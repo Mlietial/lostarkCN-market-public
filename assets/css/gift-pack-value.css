@@ -106,19 +106,6 @@ button {
   margin-bottom: 18px;
 }
 
-.page-actions {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-bottom: 14px;
-}
-
-.page-actions .home-link {
-  display: inline-flex;
-  align-items: center;
-  text-decoration: none;
-}
-
 .eyebrow {
   margin: 0 0 8px;
   color: var(--gold);
@@ -158,10 +145,17 @@ h1 {
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  flex-wrap: wrap;
   margin-bottom: 10px;
   color: var(--muted);
   font-size: 13px;
   line-height: 1.35;
+}
+
+.author-data-status .home-link {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
 }
 
 .author-refresh-btn {
