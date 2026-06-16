@@ -1020,6 +1020,55 @@ textarea {
   line-height: 1;
 }
 
+.support-author-popover {
+  position: relative;
+  display: inline-flex;
+  z-index: 20;
+}
+
+.support-author-tip {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px);
+  width: 156px;
+  padding: 9px;
+  border: 1px solid rgba(68, 137, 205, .22);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, .98);
+  box-shadow: 0 16px 36px rgba(15, 23, 42, .16);
+  color: var(--text);
+  text-align: center;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition: opacity .16s ease, transform .16s ease, visibility .16s ease;
+  pointer-events: none;
+}
+
+.support-author-popover:hover .support-author-tip,
+.support-author-popover:focus-within .support-author-tip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.support-author-tip strong {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 13px;
+}
+
+.support-author-tip img {
+  display: block;
+  width: 132px;
+  max-width: 100%;
+  max-height: 180px;
+  margin: 0 auto;
+  object-fit: contain;
+  border-radius: 6px;
+  background: #fff;
+}
+
 .modal-grid {
   display: grid;
   grid-template-columns: minmax(236px, 315px) minmax(0, 1fr);

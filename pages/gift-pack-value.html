@@ -72,6 +72,13 @@
           <button id="addCustomPackBtn" type="button" class="ghost-btn">新增礼包</button>
           <button id="exportGiftPackDataBtn" type="button" class="ghost-btn">导出数据</button>
           <button id="importGiftPackDataBtn" type="button" class="ghost-btn">导入数据</button>
+          <span class="support-author-popover">
+            <button type="button" class="ghost-btn support-author-btn" aria-describedby="supportAuthorTip">支持作者</button>
+            <span id="supportAuthorTip" class="support-author-tip" role="tooltip">
+              <strong>感谢支持</strong>
+              <img src="../assets/support-author.jpg" alt="支持作者收款码">
+            </span>
+          </span>
           <input id="giftPackImportInput" type="file" accept="application/json,.json" hidden>
           <button id="sortBtn" type="button" class="ghost-btn">性价比降序</button>
           <select id="filterInput" aria-label="筛选礼包">
