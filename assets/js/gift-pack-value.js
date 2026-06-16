@@ -1297,9 +1297,6 @@ function manualEntryText(entry) {
 
 function itemUnitGold(content) {
   const manualEntry = normalizeManualEntry(state.manualValues[content.name]);
-  if (manualEntry && requiresRangeEstimate(content.name) && !manualEntry.isRange) {
-    return { value: null, source: "需填写估值区间" };
-  }
   const manual = manualEntry && manualEntry.value > 0 ? manualValueToGold(manualEntry) : null;
   if (manual !== null) {
     return {
@@ -1601,7 +1598,7 @@ function manualItemMeta(name) {
   const defaultGold = defaultItemGold(name);
   const defaultValue = defaultManualValue(name, defaultGold);
   const manual = normalizeManualEntry(state.manualValues[name]) || { value: "", unit: defaultUnit };
-  const placeholder = requiresRangeEstimate(name) ? "请填区间，如 60000~90000" : (defaultGold === null ? "未计入" : fmtUnitGold(defaultValue));
+  const placeholder = defaultGold === null ? "请输入单价，如 60000" : fmtUnitGold(defaultValue);
   const note = itemPrices[name] ? defaultItemSource(name) : "自定义估值项";
   const meta = manualDefaultSummary(defaultValue, defaultUnit, defaultGold);
   return { defaultGold, defaultUnit, defaultValue, manual, placeholder, meta, note };
@@ -1619,7 +1616,7 @@ function manualListItemHtml(name) {
   const selected = name === state.selectedManualItem;
   const defaultText = manualDefaultBrief(defaultValue, defaultUnit, defaultGold);
   const manualText = manual && manual.value > 0
-    ? (requiresRangeEstimate(name) && !manual.isRange ? "需填写区间" : `已改写：${manualEntryText(manual)} ${MANUAL_VALUE_UNITS[manual.unit] || "金币"}`)
+    ? `已改写：${manualEntryText(manual)} ${MANUAL_VALUE_UNITS[manual.unit] || "金币"}`
     : defaultText;
   return `
     <button type="button" class="manual-list-item ${selected ? "is-active" : ""}" data-manual-select="${escapeAttr(name)}">
@@ -1643,7 +1640,7 @@ function manualDetailHtml(name) {
     return `<div class="manual-empty">暂无可编辑估值项。</div>`;
   }
   const { manual, placeholder, meta, note } = manualItemMeta(name);
-  const valuePlaceholder = requiresRangeEstimate(name) ? placeholder : `${placeholder}，可填 100~200`;
+  const valuePlaceholder = `${placeholder}，也可填 100~200`;
   return `
     <div class="manual-detail-inner" data-manual-current="${escapeAttr(name)}">
       <button type="button" class="manual-preview" id="manualIconPreviewBtn" title="点击更换图标">
