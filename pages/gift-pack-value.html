@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>命运方舟礼包性价比分析</title>
+  <link rel="icon" type="image/jpeg" href="../assets/_0016_英雄星石箱子.jpg">
+  <link rel="stylesheet" href="../assets/css/gift-pack-value.css">
+</head>
+<body>
+  <main class="app-shell">
+    <header class="page-head">
+      <div>
+        <p class="eyebrow">Lost Ark CN Gift Pack Value</p>
+        <div class="title-row">
+          <h1>命运方舟礼包性价比分析</h1>
+        </div>
+        <p class="subtitle">按“礼包可估值金币价值 / 购买成本折金币”计算。100% 表示和直接买金再去拍卖买材料持平。</p>
+      </div>
+    </header>
+
+    <section class="control-panel" aria-label="全局参数">
+      <label>
+        当前金价
+        <span class="input-wrap"><input id="goldRateInput" type="number" step="0.01" min="0" value="4189.67"><em>金/元</em></span>
+      </label>
+      <label>
+        彩钻比例
+        <span class="input-wrap"><input id="crystalRateInput" type="number" step="1" min="1" value="100"><em>彩钻=1元</em></span>
+      </label>
+      <label>
+        蓝钻来源
+        <select id="blueSourceInput">
+          <option value="normal">普通：1蓝钻=1彩钻</option>
+          <option value="weekly">周优惠：30000蓝钻=28000彩钻</option>
+          <option value="monthly">月优惠：60000蓝钻=52000彩钻</option>
+        </select>
+      </label>
+      <label>
+        彩钻折扣
+        <span class="discount-wrap">
+          <select id="royalDiscountPreset">
+            <option value="1">原价：100%</option>
+            <option value="0.95">95折</option>
+            <option value="0.9">9折</option>
+            <option value="0.85">85折</option>
+            <option value="0.8">8折</option>
+            <option value="custom">自定义</option>
+          </select>
+          <input id="royalDiscountCustomInput" type="number" step="0.01" min="0.01" max="1" value="1" aria-label="彩钻自定义折扣">
+        </span>
+      </label>
+      <div class="formula-note">
+        蓝钻来源会影响蓝钻礼包成本与蓝钻标价内容物估值；彩钻折扣会影响所有彩钻/蓝钻折算成本。
+      </div>
+    </section>
+
+    <section class="table-panel">
+      <div class="section-head table-head">
+        <div>
+          <h2>礼包总表</h2>
+          <p class="table-note">默认按性价比排序。[3赠1] 总表按吃满口径显示，详情里保留单买口径。组合用于判断整套回馈，不与单品重复累计。</p>
+        </div>
+        <div class="table-actions">
+          <button id="manualValuesToggleBtn" type="button" class="ghost-btn">显示估值设置</button>
+          <button id="addCustomPackBtn" type="button" class="ghost-btn">新增礼包</button>
+          <button id="sortBtn" type="button" class="ghost-btn">性价比降序</button>
+          <select id="filterInput" aria-label="筛选礼包">
+            <option value="all">全部</option>
+            <option value="royal">彩钻</option>
+            <option value="blue">蓝钻</option>
+            <option value="threeForOne">3赠1</option>
+            <option value="selfSelect">自选</option>
+            <option value="random">随机</option>
+            <option value="combo">奖励屋组合</option>
+            <option value="expired">已过期</option>
+          </select>
+        </div>
+      </div>
+      <div class="table-scroll">
+        <table class="pack-table">
+          <thead>
+            <tr>
+              <th>图片</th>
+              <th>礼包名称</th>
+              <th>币种</th>
+              <th>价格</th>
+              <th>3赠1</th>
+              <th>自选</th>
+              <th>成本折金币</th>
+              <th>折人民币</th>
+              <th>内容估值金币</th>
+              <th>内容估值人民币</th>
+              <th>性价比</th>
+              <th>推荐</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="packTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <div id="modalBackdrop" class="modal-backdrop" hidden>
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" tabindex="-1">
+      <button id="closeModalBtn" type="button" class="modal-close" aria-label="关闭">×</button>
+      <div id="modalContent"></div>
+    </section>
+  </div>
+
+  <div id="editDialogBackdrop" class="modal-backdrop" hidden>
+    <section class="modal dialog-modal" role="dialog" aria-modal="true" aria-labelledby="editDialogTitle" tabindex="-1">
+      <button id="closeEditDialogBtn" type="button" class="modal-close" aria-label="关闭">×</button>
+      <div id="editDialogContent"></div>
+    </section>
+  </div>
+
+  <div class="floating-edit">
+    <button id="floatingEditBtn" type="button" class="floating-edit-btn" aria-label="编辑操作">✎</button>
+    <div id="floatingEditMenu" class="floating-edit-menu" hidden>
+      <button id="toggleEditListBtn" type="button">编辑列表</button>
+      <button id="openFirstPackEditorBtn" type="button">编辑礼包</button>
+      <button id="floatingAddPackBtn" type="button">新增礼包</button>
+    </div>
+  </div>
+
+  <div id="rateUpdatedAt" class="rate-updated-at">金价更新时间：未记录</div>
+
+  <script src="../assets/js/gift-pack-value.js"></script>
+</body>
+</html>

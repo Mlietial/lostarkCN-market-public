@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>命运方舟市场工具</title>
+  <style>
+    *{box-sizing:border-box}body{margin:0;font-family:"Microsoft YaHei",Arial,sans-serif;color:#111827;background:#f6f8fb}.shell{max-width:1040px;margin:0 auto;padding:42px 22px}.top{margin-bottom:22px}h1{margin:0 0 8px;font-size:34px}.sub{color:#64748b;line-height:1.6}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.card{display:block;text-decoration:none;color:inherit;background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:20px;box-shadow:0 12px 28px rgba(15,23,42,.07)}.card h2{margin:0 0 8px;font-size:22px}.card p{margin:0;color:#64748b;line-height:1.55}.api{margin-top:16px;background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:18px}.api code{display:block;margin-top:8px;padding:10px 12px;background:#f1f5f9;border-radius:8px;overflow:auto}@media(max-width:720px){.grid{grid-template-columns:1fr}h1{font-size:28px}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="top">
+      <h1>命运方舟市场工具</h1>
+      <p class="sub">礼包性价比分析、宝石价格指数和公开数据接口统一发布在这里。</p>
+    </section>
+    <section class="grid">
+      <a class="card" href="./pages/gift-pack-value.html">
+        <h2>礼包分析页</h2>
+        <p>按金币折算、人民币成本和内容估值查看礼包性价比。</p>
+      </a>
+      <a class="card" href="./pages/gem-dashboard.html">
+        <h2>宝石价格指数仪表盘</h2>
+        <p>查看宝石走势、金价换算、刻印书价格和日报导出工具。</p>
+      </a>
+    </section>
+    <section class="api">
+      <strong>公开 API</strong>
+      <code>GET ./api/latest.json</code>
+      <code>GET ./data/dashboard-state.json</code>
+    </section>
+  </main>
+</body>
+</html>
