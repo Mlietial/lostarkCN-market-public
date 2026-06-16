@@ -22,6 +22,12 @@ const EDITABLE_STORAGE_KEYS = {
   packLinks: "giftPackHistoryLinks"
 };
 
+const GIFT_PACK_BACKUP_VERSION = 1;
+const GIFT_PACK_EXTRA_STORAGE_KEYS = [
+  "giftPackManualValues",
+  "giftPackSettings"
+];
+
 let editablePageContent = loadJson(EDITABLE_STORAGE_KEYS.pageContent, {});
 let editablePackOverrides = loadJson(EDITABLE_STORAGE_KEYS.packOverrides, {});
 let editableCustomPacks = loadJson(EDITABLE_STORAGE_KEYS.customPacks, []);
@@ -429,6 +435,115 @@ function loadJson(key, fallback) {
 
 function saveJson(key, value) {
   localStorage.setItem(key, JSON.stringify(value));
+}
+
+function giftPackStorageKeys() {
+  return [...new Set([
+    ...Object.values(EDITABLE_STORAGE_KEYS),
+    ...GIFT_PACK_EXTRA_STORAGE_KEYS
+  ])];
+}
+
+function buildGiftPackBackup() {
+  const storage = {};
+  giftPackStorageKeys().forEach(key => {
+    const value = localStorage.getItem(key);
+    if (value !== null) storage[key] = value;
+  });
+  return {
+    app: "lostark-gift-pack-value",
+    version: GIFT_PACK_BACKUP_VERSION,
+    exportedAt: new Date().toISOString(),
+    storage,
+    snapshot: {
+      settings: {
+        goldPerRmb: state.goldPerRmb,
+        royalPerRmb: state.royalPerRmb,
+        blueSource: state.blueSource,
+        royalDiscount: state.royalDiscount,
+        valuationGoldPerRmb: state.valuationGoldPerRmb,
+        valuationGoldBaseLocked: !!state.valuationGoldBaseLocked,
+        settingsUpdatedAt: state.settingsUpdatedAt
+      },
+      manualValues: state.manualValues,
+      packs: getGiftPacks()
+    }
+  };
+}
+
+function downloadJsonFile(filename, data) {
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
+function exportGiftPackData() {
+  const date = new Date().toISOString().slice(0, 10);
+  downloadJsonFile(`gift-pack-data-${date}.json`, buildGiftPackBackup());
+}
+
+function stringifyBackupValue(value) {
+  return typeof value === "string" ? value : JSON.stringify(value ?? null);
+}
+
+function normalizeGiftPackBackupStorage(backup) {
+  if (!backup || typeof backup !== "object") throw new Error("invalid backup");
+  const storage = {};
+  const allowedKeys = giftPackStorageKeys();
+  if (backup.storage && typeof backup.storage === "object") {
+    allowedKeys.forEach(key => {
+      if (Object.prototype.hasOwnProperty.call(backup.storage, key) && backup.storage[key] !== undefined) {
+        storage[key] = stringifyBackupValue(backup.storage[key]);
+      }
+    });
+  }
+  if (backup.editable && typeof backup.editable === "object") {
+    Object.entries(EDITABLE_STORAGE_KEYS).forEach(([name, key]) => {
+      if (Object.prototype.hasOwnProperty.call(backup.editable, name)) {
+        storage[key] = stringifyBackupValue(backup.editable[name]);
+      }
+    });
+  }
+  if (Object.prototype.hasOwnProperty.call(backup, "manualValues")) {
+    storage.giftPackManualValues = stringifyBackupValue(backup.manualValues);
+  }
+  if (Object.prototype.hasOwnProperty.call(backup, "settings")) {
+    storage.giftPackSettings = stringifyBackupValue(backup.settings);
+  }
+  return storage;
+}
+
+function validateGiftPackBackupStorage(storage) {
+  const entries = Object.entries(storage);
+  if (!entries.length) throw new Error("empty backup");
+  entries.forEach(([key, value]) => {
+    if (!giftPackStorageKeys().includes(key)) return;
+    JSON.parse(value);
+  });
+}
+
+async function importGiftPackData(file) {
+  if (!file) return;
+  try {
+    const backup = JSON.parse(await file.text());
+    const storage = normalizeGiftPackBackupStorage(backup);
+    validateGiftPackBackupStorage(storage);
+    const count = Object.keys(storage).length;
+    if (!window.confirm(`导入会覆盖本浏览器里的礼包编辑数据，共 ${count} 项。继续？`)) return;
+    giftPackStorageKeys().forEach(key => localStorage.removeItem(key));
+    Object.entries(storage).forEach(([key, value]) => localStorage.setItem(key, value));
+    window.alert("礼包数据已导入，页面将刷新。");
+    window.location.reload();
+  } catch (error) {
+    console.error(error);
+    window.alert("导入失败：请选择由礼包页导出的 JSON 数据文件。");
+  }
 }
 
 function sanitizePack(raw, fallback = {}) {
@@ -2120,6 +2235,16 @@ function bindControls() {
   }
   const addPackButton = document.getElementById("addCustomPackBtn");
   const manualToggle = document.getElementById("manualValuesToggleBtn");
+  const importInput = document.getElementById("giftPackImportInput");
+  document.getElementById("exportGiftPackDataBtn")?.addEventListener("click", exportGiftPackData);
+  document.getElementById("importGiftPackDataBtn")?.addEventListener("click", () => {
+    importInput?.click();
+  });
+  importInput?.addEventListener("change", event => {
+    const file = event.target.files?.[0];
+    importGiftPackData(file);
+    event.target.value = "";
+  });
   manualToggle?.addEventListener("click", () => {
     openEditDialog("manual");
   });

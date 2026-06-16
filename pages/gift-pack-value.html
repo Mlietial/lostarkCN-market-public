@@ -6,23 +6,8 @@
   <title>命运方舟礼包性价比分析</title>
   <link rel="icon" type="image/jpeg" href="../assets/_0016_英雄星石箱子.jpg">
   <link rel="stylesheet" href="../assets/css/gift-pack-value.css">
-  <style>
-    .public-readonly .floating-edit,
-    .public-readonly #manualValuesToggleBtn,
-    .public-readonly #addCustomPackBtn,
-    .public-readonly .edit-pack-btn,
-    .public-readonly .pack-table th:last-child,
-    .public-readonly .pack-table td:last-child,
-    .public-readonly #editDialogBackdrop,
-    .public-readonly .manual-detail-actions,
-    .public-readonly .manual-actions,
-    .public-readonly .edit-actions,
-    .public-readonly .pack-edit-actions {
-      display: none !important;
-    }
-  </style>
 </head>
-<body class="public-readonly">
+<body>
   <main class="app-shell">
     <header class="page-head">
       <div>
@@ -79,6 +64,9 @@
         <div class="table-actions">
           <button id="manualValuesToggleBtn" type="button" class="ghost-btn">显示估值设置</button>
           <button id="addCustomPackBtn" type="button" class="ghost-btn">新增礼包</button>
+          <button id="exportGiftPackDataBtn" type="button" class="ghost-btn">导出数据</button>
+          <button id="importGiftPackDataBtn" type="button" class="ghost-btn">导入数据</button>
+          <input id="giftPackImportInput" type="file" accept="application/json,.json" hidden>
           <button id="sortBtn" type="button" class="ghost-btn">性价比降序</button>
           <select id="filterInput" aria-label="筛选礼包">
             <option value="all">全部</option>
