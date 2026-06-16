@@ -1662,11 +1662,15 @@ document.getElementById("importBackupInput").addEventListener("change",async fun
 try{
   const emb=document.getElementById("EMBEDDED_DATA");
   let payload=JSON.parse(emb?emb.textContent||"null":"null");
-  try{const response=await fetch("../data/dashboard-state.json",{cache:"no-store"});if(response.ok)payload=await response.json();}catch(fetchError){console.warn("远程数据加载失败，使用页面内置数据：",fetchError);}
-  if(!hasLocalGemRows()&&payload&&payload.version===DASHBOARD_STATE_VERSION&&Array.isArray(payload.gemRows)&&Array.isArray(payload.goldTxns)){
+  let loadedRemoteState=false;
+  try{
+    const response=await fetch("../data/dashboard-state.json?v="+Date.now(),{cache:"no-store"});
+    if(response.ok){payload=await response.json();loadedRemoteState=true;}
+  }catch(fetchError){console.warn("远程数据加载失败，使用页面内置数据：",fetchError);}
+  if(payload&&payload.version===DASHBOARD_STATE_VERSION&&Array.isArray(payload.gemRows)&&Array.isArray(payload.goldTxns)){
     embeddedDashboardState=payload;
     applyDashboardState(payload);
-  }else if(!hasLocalGemRows()&&Array.isArray(payload)&&payload.length){
+  }else if(!loadedRemoteState&&!hasLocalGemRows()&&Array.isArray(payload)&&payload.length){
     data=rowsToData(payload);
     persistGemRows();
     renderDataPreview();
