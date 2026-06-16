@@ -659,7 +659,17 @@ async function preloadImage(src) {
 }
 
 async function preloadGiftPackImages() {
-  const sources = [...new Set(getGiftPacks().map(pack => pack.image).filter(Boolean))];
+  const iconSources = [];
+  getGiftPacks().forEach(pack => {
+    modalDisplayItems(pack).forEach(item => {
+      const path = resolveItemIconPath(item.name);
+      if (path) iconSources.push(path);
+    });
+  });
+  const sources = [...new Set([
+    ...getGiftPacks().map(pack => pack.image).filter(Boolean),
+    ...iconSources
+  ])];
   const limit = 4;
   for (let i = 0; i < sources.length; i += limit) {
     await Promise.all(sources.slice(i, i + limit).map(preloadImage));
@@ -2285,7 +2295,7 @@ function itemIconHtml(name) {
   const path = resolveItemIconPath(name);
   const label = displayItemName(name);
   if (!path) return `<span class="item-icon item-icon-fallback">${escapeHtml(label.slice(0, 1))}</span>`;
-  return `<img class="item-icon" src="${escapeAttr(path)}" alt="${escapeAttr(label)}" loading="lazy" onerror="this.replaceWith(createItemIconFallback('${escapeAttr(label)}'))">`;
+  return `<img class="item-icon" src="${escapeAttr(path)}" alt="${escapeAttr(label)}" loading="eager" decoding="async" onerror="this.replaceWith(createItemIconFallback('${escapeAttr(label)}'))">`;
 }
 
 function resolveItemIconPath(name) {
