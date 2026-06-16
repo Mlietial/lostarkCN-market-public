@@ -1,5 +1,4 @@
 import { copyFile } from "node:fs/promises";
-import { spawnSync } from "node:child_process";
 
 const source = process.argv[2];
 if (!source) {
@@ -8,5 +7,3 @@ if (!source) {
 }
 
 await copyFile(source, "data/dashboard-state.json");
-const result = spawnSync(process.execPath, ["scripts/build-data.mjs"], { stdio: "inherit" });
-process.exit(result.status ?? 1);
