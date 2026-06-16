@@ -50,9 +50,54 @@ body{position:relative;overflow-x:hidden;isolation:isolate}body:before,body:afte
   .public-readonly .engraving-toolbar {
     min-width: 0;
   }
+  .dashboard-loading .app,
+  .dashboard-loading .float-data,
+  .dashboard-loading .editor,
+  .dashboard-error .app,
+  .dashboard-error .float-data,
+  .dashboard-error .editor {
+    display: none !important;
+  }
+  .dashboard-loader {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+  }
+  .dashboard-ready .dashboard-loader {
+    display: none;
+  }
+  .dashboard-loader-card {
+    width: min(460px, 100%);
+    border: 1px solid rgba(229, 231, 235, .95);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, .94);
+    box-shadow: var(--shadow);
+    padding: 22px 24px;
+  }
+  .dashboard-loader-card h1 {
+    margin: 0 0 8px;
+    font-size: 22px;
+  }
+  .dashboard-loader-card p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .dashboard-error .dashboard-loader-card {
+    border-color: #fecaca;
+    background: #fff7f7;
+  }
 </style>
 </head>
-<body class="public-readonly">
+<body class="public-readonly dashboard-loading">
+<div id="dashboardLoader" class="dashboard-loader" role="status" aria-live="polite">
+  <section class="dashboard-loader-card">
+    <h1>宝石价格指数仪表盘</h1>
+    <p id="dashboardLoaderText">正在加载 dashboard-state.json...</p>
+  </section>
+</div>
 <main class="app">
 <section class="topbar"><div><h1>宝石价格指数仪表盘</h1><div class="subtitle" id="subtitle">数据区间自动读取，基准价可自定义</div></div><div class="actions"><button id="toggleEditor" class="secondary" aria-haspopup="dialog">数据源</button><button id="saveToFileBtnTop" class="secondary">保存完整文件</button><button id="overwriteFileBtnTop" class="secondary overwrite-file-btn" type="button">覆盖原文件</button><button id="exportVideoBtn" class="warn" type="button">输出视频</button><button id="exportMobileVideoBtn" class="warn" type="button">输出手机版</button><span id="videoExportStatus" class="video-export-status" role="status" aria-live="polite"><span id="videoExportText" class="video-export-text"></span><span class="video-export-progress" aria-hidden="true"><span id="videoExportProgressBar"></span></span></span><button id="printPage" class="secondary">打印/PDF</button><button id="screenshotPage" class="warn">保存截图</button></div></section>
 <section class="grid kpis" id="kpiGrid"></section>
@@ -161,6 +206,13 @@ levels.map(l=>'<td style="padding:3px 6px;border:1px solid #e5e7eb;text-align:ce
 '<td style="padding:3px 6px;border:1px solid #e5e7eb;text-align:center"><button class="delete-data-row" data-idx="'+i+'" style="border:1px solid #fecaca;background:#fff;color:#b91c1c;border-radius:6px;padding:2px 7px;font-size:11px;cursor:pointer">删除</button></td></tr>';});
 c.innerHTML=html+'</tbody></table></div>';}
 function showStatus(message,unsaved=false){const sl=document.getElementById("statusline");if(!sl)return;hasUnsavedChanges=hasUnsavedChanges||unsaved;sl.classList.toggle("unsaved",hasUnsavedChanges);sl.textContent=message+(hasUnsavedChanges?"；有尚未保存到文件的修改":"");}
+function setDashboardLoadState(state,message){
+  document.body.classList.toggle("dashboard-loading",state==="loading");
+  document.body.classList.toggle("dashboard-ready",state==="ready");
+  document.body.classList.toggle("dashboard-error",state==="error");
+  const text=document.getElementById("dashboardLoaderText");
+  if(text&&message)text.textContent=message;
+}
 function armConfirmButton(btn,message,confirmText,action){if(!btn)return;if(btn.dataset.confirming==="1"){resetConfirmButton(btn);action();return;}btn.dataset.originalText=btn.dataset.originalText||btn.textContent;btn.dataset.confirming="1";btn.textContent=confirmText;btn.classList.add("warn");showStatus(message);clearTimeout(btn._confirmTimer);btn._confirmTimer=setTimeout(()=>resetConfirmButton(btn),6500);}
 function resetConfirmButton(btn){if(!btn)return;clearTimeout(btn._confirmTimer);if(btn.dataset.originalText)btn.textContent=btn.dataset.originalText;btn.dataset.confirming="";btn.classList.remove("warn");}
 function hasLocalGemRows(){try{return !!String(localStorage.getItem(GEM_DASHBOARD_DATA_KEY)||"").trim();}catch(e){return false;}}
@@ -1671,6 +1723,7 @@ try{
   if(payload&&payload.version===DASHBOARD_STATE_VERSION&&Array.isArray(payload.gemRows)&&Array.isArray(payload.goldTxns)){
     embeddedDashboardState=payload;
     applyDashboardState(payload);
+    setDashboardLoadState("ready");
   }else{
     throw new Error("dashboard-state.json 格式不受支持");
   }
@@ -1681,8 +1734,7 @@ try{
   gcTxns=[];
   engravingBookPrices=[];
   renderDataPreview();
-  render();
-  renderGcAll(true);
+  setDashboardLoadState("error",e.message||"dashboard-state.json 加载失败");
   showStatus(e.message||"dashboard-state.json 加载失败");
 }
 </script>
