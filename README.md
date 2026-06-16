@@ -4,7 +4,6 @@
 
 - 礼包分析页：`/pages/gift-pack-value.html`
 - 宝石价格指数仪表盘：`/pages/gem-dashboard.html`
-- 最新摘要 API：`/api/latest.json`
 - 完整仪表盘状态：`/data/dashboard-state.json`
 
 ## 数据分管
@@ -13,14 +12,14 @@
 - `data/gem-rows.json`：宝石价格历史。
 - `data/gold-transactions.json`：金价交易记录。
 - `data/engraving-book-prices.json`：刻印书价格记录。
-- `api/latest.json`：给外部页面或脚本读取的最新摘要接口。
+公开站点为只读展示版，不提供页面上的导入、导出、截图或外部 API 入口。
 
 ## 更新数据
 
 把新的完整状态 JSON 放到 `data/dashboard-state.json` 后运行：
 
 ```bash
-npm run build:api
+npm run build:data
 ```
 
 如果你从仪表盘页面里导出了“完整数据备份”，也可以直接：

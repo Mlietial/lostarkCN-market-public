@@ -8,5 +8,5 @@ if (!source) {
 }
 
 await copyFile(source, "data/dashboard-state.json");
-const result = spawnSync(process.execPath, ["scripts/build-api.mjs"], { stdio: "inherit" });
+const result = spawnSync(process.execPath, ["scripts/build-data.mjs"], { stdio: "inherit" });
 process.exit(result.status ?? 1);
