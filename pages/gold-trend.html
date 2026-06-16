@@ -190,7 +190,7 @@
       const pad = Math.max(1, (max - min) * .12);
       const lo = min - pad, hi = max + pad;
       const w = 980, h = 360;
-      const m = { l: 58, r: 28, t: 24, b: 54 };
+      const m = { l: 78, r: 98, t: 24, b: 54 };
       const x = date => m.l + (dates.indexOf(date) / Math.max(1, dates.length - 1)) * (w - m.l - m.r);
       const y = value => m.t + (hi - value) / Math.max(1, hi - lo) * (h - m.t - m.b);
       const grid = Array.from({ length: 5 }, (_, i) => {
@@ -217,8 +217,19 @@
         });
         node.addEventListener("mousemove", event => {
           const rect = wrap.getBoundingClientRect();
-          tip.style.left = event.clientX - rect.left + 12 + "px";
-          tip.style.top = event.clientY - rect.top - 8 + "px";
+          const tipW = tip.offsetWidth || 180;
+          let left = event.clientX - rect.left + 12;
+          if (left + tipW > wrap.clientWidth - 8) left = event.clientX - rect.left - tipW - 12;
+          if (left < 8) left = 8;
+          let top = event.clientY - rect.top - 8;
+          if (top < 34) {
+            tip.style.transform = "";
+            top = event.clientY - rect.top + 18;
+          } else {
+            tip.style.transform = "translateY(-100%)";
+          }
+          tip.style.left = left + "px";
+          tip.style.top = top + "px";
         });
         node.addEventListener("mouseleave", () => tip.classList.remove("show"));
       });
