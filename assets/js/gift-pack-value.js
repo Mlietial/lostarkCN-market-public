@@ -24,6 +24,7 @@ const EDITABLE_STORAGE_KEYS = {
 
 const GIFT_PACK_BACKUP_VERSION = 1;
 const PUBLIC_GIFT_PACK_DATA_URL = "../data/gift-pack-data.json";
+const MIN_GIFT_LOADER_MS = 900;
 const GIFT_PACK_EXTRA_STORAGE_KEYS = [
   "giftPackManualValues",
   "giftPackSettings"
@@ -432,6 +433,10 @@ function setGiftPageLoadState(stateName, message) {
   document.body.classList.toggle("gift-error", stateName === "error");
   const text = document.getElementById("giftPageLoaderText");
   if (text && message) text.textContent = message;
+}
+
+function wait(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 function loadJson(key, fallback) {
@@ -2484,11 +2489,14 @@ function bindControls() {
 
 async function initGiftPackPage() {
   try {
+    const loaderStartedAt = Date.now();
     initPageContentDefaults();
-    setGiftPageLoadState("loading", "正在加载礼包公开数据...");
+    setGiftPageLoadState("loading", "正在加载 gift-pack-data.json...");
     await loadPublicGiftPackData();
     setGiftPageLoadState("loading", "正在加载礼包缩略图...");
     await preloadGiftPackImages();
+    const elapsed = Date.now() - loaderStartedAt;
+    if (elapsed < MIN_GIFT_LOADER_MS) await wait(MIN_GIFT_LOADER_MS - elapsed);
     applyPageContent();
     bindControls();
     renderRateTimestamp();
