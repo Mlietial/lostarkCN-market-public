@@ -426,6 +426,14 @@ for (const pack of getGiftPacks()) {
   if (pack.isSelfSelect) state.selectedOptions[pack.id] = new Set(pack.defaultSelected || []);
 }
 
+function setGiftPageLoadState(stateName, message) {
+  document.body.classList.toggle("gift-loading", stateName === "loading");
+  document.body.classList.toggle("gift-ready", stateName === "ready");
+  document.body.classList.toggle("gift-error", stateName === "error");
+  const text = document.getElementById("giftPageLoaderText");
+  if (text && message) text.textContent = message;
+}
+
 function loadJson(key, fallback) {
   try {
     return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback));
@@ -631,6 +639,25 @@ async function loadPublicGiftPackData() {
     }
   } catch (error) {
     console.warn("礼包公开数据加载失败：", error);
+    throw new Error(`gift-pack-data.json 加载失败：${error.message || error}`);
+  }
+}
+
+async function preloadImage(src) {
+  if (!src) return;
+  await new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => resolve();
+    img.onerror = () => resolve();
+    img.src = src;
+  });
+}
+
+async function preloadGiftPackImages() {
+  const sources = [...new Set(getGiftPacks().map(pack => pack.image).filter(Boolean))];
+  const limit = 4;
+  for (let i = 0; i < sources.length; i += limit) {
+    await Promise.all(sources.slice(i, i + limit).map(preloadImage));
   }
 }
 
@@ -2456,13 +2483,22 @@ function bindControls() {
 }
 
 async function initGiftPackPage() {
-  initPageContentDefaults();
-  await loadPublicGiftPackData();
-  applyPageContent();
-  bindControls();
-  renderRateTimestamp();
-  renderManualValues();
-  renderTable();
+  try {
+    initPageContentDefaults();
+    setGiftPageLoadState("loading", "正在加载礼包公开数据...");
+    await loadPublicGiftPackData();
+    setGiftPageLoadState("loading", "正在加载礼包缩略图...");
+    await preloadGiftPackImages();
+    applyPageContent();
+    bindControls();
+    renderRateTimestamp();
+    renderManualValues();
+    renderTable();
+    setGiftPageLoadState("ready");
+  } catch (error) {
+    console.warn("礼包页初始化失败：", error);
+    setGiftPageLoadState("error", error.message || "礼包数据加载失败");
+  }
 }
 
 initGiftPackPage();
