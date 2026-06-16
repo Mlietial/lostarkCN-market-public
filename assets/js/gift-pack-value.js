@@ -23,6 +23,7 @@ const EDITABLE_STORAGE_KEYS = {
 };
 
 const GIFT_PACK_BACKUP_VERSION = 1;
+const PUBLIC_GIFT_PACK_DATA_URL = "../data/gift-pack-data.json";
 const GIFT_PACK_EXTRA_STORAGE_KEYS = [
   "giftPackManualValues",
   "giftPackSettings"
@@ -528,6 +529,65 @@ function validateGiftPackBackupStorage(storage) {
   });
 }
 
+function applyGiftPackBackupStorage(storage, persist = false) {
+  const parse = key => {
+    if (!Object.prototype.hasOwnProperty.call(storage, key)) return undefined;
+    try {
+      return JSON.parse(storage[key]);
+    } catch (error) {
+      return undefined;
+    }
+  };
+  const pageContent = parse(EDITABLE_STORAGE_KEYS.pageContent);
+  const packOverrides = parse(EDITABLE_STORAGE_KEYS.packOverrides);
+  const customPacks = parse(EDITABLE_STORAGE_KEYS.customPacks);
+  const itemIcons = parse(EDITABLE_STORAGE_KEYS.itemIcons);
+  const deletedPacks = parse(EDITABLE_STORAGE_KEYS.deletedPacks);
+  const customItems = parse(EDITABLE_STORAGE_KEYS.customManualItems);
+  const hiddenItems = parse(EDITABLE_STORAGE_KEYS.hiddenManualItems);
+  const itemLabels = parse(EDITABLE_STORAGE_KEYS.itemLabels);
+  const rates = parse(EDITABLE_STORAGE_KEYS.rateHistory);
+  const packs = parse(EDITABLE_STORAGE_KEYS.packHistory);
+  const links = parse(EDITABLE_STORAGE_KEYS.packLinks);
+  const manualValues = parse("giftPackManualValues");
+  const settings = parse("giftPackSettings");
+
+  if (pageContent && typeof pageContent === "object") editablePageContent = pageContent;
+  if (packOverrides && typeof packOverrides === "object") editablePackOverrides = packOverrides;
+  if (Array.isArray(customPacks)) editableCustomPacks = customPacks;
+  if (itemIcons && typeof itemIcons === "object") editableItemIcons = itemIcons;
+  if (Array.isArray(deletedPacks)) editableDeletedPacks = deletedPacks;
+  if (Array.isArray(customItems)) customManualItems = customItems;
+  if (Array.isArray(hiddenItems)) hiddenManualItems = hiddenItems;
+  if (itemLabels && typeof itemLabels === "object") editableItemLabels = itemLabels;
+  if (Array.isArray(rates)) rateHistory = rates;
+  if (Array.isArray(packs)) packHistory = packs;
+  if (links && typeof links === "object") packHistoryLinks = links;
+  if (manualValues && typeof manualValues === "object") state.manualValues = manualValues;
+  if (settings && typeof settings === "object") {
+    const goldPerRmb = Number(settings.goldPerRmb);
+    const royalPerRmb = Number(settings.royalPerRmb);
+    const royalDiscount = Number(settings.royalDiscount);
+    const valuationGoldPerRmb = Number(settings.valuationGoldPerRmb);
+    if (Number.isFinite(goldPerRmb) && goldPerRmb > 0) state.goldPerRmb = goldPerRmb;
+    if (Number.isFinite(royalPerRmb) && royalPerRmb > 0) state.royalPerRmb = royalPerRmb;
+    if (BLUE_SOURCES[settings.blueSource]) state.blueSource = settings.blueSource;
+    if (Number.isFinite(royalDiscount) && royalDiscount > 0) state.royalDiscount = royalDiscount;
+    state.valuationGoldBaseLocked = !!settings.valuationGoldBaseLocked;
+    state.valuationGoldPerRmb = Number.isFinite(valuationGoldPerRmb) && valuationGoldPerRmb > 0
+      ? valuationGoldPerRmb
+      : state.goldPerRmb;
+    state.settingsUpdatedAt = settings.settingsUpdatedAt || null;
+  }
+  if (persist) {
+    giftPackStorageKeys().forEach(key => localStorage.removeItem(key));
+    Object.entries(storage).forEach(([key, value]) => localStorage.setItem(key, value));
+  }
+  for (const pack of getGiftPacks()) {
+    if (!state.selectedOptions[pack.id] && pack.isSelfSelect) state.selectedOptions[pack.id] = new Set(pack.defaultSelected || []);
+  }
+}
+
 async function importGiftPackData(file) {
   if (!file) return;
   try {
@@ -536,13 +596,41 @@ async function importGiftPackData(file) {
     validateGiftPackBackupStorage(storage);
     const count = Object.keys(storage).length;
     if (!window.confirm(`导入会覆盖本浏览器里的礼包编辑数据，共 ${count} 项。继续？`)) return;
-    giftPackStorageKeys().forEach(key => localStorage.removeItem(key));
-    Object.entries(storage).forEach(([key, value]) => localStorage.setItem(key, value));
+    applyGiftPackBackupStorage(storage, true);
     window.alert("礼包数据已导入，页面将刷新。");
     window.location.reload();
   } catch (error) {
     console.error(error);
     window.alert("导入失败：请选择由礼包页导出的 JSON 数据文件。");
+  }
+}
+
+async function loadPublicGiftPackData() {
+  try {
+    const response = await fetch(`${PUBLIC_GIFT_PACK_DATA_URL}?v=${Date.now()}`, { cache: "no-store" });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const backup = await response.json();
+    const storage = normalizeGiftPackBackupStorage(backup);
+    validateGiftPackBackupStorage(storage);
+    applyGiftPackBackupStorage(storage, false);
+    if (Array.isArray(backup.snapshot?.packs) && !Object.prototype.hasOwnProperty.call(storage, EDITABLE_STORAGE_KEYS.customPacks)) {
+      const defaultIds = new Set(giftPacks.map(pack => pack.id));
+      const nextOverrides = {};
+      const nextCustomPacks = [];
+      backup.snapshot.packs.forEach(pack => {
+        if (!pack?.id) return;
+        if (defaultIds.has(pack.id)) nextOverrides[pack.id] = sanitizePack(pack, giftPacks.find(item => item.id === pack.id));
+        else nextCustomPacks.push(sanitizePack(pack));
+      });
+      editablePackOverrides = nextOverrides;
+      editableCustomPacks = nextCustomPacks;
+      editableDeletedPacks = [];
+      for (const pack of getGiftPacks()) {
+        if (!state.selectedOptions[pack.id] && pack.isSelfSelect) state.selectedOptions[pack.id] = new Set(pack.defaultSelected || []);
+      }
+    }
+  } catch (error) {
+    console.warn("礼包公开数据加载失败：", error);
   }
 }
 
@@ -2367,9 +2455,14 @@ function bindControls() {
   });
 }
 
-initPageContentDefaults();
-applyPageContent();
-bindControls();
-renderRateTimestamp();
-renderManualValues();
-renderTable();
+async function initGiftPackPage() {
+  initPageContentDefaults();
+  await loadPublicGiftPackData();
+  applyPageContent();
+  bindControls();
+  renderRateTimestamp();
+  renderManualValues();
+  renderTable();
+}
+
+initGiftPackPage();

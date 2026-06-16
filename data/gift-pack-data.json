@@ -1,0 +1,734 @@
+{
+  "app": "lostark-gift-pack-value",
+  "version": 1,
+  "exportedAt": "2026-06-16T04:50:41.770Z",
+  "storage": {
+    "giftPackRateHistory": "[{\"goldPerRmb\":4300,\"royalPerRmb\":100,\"blueSource\":\"normal\",\"royalDiscount\":1,\"valuationGoldPerRmb\":4300,\"valuationGoldBaseLocked\":false,\"savedAt\":\"2026-06-16T04:25:14.409Z\"},{\"goldPerRmb\":430,\"royalPerRmb\":100,\"blueSource\":\"normal\",\"royalDiscount\":1,\"valuationGoldPerRmb\":430,\"valuationGoldBaseLocked\":false,\"savedAt\":\"2026-06-16T04:25:14.284Z\"},{\"goldPerRmb\":43,\"royalPerRmb\":100,\"blueSource\":\"normal\",\"royalDiscount\":1,\"valuationGoldPerRmb\":43,\"valuationGoldBaseLocked\":false,\"savedAt\":\"2026-06-16T04:25:13.976Z\"},{\"goldPerRmb\":4,\"royalPerRmb\":100,\"blueSource\":\"normal\",\"royalDiscount\":1,\"valuationGoldPerRmb\":4,\"valuationGoldBaseLocked\":false,\"savedAt\":\"2026-06-16T04:25:13.913Z\"}]",
+    "giftPackSettings": "{\"goldPerRmb\":4300,\"royalPerRmb\":100,\"blueSource\":\"normal\",\"royalDiscount\":1,\"valuationGoldPerRmb\":4300,\"valuationGoldBaseLocked\":false,\"settingsUpdatedAt\":\"2026-06-16T04:25:14.409Z\"}"
+  },
+  "snapshot": {
+    "settings": {
+      "goldPerRmb": 4300,
+      "royalPerRmb": 100,
+      "blueSource": "normal",
+      "royalDiscount": 1,
+      "valuationGoldPerRmb": 4300,
+      "valuationGoldBaseLocked": false,
+      "settingsUpdatedAt": "2026-06-16T04:25:14.409Z"
+    },
+    "manualValues": {},
+    "packs": [
+      {
+        "id": "rare-hero-star-50",
+        "name": "[50]稀有-英雄星石箱子",
+        "currency": "royal",
+        "price": 14800,
+        "image": "../assets/images/giftpacks/[50]稀有~英雄星石箱子-外观（星石限时礼包1）.jpg",
+        "detailImages": [
+          "../assets/images/giftpacks/[50]稀有~英雄星石箱子-内容（星石限时礼包1）.jpg"
+        ],
+        "contents": [
+          {
+            "name": "稀有-英雄星石箱子",
+            "qty": 50
+          }
+        ],
+        "options": [],
+        "randomResults": [],
+        "defaultSelected": [],
+        "chooseCount": 5,
+        "note": "",
+        "expired": false,
+        "threeForOne": false,
+        "isCombo": false,
+        "isRandom": false,
+        "isSelfSelect": false,
+        "isCustom": false
+      },
+      {
+        "id": "hero-star-7",
+        "name": "[7]英雄星石箱子",
+        "currency": "royal",
+        "price": 20700,
+        "image": "../assets/images/giftpacks/[7]英雄星石箱子-外观（星石限时礼包1）.jpg",
+        "detailImages": [
+          "../assets/images/giftpacks/[7]英雄星石箱子-内容（星石限时礼包1）.jpg"
+        ],
+        "contents": [
+          {
+            "name": "英雄星石箱子",
+            "qty": 7
+          }
+        ],
+        "options": [],
+        "randomResults": [],
+        "defaultSelected": [],
+        "chooseCount": 5,
+        "note": "",
+        "expired": false,
+        "threeForOne": false,
+        "isCombo": false,
+        "isRandom": false,
+        "isSelfSelect": false,
+        "isCustom": false
+      },
+      {
+        "id": "hero-star-choice-3",
+        "name": "[3]英雄星石自选箱子",
+        "currency": "royal",
+        "price": 20000,
+        "image": "../assets/images/giftpacks/[3]英雄星石自选箱子-外观（星石限时礼包1）.jpg",
+        "detailImages": [
+          "../assets/images/giftpacks/[3]英雄星石自选箱子-内容（星石限时礼包1）.jpg"
+        ],
+        "contents": [
+          {
+            "name": "英雄星石自选箱子",
+            "qty": 3
+          }
+        ],
+        "options": [],
+        "randomResults": [],
+        "defaultSelected": [],
+        "chooseCount": 5,
+        "note": "",
+        "expired": false,
+        "threeForOne": false,
+        "isCombo": false,
+        "isRandom": false,
+        "isSelfSelect": false,
+        "isCustom": false
+      },
+      {
+        "id": "star-reset-10",
+        "name": "[10]星石加工初始化/重置券",
+        "currency": "royal",
+        "price": 14000,
+        "image": "../assets/images/giftpacks/[10]星石加工重置券-外观（星石限时礼包1）.jpg",
+        "detailImages": [
+          "../assets/images/giftpacks/[10]星石加工重置券-内容（星石限时礼包1）.jpg"
+        ],
+        "contents": [
+          {
+            "name": "星石加工初始化券",
+            "qty": 10
+          }
+        ],
+        "options": [],
+        "randomResults": [],
+        "defaultSelected": [],
+        "chooseCount": 5,
+        "note": "",
+        "expired": false,
+        "threeForOne": false,
+        "isCombo": false,
+        "isRandom": false,
+        "isSelfSelect": false,
+        "isCustom": false
+      },
+      {
+        "id": "combo-star-house-1",
+        "name": "奖励屋星石限时礼包Ⅰ整套 + 回馈赠礼Ⅰ",
+        "currency": "royal",
+        "price": 69500,
+        "isCombo": true,
+        "image": "../assets/images/giftpacks/星石限时礼包1-回馈赠礼-外观.jpg",
+        "detailImages": [
+          "../assets/images/giftpacks/星石限时礼包1-回馈赠礼-内容.jpg",
+          "../assets/images/giftpacks/[50]稀有~英雄星石箱子-内容（星石限时礼包1）.jpg",
+          "../assets/images/giftpacks/[7]英雄星石箱子-内容（星石限时礼包1）.jpg",
+          "../assets/images/giftpacks/[3]英雄星石自选箱子-内容（星石限时礼包1）.jpg",
+          "../assets/images/giftpacks/[10]星石加工重置券-内容（星石限时礼包1）.jpg"
+        ],
+        "contents": [
+          {
+            "name": "稀有-英雄星石箱子",
+            "qty": 50
+          },
+          {
+            "name": "英雄星石箱子",
+            "qty": 7
+          },
+          {
+            "name": "英雄星石自选箱子",
+            "qty": 3
+          },
+          {
+            "name": "星石加工初始化券",
+            "qty": 10
+          },
+          {
+            "name": "加工星石属性刷新券",
+            "qty": 10
+          },
+          {
+            "name": "遗物核心自选箱子",
+            "qty": 1
+          }
+        ],
+        "note": "组合用于判断整套回馈，不与单品重复累计。",
+        "options": [],
+        "randomResults": [],
+        "defaultSelected": [],
+        "chooseCount": 5,
+        "expired": false,
+        "threeForOne": false,
+        "isRandom": false,
+        "isSelfSelect": false,
+        "isCustom": false
+      },
+      {
+        "id": "fusion-t4-600",
+        "name": "[600]T4融合材料自选箱子",
+        "currency": "royal",
+        "price": 6500,
+        "image": "../assets/images/giftpacks/[600]T4融合材料选择箱子-外观（材料限时礼包1）.jpg",
+        "detailImages": [
+          "../assets/images/giftpacks/[600]T4融合材料选择箱子-内容（材料限时礼包1）.jpg"
+        ],
+        "contents": [
+          {
+            "name": "4阶融合材料自选箱子",
+            "qty": 600
+          }
+        ],
+        "options": [],
+        "randomResults": [],
+        "defaultSelected": [],
+        "chooseCount": 5,
+        "note": "",
+        "expired": false,
+        "threeForOne": false,
+        "isCombo": false,
+        "isRandom": false,
+        "isSelfSelect": false,
+        "isCustom": false
+      },
+      {
+        "id": "glacier-350",
+        "name": "[350]冰川之息箱子",
+        "currency": "royal",
+        "price": 6700,
+        "image": "../assets/images/giftpacks/[350]冰川之息箱子-外观（材料限时礼包1）.jpg",
+        "detailImages": [
+          "../assets/images/giftpacks/[350]冰川之息箱子-内容（材料限时礼包1）.jpg"
+        ],
+        "contents": [
+          {
+            "name": "冰川之息箱子",
+            "qty": 350
+          }
+        ],
+        "options": [],
+        "randomResults": [],
+        "defaultSelected": [],
+        "chooseCount": 5,
+        "note": "",
+        "expired": false,
+        "threeForOne": false,
+        "isCombo": false,
+        "isRandom": false,
+        "isSelfSelect": false,
+        "isCustom": false
+      },
+      {
+        "id": "lava-250",
+        "name": "[250]熔岩之息箱子",
+        "currency": "royal",
+        "price": 6300,
+        "image": "../assets/images/giftpacks/[250]熔岩之息箱子-外观（材料限时礼包1）.jpg",
+        "detailImages": [
+          "../assets/images/giftpacks/[250]熔岩之息箱子-内容（材料限时礼包1）.jpg"
+        ],
+        "contents": [
+          {
+            "name": "熔岩之息箱子",
+            "qty": 250
+          }
+        ],
+        "options": [],
+        "randomResults": [],
+        "defaultSelected": [],
+        "chooseCount": 5,
+        "note": "",
+        "expired": false,
+        "threeForOne": false,
+        "isCombo": false,
+        "isRandom": false,
+        "isSelfSelect": false,
+        "isCustom": false
+      },
+      {
+        "id": "destruction-t4-2500",
+        "name": "[2500]T4破坏石自选箱子",
+        "currency": "royal",
+        "price": 9000,
+        "image": "../assets/images/giftpacks/[2500]T4破坏石选择箱子-外观（材料限时礼包1）.jpg",
+        "detailImages": [
+          "../assets/images/giftpacks/[2500]T4破坏石选择箱子-内容（材料限时礼包1）.jpg"
+        ],
+        "contents": [
+          {
+            "name": "4阶破坏石自选箱子",
+            "qty": 2500
+          }
+        ],
+        "options": [],
+        "randomResults": [],
+        "defaultSelected": [],
+        "chooseCount": 5,
+        "note": "",
+        "expired": false,
+        "threeForOne": false,
+        "isCombo": false,
+        "isRandom": false,
+        "isSelfSelect": false,
+        "isCustom": false
+      },
+      {
+        "id": "combo-material-house-1",
+        "name": "奖励屋材料限时礼包Ⅱ整套 + 回馈赠礼Ⅱ",
+        "currency": "royal",
+        "price": 28500,
+        "isCombo": true,
+        "image": "../assets/images/giftpacks/材料限时礼包1-回馈赠礼-外观.jpg",
+        "detailImages": [
+          "../assets/images/giftpacks/材料限时礼包1-回馈赠礼-内容1.jpg",
+          "../assets/images/giftpacks/材料限时礼包1-回馈赠礼-内容2.jpg",
+          "../assets/images/giftpacks/[600]T4融合材料选择箱子-内容（材料限时礼包1）.jpg",
+          "../assets/images/giftpacks/[350]冰川之息箱子-内容（材料限时礼包1）.jpg",
+          "../assets/images/giftpacks/[250]熔岩之息箱子-内容（材料限时礼包1）.jpg",
+          "../assets/images/giftpacks/[2500]T4破坏石选择箱子-内容（材料限时礼包1）.jpg"
+        ],
+        "contents": [
+          {
+            "name": "4阶融合材料自选箱子",
+            "qty": 600
+          },
+          {
+            "name": "冰川之息箱子",
+            "qty": 350
+          },
+          {
+            "name": "熔岩之息箱子",
+            "qty": 250
+          },
+          {
+            "name": "4阶破坏石自选箱子",
+            "qty": 2500
+          },
+          {
+            "name": "稀有炼狱钥匙兑换券",
+            "qty": 3
+          },
+          {
+            "name": "传说炼狱钥匙兑换券",
+            "qty": 2
+          }
+        ],
+        "note": "组合用于判断整套回馈，不与单品重复累计。",
+        "options": [],
+        "randomResults": [],
+        "defaultSelected": [],
+        "chooseCount": 5,
+        "expired": false,
+        "threeForOne": false,
+        "isRandom": false,
+        "isSelfSelect": false,
+        "isCustom": false
+      },
+      {
+        "id": "refine-support-3for1",
+        "name": "[3赠1]精炼支援礼包",
+        "currency": "royal",
+        "price": 8800,
+        "threeForOne": true,
+        "image": "../assets/images/giftpacks/[3赠1]精炼支援礼包-外观.jpg",
+        "detailImages": [
+          "../assets/images/giftpacks/[3赠1]精炼支援礼包-内容1.jpg",
+          "../assets/images/giftpacks/[3赠1]精炼支援礼包-内容2.jpg",
+          "../assets/images/giftpacks/[3赠1]精炼支援礼包-内容3.jpg",
+          "../assets/images/giftpacks/[3赠1]精炼支援礼包-内容4.jpg",
+          "../assets/images/giftpacks/[3赠1]精炼支援礼包-内容5.jpg"
+        ],
+        "contents": [
+          {
+            "name": "4阶破坏石自选箱子",
+            "qty": 350
+          },
+          {
+            "name": "4阶守护石自选箱子",
+            "qty": 5000
+          },
+          {
+            "name": "4阶精炼辅助材料自选箱子",
+            "qty": 120
+          },
+          {
+            "name": "4阶碎片自选箱子",
+            "qty": 350
+          },
+          {
+            "name": "4阶融合材料自选箱子",
+            "qty": 350
+          }
+        ],
+        "options": [],
+        "randomResults": [],
+        "defaultSelected": [],
+        "chooseCount": 5,
+        "note": "",
+        "expired": false,
+        "isCombo": false,
+        "isRandom": false,
+        "isSelfSelect": false,
+        "isCustom": false
+      },
+      {
+        "id": "blue-star-support",
+        "name": "蓝钻星石支援包",
+        "currency": "royal",
+        "price": 2800,
+        "image": "../assets/images/giftpacks/蓝钻星石支援包-外观.jpg",
+        "detailImages": [
+          "../assets/images/giftpacks/蓝钻星石支援包-内容1.jpg",
+          "../assets/images/giftpacks/蓝钻星石支援包-内容2.jpg",
+          "../assets/images/giftpacks/蓝钻星石支援包-内容3.jpg",
+          "../assets/images/giftpacks/蓝钻星石支援包-内容4.jpg"
+        ],
+        "contents": [
+          {
+            "name": "高级-英雄星石箱子",
+            "qty": 5
+          },
+          {
+            "name": "稀有-英雄星石箱子",
+            "qty": 1
+          },
+          {
+            "name": "星石加工初始化券",
+            "qty": 1
+          },
+          {
+            "name": "加工星石属性刷新券",
+            "qty": 3
+          }
+        ],
+        "options": [],
+        "randomResults": [],
+        "defaultSelected": [],
+        "chooseCount": 5,
+        "note": "",
+        "expired": false,
+        "threeForOne": false,
+        "isCombo": false,
+        "isRandom": false,
+        "isSelfSelect": false,
+        "isCustom": false
+      },
+      {
+        "id": "weekly-star-gas",
+        "name": "[周]星石加油包",
+        "currency": "royal",
+        "price": 900,
+        "image": "../assets/images/giftpacks/[周]星石加油包-外观.jpg",
+        "detailImages": [
+          "../assets/images/giftpacks/[周]星石加油包-内容1.jpg",
+          "../assets/images/giftpacks/[周]星石加油包-内容2.jpg"
+        ],
+        "contents": [
+          {
+            "name": "高级-英雄星石箱子",
+            "qty": 7
+          },
+          {
+            "name": "稀有-英雄星石箱子",
+            "qty": 2
+          }
+        ],
+        "options": [],
+        "randomResults": [],
+        "defaultSelected": [],
+        "chooseCount": 5,
+        "note": "",
+        "expired": false,
+        "threeForOne": false,
+        "isCombo": false,
+        "isRandom": false,
+        "isSelfSelect": false,
+        "isCustom": false
+      },
+      {
+        "id": "weekly-star-supply",
+        "name": "[周]星石补给包",
+        "currency": "royal",
+        "price": 15000,
+        "image": "../assets/images/giftpacks/[周]星石补给包-外观.jpg",
+        "detailImages": [
+          "../assets/images/giftpacks/[周]星石补给包-内容1.jpg",
+          "../assets/images/giftpacks/[周]星石补给包-内容2.jpg",
+          "../assets/images/giftpacks/[周]星石补给包-内容3.jpg"
+        ],
+        "contents": [
+          {
+            "name": "英雄星石箱子",
+            "qty": 4
+          },
+          {
+            "name": "稀有-英雄星石箱子",
+            "qty": 5
+          },
+          {
+            "name": "加工星石属性刷新券",
+            "qty": 7
+          }
+        ],
+        "options": [],
+        "randomResults": [],
+        "defaultSelected": [],
+        "chooseCount": 5,
+        "note": "",
+        "expired": false,
+        "threeForOne": false,
+        "isCombo": false,
+        "isRandom": false,
+        "isSelfSelect": false,
+        "isCustom": false
+      },
+      {
+        "id": "lucky-material-random",
+        "name": "[限购]幸运材料随机箱子",
+        "currency": "royal",
+        "price": 1500,
+        "isRandom": true,
+        "image": "../assets/images/giftpacks/[限购]幸运材料随机箱子-外观.jpg",
+        "detailImages": [
+          "../assets/images/giftpacks/[限购]幸运材料随机箱子-内容1.jpg",
+          "../assets/images/giftpacks/[限购]幸运材料随机箱子-内容2.jpg",
+          "../assets/images/giftpacks/[限购]幸运材料随机箱子-内容3.jpg",
+          "../assets/images/giftpacks/[限购]幸运材料随机箱子-内容4.jpg",
+          "../assets/images/giftpacks/[限购]幸运材料随机箱子-内容5.jpg",
+          "../assets/images/giftpacks/[限购]幸运材料随机箱子-内容6.jpg",
+          "../assets/images/giftpacks/[限购]幸运材料随机箱子-内容7.jpg",
+          "../assets/images/giftpacks/[限购]幸运材料随机箱子-内容8.jpg",
+          "../assets/images/giftpacks/[限购]幸运材料随机箱子-内容9.jpg",
+          "../assets/images/giftpacks/[限购]幸运材料随机箱子-内容10.jpg",
+          "../assets/images/giftpacks/[限购]幸运材料随机箱子-内容11.jpg",
+          "../assets/images/giftpacks/[限购]幸运材料随机箱子-内容12.jpg",
+          "../assets/images/giftpacks/[限购]幸运材料随机箱子-内容13.jpg",
+          "../assets/images/giftpacks/[限购]幸运材料随机箱子-内容14.jpg"
+        ],
+        "randomResults": [
+          [
+            {
+              "name": "造物战斗刻印书自选袋子",
+              "qty": 1,
+              "unknown": true
+            }
+          ],
+          [
+            {
+              "name": "传说卡牌礼物4",
+              "qty": 1,
+              "unknown": true
+            }
+          ],
+          [
+            {
+              "name": "英雄星石自选箱子",
+              "qty": 1,
+              "unknown": false
+            }
+          ],
+          [
+            {
+              "name": "传说炼狱钥匙兑换券",
+              "qty": 1,
+              "unknown": true
+            }
+          ],
+          [
+            {
+              "name": "英雄星石箱子",
+              "qty": 1,
+              "unknown": false
+            }
+          ],
+          [
+            {
+              "name": "英雄炼狱钥匙兑换券",
+              "qty": 1,
+              "unknown": true
+            }
+          ],
+          [
+            {
+              "name": "稀有炼狱钥匙兑换券",
+              "qty": 2,
+              "unknown": true
+            }
+          ],
+          [
+            {
+              "name": "飞翔之石刻印自定套件",
+              "qty": 15,
+              "unknown": true
+            }
+          ],
+          [
+            {
+              "name": "4阶破坏石自选箱子",
+              "qty": 450,
+              "unknown": false
+            }
+          ],
+          [
+            {
+              "name": "4阶融合材料自选箱子",
+              "qty": 100,
+              "unknown": false
+            }
+          ]
+        ],
+        "contents": [],
+        "options": [],
+        "defaultSelected": [],
+        "chooseCount": 5,
+        "note": "",
+        "expired": false,
+        "threeForOne": false,
+        "isCombo": false,
+        "isSelfSelect": false,
+        "isCustom": false
+      },
+      {
+        "id": "hell-key-3for1",
+        "name": "[3赠1]炼狱钥匙礼包",
+        "currency": "royal",
+        "price": 7100,
+        "threeForOne": true,
+        "image": "../assets/images/giftpacks/[3赠1]炼狱钥匙礼包-外观.jpg",
+        "detailImages": [
+          "../assets/images/giftpacks/英雄炼狱钥匙.jpg",
+          "../assets/images/giftpacks/幻境券.jpg"
+        ],
+        "contents": [
+          {
+            "name": "幻境挑战次数+1兑换券",
+            "qty": 3
+          },
+          {
+            "name": "稀有炼狱钥匙兑换券",
+            "qty": 2
+          },
+          {
+            "name": "英雄炼狱钥匙兑换券",
+            "qty": 1
+          },
+          {
+            "name": "传说炼狱钥匙兑换券",
+            "qty": 1
+          }
+        ],
+        "note": "钥匙没有默认市价，详情显示回本线。",
+        "options": [],
+        "randomResults": [],
+        "defaultSelected": [],
+        "chooseCount": 5,
+        "expired": false,
+        "isCombo": false,
+        "isRandom": false,
+        "isSelfSelect": false,
+        "isCustom": false
+      },
+      {
+        "id": "kazeroth-choice",
+        "name": "[限购]卡杰洛斯自选礼包",
+        "currency": "royal",
+        "price": 28800,
+        "isSelfSelect": true,
+        "chooseCount": 5,
+        "image": "../assets/images/giftpacks/[限购]卡杰洛斯自选礼包-外观.jpg",
+        "detailImages": [
+          "../assets/images/giftpacks/[限购]卡杰洛斯自选礼包-内容1.jpg",
+          "../assets/images/giftpacks/[限购]卡杰洛斯自选礼包-内容2.jpg",
+          "../assets/images/giftpacks/[限购]卡杰洛斯自选礼包-内容3.jpg",
+          "../assets/images/giftpacks/[限购]卡杰洛斯自选礼包-内容4.jpg",
+          "../assets/images/giftpacks/[限购]卡杰洛斯自选礼包-内容5.jpg",
+          "../assets/images/giftpacks/[限购]卡杰洛斯自选礼包-内容6.jpg",
+          "../assets/images/giftpacks/[限购]卡杰洛斯自选礼包-内容7.jpg",
+          "../assets/images/giftpacks/[限购]卡杰洛斯自选礼包-内容8.jpg",
+          "../assets/images/giftpacks/[限购]卡杰洛斯自选礼包-内容9.jpg",
+          "../assets/images/giftpacks/[限购]卡杰洛斯自选礼包-内容10.jpg"
+        ],
+        "contents": [],
+        "options": [
+          {
+            "name": "4阶破坏石自选箱子",
+            "qty": 1000,
+            "unknown": false
+          },
+          {
+            "name": "4阶守护石自选箱子",
+            "qty": 4500,
+            "unknown": false
+          },
+          {
+            "name": "4阶碎片自选箱子",
+            "qty": 600,
+            "unknown": false
+          },
+          {
+            "name": "4阶突破石自选箱子",
+            "qty": 800,
+            "unknown": false
+          },
+          {
+            "name": "4阶融合材料自选箱子",
+            "qty": 300,
+            "unknown": false
+          },
+          {
+            "name": "星石加工初始化券",
+            "qty": 3,
+            "unknown": false
+          },
+          {
+            "name": "加工星石属性刷新券",
+            "qty": 15,
+            "unknown": false
+          },
+          {
+            "name": "英雄星石箱子",
+            "qty": 2,
+            "unknown": false
+          },
+          {
+            "name": "英雄星石自选箱子",
+            "qty": 2,
+            "unknown": false
+          },
+          {
+            "name": "传说炼狱钥匙兑换券",
+            "qty": 2,
+            "unknown": true
+          }
+        ],
+        "defaultSelected": [
+          "英雄星石自选箱子",
+          "英雄星石箱子",
+          "星石加工初始化券",
+          "加工星石属性刷新券",
+          "4阶破坏石自选箱子"
+        ],
+        "randomResults": [],
+        "note": "",
+        "expired": false,
+        "threeForOne": false,
+        "isCombo": false,
+        "isRandom": false,
+        "isCustom": false
+      }
+    ]
+  }
+}
