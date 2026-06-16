@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>命运方舟礼包性价比分析</title>
   <link rel="icon" type="image/jpeg" href="../assets/_0016_英雄星石箱子.jpg">
-  <link rel="stylesheet" href="../assets/css/gift-pack-value.css">
+  <link rel="stylesheet" href="../assets/css/gift-pack-value.css?v=20260616-support2">
 </head>
 <body class="gift-loading">
   <div id="giftPageLoader" class="gift-page-loader" role="status" aria-live="polite">
@@ -68,17 +68,17 @@
           <p class="table-note">默认按性价比排序。[3赠1] 总表按吃满口径显示，详情里保留单买口径。组合用于判断整套回馈，不与单品重复累计。</p>
         </div>
         <div class="table-actions">
+          <span class="support-author-popover">
+            <button type="button" class="ghost-btn support-author-btn" aria-describedby="supportAuthorTip">支持作者</button>
+            <span id="supportAuthorTip" class="support-author-tip" role="tooltip" style="display:none">
+              <strong>感谢支持</strong>
+              <img src="../assets/support-author.jpg" alt="支持作者收款码" width="96">
+            </span>
+          </span>
           <button id="manualValuesToggleBtn" type="button" class="ghost-btn">显示估值设置</button>
           <button id="addCustomPackBtn" type="button" class="ghost-btn">新增礼包</button>
           <button id="exportGiftPackDataBtn" type="button" class="ghost-btn">导出数据</button>
           <button id="importGiftPackDataBtn" type="button" class="ghost-btn">导入数据</button>
-          <span class="support-author-popover">
-            <button type="button" class="ghost-btn support-author-btn" aria-describedby="supportAuthorTip">支持作者</button>
-            <span id="supportAuthorTip" class="support-author-tip" role="tooltip">
-              <strong>感谢支持</strong>
-              <img src="../assets/support-author.jpg" alt="支持作者收款码">
-            </span>
-          </span>
           <input id="giftPackImportInput" type="file" accept="application/json,.json" hidden>
           <button id="sortBtn" type="button" class="ghost-btn">性价比降序</button>
           <select id="filterInput" aria-label="筛选礼包">
