@@ -131,7 +131,7 @@ const DEFAULT_ENGRAVING_BOOK_PRICES=[
 const ENGRAVING_PAGE_SIZE=6;let engravingSearch="";let engravingFilter="all";let engravingDateFilter="";let engravingSortKey="lowest";let engravingSortDir=-1;let engravingPage=0;let engravingImportOpen=false;
 function normalizeEngravingGrade(value){const s=String(value||"").trim().toLowerCase();if(!s)return"遗物";if(s==="relic")return"遗物";if(s==="legendary")return"传说";if(s==="epic")return"史诗";return String(value||"遗物").trim();}
 function migrateEngravingBookPrices(arr){return (Array.isArray(arr)?arr:[]).map((row,index)=>{if(!row)return null;let name=String(row.name||"").trim();if(name==="逆境迸发")name="速战速决";const prevAvg=cleanNum(row.prevAvg),recentDeal=cleanNum(row.recentDeal),lowest=cleanNum(row.lowest);if(!name||!(prevAvg>0)||!(recentDeal>0)||!(lowest>0))return null;const po=Number(row.pageOrder),date=normalizeDateToken(row.date)||String(row.date||todayLabel());return{date,name,grade:normalizeEngravingGrade(row.grade),prevAvg,recentDeal,lowest,pageOrder:Number.isFinite(po)?po:index+1};}).filter(Boolean).sort((a,b)=>a.pageOrder-b.pageOrder||a.name.localeCompare(b.name,"zh-CN"));}
-function loadEngravingBookPrices(source){const direct=migrateEngravingBookPrices(source);if(direct.length)return direct;try{const saved=migrateEngravingBookPrices(JSON.parse(localStorage.getItem(ENGRAVING_STORAGE_KEY)||"null"));if(saved.length)return saved;}catch(e){}return migrateEngravingBookPrices(DEFAULT_ENGRAVING_BOOK_PRICES);}
+function loadEngravingBookPrices(source){return migrateEngravingBookPrices(source||[]);}
 function persistEngravingBookPrices(){localStorage.setItem(ENGRAVING_STORAGE_KEY,JSON.stringify(engravingBookPrices));}
 let engravingBookPrices=loadEngravingBookPrices();
 function escapeHtml(text){return String(text==null?"":text).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");}
@@ -556,9 +556,9 @@ try{customBaselines=JSON.parse(localStorage.getItem("gemDashboardBaselines")||"{
 try{notesTplOverride=JSON.parse(localStorage.getItem("gemDashboardNotesTpl")||"{}");}catch(e){notesTplOverride={};}
 importTimestamps=loadImportTimestamps();
 try{runSelfTests();runEngravingSelfTests();}catch(e){console.warn("自检未通过：",e);}
-// 主脚本执行时尾部 EMBEDDED_DATA 还未解析；先使用本地持久化数据，尾部脚本只在本地为空时导入文件内嵌数据。
-try{data=parseData(localStorage.getItem(GEM_DASHBOARD_DATA_KEY)||sampleCsv);}
-catch(e){data=parseData(sampleCsv);}
+// 公开页只以 data/dashboard-state.json 为数据源；加载失败时保持空数据。
+data=[];
+rawRows=[];
 document.getElementById("dataText").value="";
 document.getElementById("toggleEditor").addEventListener("click",toggleEditorPanel);document.getElementById("floatEditor").addEventListener("click",toggleEditorPanel);document.getElementById("closeEditor").addEventListener("click",closeEditor);
 setupDailyReportButton();
@@ -722,7 +722,7 @@ function goldPriceChangePercent(firstRate,lastRate){
   return firstCost&&lastCost?(lastCost-firstCost)/firstCost*100:0;
 }
 let gcTxns;
-try{gcTxns=migrateGcTxns((embeddedDashboardState&&embeddedDashboardState.goldTxns)||JSON.parse(localStorage.getItem("gemGcTxns")||"null")||defaultGcTxns);}catch(e){gcTxns=migrateGcTxns(defaultGcTxns.slice());}
+gcTxns=migrateGcTxns((embeddedDashboardState&&embeddedDashboardState.goldTxns)||[]);
 let gcQuoteDate=embeddedDashboardState&&embeddedDashboardState.settings?normalizeDateToken(embeddedDashboardState.settings.quoteDate):null;
 let gcWithdrawChannel=normalizeWithdrawChannel(embeddedDashboardState&&embeddedDashboardState.settings?embeddedDashboardState.settings.withdrawChannel:localStorage.getItem("gemGcWithdrawChannel"));
 function saveGcTxns(){localStorage.setItem("gemGcTxns",JSON.stringify(gcTxns));localStorage.setItem("gemGcWithdrawChannel",gcWithdrawChannel);buildGoldHistory();}
@@ -1660,25 +1660,30 @@ document.getElementById("importBackupInput").addEventListener("change",async fun
 <script id="EMBEDDED_DATA" type="application/json">{"version":2,"gemRows":[],"goldTxns":[]}</script>
 <script type="module">
 try{
-  const emb=document.getElementById("EMBEDDED_DATA");
-  let payload=JSON.parse(emb?emb.textContent||"null":"null");
-  let loadedRemoteState=false;
+  let payload=null;
   try{
     const response=await fetch("../data/dashboard-state.json?v="+Date.now(),{cache:"no-store"});
-    if(response.ok){payload=await response.json();loadedRemoteState=true;}
-  }catch(fetchError){console.warn("远程数据加载失败，使用页面内置数据：",fetchError);}
+    if(!response.ok)throw new Error("HTTP "+response.status);
+    payload=await response.json();
+  }catch(fetchError){
+    throw new Error("dashboard-state.json 加载失败："+fetchError.message);
+  }
   if(payload&&payload.version===DASHBOARD_STATE_VERSION&&Array.isArray(payload.gemRows)&&Array.isArray(payload.goldTxns)){
     embeddedDashboardState=payload;
     applyDashboardState(payload);
-  }else if(!loadedRemoteState&&!hasLocalGemRows()&&Array.isArray(payload)&&payload.length){
-    data=rowsToData(payload);
-    persistGemRows();
-    renderDataPreview();
-    render();
-    renderGcAll(true);
+  }else{
+    throw new Error("dashboard-state.json 格式不受支持");
   }
 }catch(e){
-  console.warn("EMBEDDED_DATA 尾部加载失败：",e);
+  console.warn("仪表盘数据加载失败：",e);
+  data=[];
+  rawRows=[];
+  gcTxns=[];
+  engravingBookPrices=[];
+  renderDataPreview();
+  render();
+  renderGcAll(true);
+  showStatus(e.message||"dashboard-state.json 加载失败");
 }
 </script>
 </body>
