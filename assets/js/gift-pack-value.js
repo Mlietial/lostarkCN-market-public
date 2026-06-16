@@ -567,9 +567,28 @@ function validateGiftPackBackupStorage(storage) {
 }
 
 async function fetchPublicGiftPackBackup() {
-  const response = await fetch(`${PUBLIC_GIFT_PACK_DATA_URL}?v=${Date.now()}`, { cache: "no-store" });
-  if (!response.ok) throw new Error(`HTTP ${response.status}`);
-  const backup = await response.json();
+  const readEmbeddedBackup = () => {
+    try {
+      const text = document.getElementById("EMBEDDED_GIFT_PACK_DATA")?.textContent || "";
+      return text ? JSON.parse(text) : null;
+    } catch (error) {
+      return null;
+    }
+  };
+  let backup = null;
+  if (location.protocol === "file:") {
+    backup = readEmbeddedBackup();
+  } else {
+    try {
+      const response = await fetch(`${PUBLIC_GIFT_PACK_DATA_URL}?v=${Date.now()}`, { cache: "no-store" });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      backup = await response.json();
+    } catch (error) {
+      backup = readEmbeddedBackup();
+      if (!backup) throw error;
+    }
+  }
+  if (!backup) throw new Error("没有可用的内嵌礼包数据");
   const storage = normalizeGiftPackBackupStorage(backup);
   validateGiftPackBackupStorage(storage);
   return { backup, storage };

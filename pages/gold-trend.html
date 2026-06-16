@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>金价走势仪表盘</title>
+  <style>
+    :root{--bg:#f5f7fb;--text:#111827;--muted:#6b7280;--line:#e5e7eb;--shadow:0 14px 35px rgba(15,23,42,.08);--mail:#2563eb;--auc:#d97706;--good:#059669;--bad:#dc2626}*{box-sizing:border-box}body{margin:0;font-family:"Microsoft YaHei","Noto Sans CJK SC",Arial,sans-serif;color:var(--text);background:linear-gradient(180deg,#f8fafc 0%,var(--bg) 100%)}.app{max-width:1280px;margin:0 auto;padding:24px 22px 34px}.topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:18px}.title h1{font-size:30px;line-height:1.15;margin:0;font-weight:900}.subtitle{margin-top:7px;color:var(--muted);font-size:14px}.actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}.btn{border:0;border-radius:999px;padding:9px 14px;background:#111827;color:#fff;font-weight:800;cursor:pointer;box-shadow:0 8px 20px rgba(17,24,39,.12);font-size:13px;line-height:1;text-decoration:none}.btn.secondary{background:#fff;color:#111827;border:1px solid var(--line);box-shadow:none}.btn:disabled{opacity:.45;cursor:not-allowed}.grid{display:grid;gap:16px}.kpis{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:16px}.card{background:rgba(255,255,255,.94);border:1px solid rgba(229,231,235,.95);border-radius:18px;box-shadow:var(--shadow);backdrop-filter:blur(12px)}.kpi{padding:16px 15px 14px;min-height:126px}.kpi span{display:block;color:var(--muted);font-size:12px;font-weight:800;margin-bottom:8px}.kpi b{display:block;font-size:27px;line-height:1.12;font-weight:950}.kpi em{display:block;margin-top:8px;color:var(--muted);font-size:12px;line-height:1.35;font-style:normal}.panel{padding:18px 20px 20px;margin-bottom:16px;overflow:hidden}.panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:10px}.panel h2{font-size:20px;line-height:1.2;margin:0 0 8px;font-weight:900}.legend{display:flex;align-items:center;gap:14px;flex-wrap:wrap;color:#374151;font-size:13px}.legend span{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}.dot{width:10px;height:10px;border-radius:50%;display:inline-block;background:var(--c)}.chart-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}.chart-range{color:var(--muted);font-size:13px;font-weight:800}.chart-wrap{height:390px;width:100%;max-width:100%;min-width:0;position:relative;overflow:hidden;padding-bottom:6px}.chart-wrap svg{width:100%;height:100%;display:block}.gridline{stroke:#edf1f6;stroke-width:1}.axis-label,.tick{fill:#6b7280;font-size:11px}.series{fill:none;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}.marker{stroke:#fff;stroke-width:2.2}.tooltip{position:absolute;z-index:8;display:none;pointer-events:none;background:rgba(17,24,39,.92);color:#fff;border-radius:10px;padding:7px 9px;font-size:12px;line-height:1.45;box-shadow:0 10px 24px rgba(15,23,42,.22);white-space:nowrap;transform:translateY(-100%)}.tooltip.show{display:block}.split{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.table-card{padding:18px 20px 20px;overflow:hidden}.table-scroll{overflow-x:auto}.data-table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:13px}.data-table th,.data-table td{padding:9px 10px;border-bottom:1px solid #edf1f6;text-align:right;white-space:nowrap}.data-table th:first-child,.data-table td:first-child{text-align:left}.data-table th{background:#f9fafb;color:#374151;font-weight:900}.data-table tr:last-child td{border-bottom:0}.mail{color:var(--mail)}.auc{color:var(--auc)}.good{color:var(--good)}.bad{color:var(--bad)}.muted{color:var(--muted)}.status{color:var(--muted);font-size:13px;align-self:center}@media(max-width:860px){.topbar{display:block}.actions{justify-content:flex-start;margin-top:12px}.kpis,.split{grid-template-columns:1fr}.panel{padding:16px 14px}.panel-head{display:block}.chart-controls{justify-content:flex-start;margin-top:10px}.title h1{font-size:26px}}
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="topbar">
+      <div class="title">
+        <h1>金价走势仪表盘</h1>
+        <div class="subtitle" id="subtitle">读取公开金价交易记录，展示邮寄和拍卖金币比例走势。</div>
+      </div>
+      <div class="actions">
+        <a class="btn secondary" href="../index.html">返回首页</a>
+        <a class="btn secondary" href="./gem-dashboard.html">宝石仪表盘</a>
+        <button class="btn" id="reloadBtn" type="button">刷新数据</button>
+        <span class="status" id="status"></span>
+      </div>
+    </section>
+
+    <section class="grid kpis" id="kpiGrid"></section>
+
+    <section class="card panel">
+      <div class="panel-head">
+        <div>
+          <h2>金币比例走势</h2>
+          <div class="legend"><span><i class="dot" style="--c:var(--mail)"></i>邮寄交易</span><span><i class="dot" style="--c:var(--auc)"></i>拍卖交易</span></div>
+        </div>
+        <div class="chart-controls">
+          <button class="btn secondary" id="goldOlderBtn" type="button">前30日</button>
+          <span class="chart-range" id="goldRangeLabel">—</span>
+          <button class="btn secondary" id="goldNewerBtn" type="button">后30日</button>
+        </div>
+      </div>
+      <div class="chart-wrap" id="costChart"></div>
+    </section>
+
+    <section class="grid split">
+      <div class="card table-card">
+        <h2>每日中间价</h2>
+        <div class="table-scroll" id="dailyTable"></div>
+      </div>
+      <div class="card table-card">
+        <h2>最新交易明细</h2>
+        <div class="table-scroll" id="txnTable"></div>
+      </div>
+    </section>
+  </main>
+
+  <script id="EMBEDDED_GOLD_DATA" type="application/json">{"publishedAt":"2026-06-16 09:00","goldTxns":[{"id":"txn-2026-05-26-邮寄交易-2999999-952-0","type":"邮寄交易","gold":2999999,"price":952,"date":"2026-05-26"},{"id":"txn-2026-05-26-邮寄交易-1399999-471-1","type":"邮寄交易","gold":1399999,"price":471,"date":"2026-05-26"},{"id":"txn-2026-05-26-拍卖交易-199999-55-2","type":"拍卖交易","gold":9000000,"price":2500,"date":"2026-05-26"},{"id":"txn-2026-05-26-拍卖交易-1999999-560-3","type":"拍卖交易","gold":1999999,"price":560,"date":"2026-05-26"},{"id":"txn-2026-05-27-邮寄交易-199999-62-0","type":"邮寄交易","gold":199999,"price":62,"date":"2026-05-27"},{"id":"txn-2026-05-27-邮寄交易-149999-49-1","type":"邮寄交易","gold":149999,"price":49,"date":"2026-05-27"},{"id":"txn-2026-05-27-拍卖交易-280000-76.8-2","type":"拍卖交易","gold":280000,"price":76.8,"date":"2026-05-27"},{"id":"txn-2026-05-27-拍卖交易-499999-140-3","type":"拍卖交易","gold":499999,"price":140,"date":"2026-05-27"},{"id":"txn-2026-05-28-邮寄交易-2999999-978-0","type":"邮寄交易","gold":2999999,"price":978,"date":"2026-05-28"},{"id":"txn-2026-05-28-邮寄交易-599999-183.5-1","type":"邮寄交易","gold":599999,"price":183.5,"date":"2026-05-28"},{"id":"txn-2026-05-28-拍卖交易-230000-61.5-2","type":"拍卖交易","gold":230000,"price":61.5,"date":"2026-05-28"},{"id":"txn-2026-05-28-拍卖交易-499999-138.88-3","type":"拍卖交易","gold":499999,"price":138.88,"date":"2026-05-28"},{"id":"txn-2026-05-29-邮寄交易-450000-129-0","type":"邮寄交易","gold":450000,"price":129,"date":"2026-05-29"},{"id":"txn-2026-05-29-邮寄交易-159999-49.9-1","type":"邮寄交易","gold":159999,"price":49.9,"date":"2026-05-29"},{"id":"txn-2026-05-29-拍卖交易-69999-18-2","type":"拍卖交易","gold":69999,"price":18,"date":"2026-05-29"},{"id":"txn-2026-05-29-拍卖交易-730000-200-3","type":"拍卖交易","gold":730000,"price":200,"date":"2026-05-29"},{"id":"txn-2026-05-30-邮寄交易-99999-29-0","type":"邮寄交易","gold":99999,"price":29,"date":"2026-05-30"},{"id":"txn-2026-05-30-邮寄交易-999999-309-1","type":"邮寄交易","gold":999999,"price":309,"date":"2026-05-30"},{"id":"txn-2026-05-30-拍卖交易-213000-56.79-2","type":"拍卖交易","gold":213000,"price":56.79,"date":"2026-05-30"},{"id":"txn-2026-05-30-拍卖交易-499999-136.1-3","type":"拍卖交易","gold":499999,"price":136.1,"date":"2026-05-30"},{"id":"txn-2026-05-31-邮寄交易-6314753-1842-0","type":"邮寄交易","gold":6314753,"price":1842,"date":"2026-05-31"},{"id":"txn-2026-05-31-邮寄交易-359999-112-1","type":"邮寄交易","gold":359999,"price":112,"date":"2026-05-31"},{"id":"txn-2026-05-31-拍卖交易-266000-69.92-2","type":"拍卖交易","gold":266000,"price":69.92,"date":"2026-05-31"},{"id":"txn-2026-05-31-拍卖交易-499999-136-3","type":"拍卖交易","gold":499999,"price":136,"date":"2026-05-31"},{"id":"txn-2026-06-01-邮寄交易-79999-22-0","type":"邮寄交易","gold":79999,"price":22,"date":"2026-06-01"},{"id":"txn-2026-06-01-邮寄交易-2999999-882.32-1","type":"邮寄交易","gold":2999999,"price":882.32,"date":"2026-06-01"},{"id":"txn-2026-06-01-拍卖交易-199999-51.13-2","type":"拍卖交易","gold":199999,"price":51.13,"date":"2026-06-01"},{"id":"txn-2026-06-01-拍卖交易-188888-50-3","type":"拍卖交易","gold":188888,"price":50,"date":"2026-06-01"},{"id":"txn-2026-06-02-邮寄交易-210000-55.5-0","type":"邮寄交易","gold":210000,"price":55.5,"date":"2026-06-02"},{"id":"txn-2026-06-02-邮寄交易-180000-50-1","type":"邮寄交易","gold":180000,"price":50,"date":"2026-06-02"},{"id":"txn-2026-06-02-拍卖交易-159999-38-2","type":"拍卖交易","gold":159999,"price":38,"date":"2026-06-02"},{"id":"txn-2026-06-02-拍卖交易-199999-50-3","type":"拍卖交易","gold":199999,"price":50,"date":"2026-06-02"},{"id":"txn-2026-06-03-邮寄交易-1900000-510-0","type":"邮寄交易","gold":1900000,"price":510,"date":"2026-06-03"},{"id":"txn-2026-06-03-邮寄交易-699999-199.94-1","type":"邮寄交易","gold":699999,"price":199.94,"date":"2026-06-03"},{"id":"txn-2026-06-03-拍卖交易-399999-99.5-2","type":"拍卖交易","gold":399999,"price":99.5,"date":"2026-06-03"},{"id":"txn-2026-06-03-拍卖交易-499999-128.2-3","type":"拍卖交易","gold":499999,"price":128.2,"date":"2026-06-03"},{"id":"txn-2026-06-04-邮寄交易-99999-26.99-0","type":"邮寄交易","gold":99999,"price":26.99,"date":"2026-06-04"},{"id":"txn-2026-06-04-邮寄交易-2999999-850-1","type":"邮寄交易","gold":2999999,"price":850,"date":"2026-06-04"},{"id":"txn-2026-06-04-拍卖交易-199999-48-2","type":"拍卖交易","gold":199999,"price":48,"date":"2026-06-04"},{"id":"txn-2026-06-04-拍卖交易-499999-125-3","type":"拍卖交易","gold":499999,"price":125,"date":"2026-06-04"},{"id":"txn-2026-06-05-邮寄交易-1000000-257.99-0","type":"邮寄交易","gold":1000000,"price":257.99,"date":"2026-06-05"},{"id":"txn-2026-06-05-邮寄交易-180000-50-1","type":"邮寄交易","gold":180000,"price":50,"date":"2026-06-05"},{"id":"txn-2026-06-05-拍卖交易-329999-76-2","type":"拍卖交易","gold":329999,"price":76,"date":"2026-06-05"},{"id":"txn-2026-06-05-拍卖交易-499999-123.8-3","type":"拍卖交易","gold":499999,"price":123.8,"date":"2026-06-05"},{"id":"txn-2026-06-06-邮寄交易-1599999-403-0","type":"邮寄交易","gold":1599999,"price":403,"date":"2026-06-06"},{"id":"txn-2026-06-06-邮寄交易-179999-50-1","type":"邮寄交易","gold":179999,"price":50,"date":"2026-06-06"},{"id":"txn-2026-06-06-拍卖交易-550000-127.16-2","type":"拍卖交易","gold":550000,"price":127.16,"date":"2026-06-06"},{"id":"txn-2026-06-06-拍卖交易-200000-49-3","type":"拍卖交易","gold":200000,"price":49,"date":"2026-06-06"},{"id":"txn-2026-06-07-邮寄交易-399999-105-0","type":"邮寄交易","gold":399999,"price":105,"date":"2026-06-07"},{"id":"txn-2026-06-07-邮寄交易-999999-278.88-1","type":"邮寄交易","gold":999999,"price":278.88,"date":"2026-06-07"},{"id":"txn-2026-06-07-拍卖交易-209999-49.67-2","type":"拍卖交易","gold":209999,"price":49.67,"date":"2026-06-07"},{"id":"txn-2026-06-07-拍卖交易-199999-48.9-3","type":"拍卖交易","gold":199999,"price":48.9,"date":"2026-06-07"},{"id":"txn-2026-06-08-邮寄交易-299999-78.49-0","type":"邮寄交易","gold":299999,"price":78.49,"date":"2026-06-08"},{"id":"txn-2026-06-08-邮寄交易-499999-136.28-1","type":"邮寄交易","gold":499999,"price":136.28,"date":"2026-06-08"},{"id":"txn-2026-06-08-拍卖交易-199999-46-2","type":"拍卖交易","gold":199999,"price":46,"date":"2026-06-08"},{"id":"txn-2026-06-08-拍卖交易-299999-72-3","type":"拍卖交易","gold":299999,"price":72,"date":"2026-06-08"},{"id":"txn-2026-06-09-邮寄交易-399999-102.56-0","type":"邮寄交易","gold":399999,"price":102.56,"date":"2026-06-09"},{"id":"txn-2026-06-09-邮寄交易-999999-278.88-1","type":"邮寄交易","gold":999999,"price":278.88,"date":"2026-06-09"},{"id":"txn-2026-06-09-拍卖交易-329999-72.59-2","type":"拍卖交易","gold":329999,"price":72.59,"date":"2026-06-09"},{"id":"txn-2026-06-09-拍卖交易-255555-61.34-3","type":"拍卖交易","gold":255555,"price":61.34,"date":"2026-06-09"},{"id":"txn-2026-06-10-邮寄交易-2899999-770.67-0","type":"邮寄交易","gold":2899999,"price":770.67,"date":"2026-06-10"},{"id":"txn-2026-06-10-邮寄交易-433333-119-1","type":"邮寄交易","gold":433333,"price":119,"date":"2026-06-10"},{"id":"txn-2026-06-10-拍卖交易-2999999-720-2","type":"拍卖交易","gold":2999999,"price":720,"date":"2026-06-10"},{"id":"txn-2026-06-10-拍卖交易-499999-123.8-3","type":"拍卖交易","gold":499999,"price":123.8,"date":"2026-06-10"},{"id":"txn-2026-06-11-邮寄交易-199999-52.3-0","type":"邮寄交易","gold":199999,"price":52.3,"date":"2026-06-11"},{"id":"txn-2026-06-11-邮寄交易-2999999-823-1","type":"邮寄交易","gold":2999999,"price":823,"date":"2026-06-11"},{"id":"txn-2026-06-11-拍卖交易-218888-50-2","type":"拍卖交易","gold":218888,"price":50,"date":"2026-06-11"},{"id":"txn-2026-06-11-拍卖交易-299999-74-3","type":"拍卖交易","gold":299999,"price":74,"date":"2026-06-11"},{"id":"txn-2026-06-12-邮寄交易-999999-250-0","type":"邮寄交易","gold":999999,"price":250,"date":"2026-06-12"},{"id":"txn-2026-06-12-邮寄交易-4999999-1350-1","type":"邮寄交易","gold":4999999,"price":1350,"date":"2026-06-12"},{"id":"txn-2026-06-12-拍卖交易-199999-46.2-2","type":"拍卖交易","gold":199999,"price":46.2,"date":"2026-06-12"},{"id":"txn-2026-06-12-拍卖交易-499999-121.62-3","type":"拍卖交易","gold":499999,"price":121.62,"date":"2026-06-12"},{"id":"txn-2026-06-13-邮寄交易-299999-75.59-0","type":"邮寄交易","gold":299999,"price":75.59,"date":"2026-06-13"},{"id":"txn-2026-06-13-邮寄交易-2999999-799-1","type":"邮寄交易","gold":2999999,"price":799,"date":"2026-06-13"},{"id":"txn-2026-06-13-拍卖交易-213500-49.99-2","type":"拍卖交易","gold":213500,"price":49.99,"date":"2026-06-13"},{"id":"txn-2026-06-13-拍卖交易-999999-240-3","type":"拍卖交易","gold":999999,"price":240,"date":"2026-06-13"},{"id":"txn-2026-06-14-邮寄交易-770000-200-0","type":"邮寄交易","gold":770000,"price":200,"date":"2026-06-14"},{"id":"txn-2026-06-14-邮寄交易-3000000-824-1","type":"邮寄交易","gold":3000000,"price":824,"date":"2026-06-14"},{"id":"txn-2026-06-14-拍卖交易-250000-59.35-2","type":"拍卖交易","gold":250000,"price":59.35,"date":"2026-06-14"},{"id":"txn-2026-06-14-拍卖交易-5279896-1267.06-3","type":"拍卖交易","gold":5279896,"price":1267.06,"date":"2026-06-14"},{"id":"txn-2026-06-15-邮寄交易-999999-255-0","type":"邮寄交易","gold":999999,"price":255,"date":"2026-06-15"},{"id":"txn-2026-06-15-邮寄交易-499999-134.4-1","type":"邮寄交易","gold":499999,"price":134.4,"date":"2026-06-15"},{"id":"txn-2026-06-15-拍卖交易-249999-56-2","type":"拍卖交易","gold":249999,"price":56,"date":"2026-06-15"},{"id":"txn-2026-06-15-拍卖交易-499999-119-3","type":"拍卖交易","gold":499999,"price":119,"date":"2026-06-15"},{"id":"txn-2026-06-16-邮寄交易-499999-123.6-0","type":"邮寄交易","gold":499999,"price":123.6,"date":"2026-06-16"},{"id":"txn-2026-06-16-邮寄交易-950000-255.2-1","type":"邮寄交易","gold":950000,"price":255.2,"date":"2026-06-16"},{"id":"txn-2026-06-16-拍卖交易-310000-71.23-2","type":"拍卖交易","gold":310000,"price":71.23,"date":"2026-06-16"},{"id":"txn-2026-06-16-拍卖交易-500000-119.5-3","type":"拍卖交易","gold":500000,"price":119.5,"date":"2026-06-16"}]}</script>
+  <script>
+    const DATA_URL = "../data/dashboard-state.json";
+    const MAIL = "邮寄交易";
+    const AUC = "拍卖交易";
+    const CHART_PAGE = 30;
+    let state = { publishedAt: "", txns: [], history: [] };
+    let chartOffset = 0;
+
+    const fmt = n => Number.isFinite(n) ? Math.round(n).toLocaleString("zh-CN") : "—";
+    const money = n => Number.isFinite(n) ? "¥" + Number(n).toFixed(2) : "—";
+    const pct = n => Number.isFinite(n) ? (n >= 0 ? "+" : "") + n.toFixed(2) + "%" : "—";
+    const costPer10k = rate => rate > 0 ? 10000 / rate : null;
+    const rateOf = t => t && t.gold > 0 && t.price > 0 ? t.gold / t.price : null;
+    const mid = values => {
+      const arr = values.filter(Number.isFinite).sort((a, b) => a - b);
+      if (!arr.length) return null;
+      const i = Math.floor(arr.length / 2);
+      return arr.length % 2 ? arr[i] : (arr[i - 1] + arr[i]) / 2;
+    };
+    const clsChange = n => !Number.isFinite(n) || Math.abs(n) < .001 ? "muted" : n > 0 ? "good" : "bad";
+
+    function buildHistory(txns) {
+      const byDate = {};
+      txns.forEach(t => {
+        if (!t.date || !(t.gold > 0) || !(t.price > 0)) return;
+        if (!byDate[t.date]) byDate[t.date] = { date: t.date, mail: [], auc: [], count: 0 };
+        const bucket = t.type === MAIL ? byDate[t.date].mail : byDate[t.date].auc;
+        bucket.push(rateOf(t));
+        byDate[t.date].count += 1;
+      });
+      return Object.values(byDate).sort((a, b) => a.date.localeCompare(b.date)).map(row => {
+        const mailMid = mid(row.mail), aucMid = mid(row.auc);
+        return {
+          date: row.date,
+          mailMid,
+          aucMid,
+          mailCost: costPer10k(mailMid),
+          aucCost: costPer10k(aucMid),
+          mailCount: row.mail.length,
+          aucCount: row.auc.length,
+          count: row.count
+        };
+      });
+    }
+
+    function readEmbeddedData() {
+      try {
+        return JSON.parse(document.getElementById("EMBEDDED_GOLD_DATA")?.textContent || "{}");
+      } catch (error) {
+        return {};
+      }
+    }
+
+    async function fetchGoldData() {
+      if (location.protocol === "file:") return readEmbeddedData();
+      try {
+        const res = await fetch(DATA_URL + "?v=" + Date.now(), { cache: "no-store" });
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        return await res.json();
+      } catch (error) {
+        const embedded = readEmbeddedData();
+        if (Array.isArray(embedded.goldTxns) && embedded.goldTxns.length) return embedded;
+        throw error;
+      }
+    }
+
+    async function loadData() {
+      const status = document.getElementById("status");
+      status.textContent = "加载中...";
+      const data = await fetchGoldData();
+      state = {
+        publishedAt: data.publishedAt || "",
+        txns: Array.isArray(data.goldTxns) ? data.goldTxns : [],
+        history: buildHistory(Array.isArray(data.goldTxns) ? data.goldTxns : [])
+      };
+      chartOffset = Math.min(chartOffset, maxChartOffset());
+      status.textContent = state.publishedAt ? "数据更新时间 " + state.publishedAt : "";
+      render();
+    }
+
+    function maxChartOffset() {
+      return state.history.length ? Math.max(0, Math.ceil(state.history.length / CHART_PAGE) - 1) : 0;
+    }
+
+    function visibleHistory() {
+      const total = state.history.length;
+      const end = Math.max(0, total - chartOffset * CHART_PAGE);
+      const start = Math.max(0, end - CHART_PAGE);
+      return state.history.slice(start, end);
+    }
+
+    function latestWith(key) {
+      for (let i = state.history.length - 1; i >= 0; i--) {
+        if (Number.isFinite(state.history[i][key])) return state.history[i];
+      }
+      return null;
+    }
+
+    function changeFor(key) {
+      const rows = state.history.filter(row => Number.isFinite(row[key]));
+      if (rows.length < 2) return NaN;
+      const prev = rows[rows.length - 2][key];
+      const last = rows[rows.length - 1][key];
+      return prev > 0 ? (last - prev) / prev * 100 : NaN;
+    }
+
+    function renderKpis() {
+      const mail = latestWith("mailMid"), auc = latestWith("aucMid");
+      const mailChg = changeFor("mailMid"), aucChg = changeFor("aucMid");
+      const dates = state.history.map(row => row.date);
+      const cards = [
+        ["邮寄金币比例", `${fmt(mail?.mailMid)} 金/元`, `${mail?.date || "—"} · 较前次 <b class="${clsChange(mailChg)}">${pct(mailChg)}</b> · 每万 ${money(mail?.mailCost)}`],
+        ["拍卖金币比例", `${fmt(auc?.aucMid)} 金/元`, `${auc?.date || "—"} · 较前次 <b class="${clsChange(aucChg)}">${pct(aucChg)}</b> · 每万 ${money(auc?.aucCost)}`],
+        ["交易记录", fmt(state.txns.length) + " 条", `${dates[0] || "—"} 至 ${dates[dates.length - 1] || "—"}`],
+        ["采样天数", fmt(state.history.length) + " 日", "按每日中间价聚合，抗极端单"]
+      ];
+      document.getElementById("kpiGrid").innerHTML = cards.map(card => `<div class="card kpi"><span>${card[0]}</span><b>${card[1]}</b><em>${card[2]}</em></div>`).join("");
+    }
+
+    function pathFor(rows, key, x, y) {
+      return rows.filter(row => Number.isFinite(row[key])).map((row, i) => `${i ? "L" : "M"}${x(row.date).toFixed(1)},${y(row[key]).toFixed(1)}`).join(" ");
+    }
+
+    function renderChart() {
+      const wrap = document.getElementById("costChart");
+      if (!state.history.length) {
+        wrap.innerHTML = '<div class="muted">暂无金价数据</div>';
+        document.getElementById("goldRangeLabel").textContent = "—";
+        return;
+      }
+      const rows = visibleHistory();
+      const dates = rows.map(row => row.date);
+      const values = rows.flatMap(row => [row.mailMid, row.aucMid]).filter(Number.isFinite);
+      const min = Math.min(...values), max = Math.max(...values);
+      const pad = Math.max(1, (max - min) * .12);
+      const lo = min - pad, hi = max + pad;
+      const w = 980, h = 360;
+      const m = { l: 58, r: 28, t: 24, b: 54 };
+      const x = date => m.l + (dates.indexOf(date) / Math.max(1, dates.length - 1)) * (w - m.l - m.r);
+      const y = value => m.t + (hi - value) / Math.max(1, hi - lo) * (h - m.t - m.b);
+      const grid = Array.from({ length: 5 }, (_, i) => {
+        const v = lo + (hi - lo) * i / 4;
+        const yy = y(v);
+        return `<line class="gridline" x1="${m.l}" y1="${yy}" x2="${w - m.r}" y2="${yy}"/><text class="tick" x="${m.l - 10}" y="${yy + 4}" text-anchor="end">${fmt(v)}</text>`;
+      }).join("");
+      const xTicks = rows.map((row, i) => i % Math.ceil(rows.length / 8) === 0 || i === rows.length - 1
+        ? `<text class="tick" x="${x(row.date)}" y="${h - 18}" text-anchor="middle">${row.date.slice(5)}</text>`
+        : "").join("");
+      const circles = rows.map(row => [
+        Number.isFinite(row.mailMid) ? `<circle class="marker" data-date="${row.date}" data-kind="邮寄" data-cost="${money(row.mailCost)}" data-rate="${fmt(row.mailMid)} 金/元" cx="${x(row.date)}" cy="${y(row.mailMid)}" r="4" fill="var(--mail)"/>` : "",
+        Number.isFinite(row.aucMid) ? `<circle class="marker" data-date="${row.date}" data-kind="拍卖" data-cost="${money(row.aucCost)}" data-rate="${fmt(row.aucMid)} 金/元" cx="${x(row.date)}" cy="${y(row.aucMid)}" r="4" fill="var(--auc)"/>` : ""
+      ].join("")).join("");
+      wrap.innerHTML = `<div class="tooltip" id="tooltip"></div><svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><rect x="0" y="0" width="${w}" height="${h}" fill="transparent"/>${grid}${xTicks}<path class="series" d="${pathFor(rows, "mailMid", x, y)}" stroke="var(--mail)"/><path class="series" d="${pathFor(rows, "aucMid", x, y)}" stroke="var(--auc)"/>${circles}<text class="axis-label" x="${m.l}" y="15">金币比例（金/元）</text></svg>`;
+      document.getElementById("goldRangeLabel").textContent = rows.length ? `${rows[0].date} - ${rows[rows.length - 1].date}` : "—";
+      document.getElementById("goldOlderBtn").disabled = chartOffset >= maxChartOffset();
+      document.getElementById("goldNewerBtn").disabled = chartOffset <= 0;
+      const tip = wrap.querySelector("#tooltip");
+      wrap.querySelectorAll(".marker").forEach(node => {
+        node.addEventListener("mouseenter", event => {
+          tip.innerHTML = `${node.dataset.date}<br>${node.dataset.kind}：${node.dataset.rate}<br>每万金成本：${node.dataset.cost}`;
+          tip.classList.add("show");
+        });
+        node.addEventListener("mousemove", event => {
+          const rect = wrap.getBoundingClientRect();
+          tip.style.left = event.clientX - rect.left + 12 + "px";
+          tip.style.top = event.clientY - rect.top - 8 + "px";
+        });
+        node.addEventListener("mouseleave", () => tip.classList.remove("show"));
+      });
+    }
+
+    function renderTables() {
+      const rows = state.history.slice().reverse();
+      document.getElementById("dailyTable").innerHTML = `<table class="data-table"><thead><tr><th>日期</th><th class="mail">邮寄金/元</th><th class="auc">拍卖金/元</th><th>记录</th></tr></thead><tbody>${rows.map(row => `<tr><td>${row.date}</td><td class="mail"><strong>${fmt(row.mailMid)} 金/元</strong><br><span class="muted">每万 ${money(row.mailCost)} · ${row.mailCount}条</span></td><td class="auc"><strong>${fmt(row.aucMid)} 金/元</strong><br><span class="muted">每万 ${money(row.aucCost)} · ${row.aucCount}条</span></td><td>${row.count}</td></tr>`).join("")}</tbody></table>`;
+      const txns = state.txns.slice().sort((a, b) => (b.date || "").localeCompare(a.date || "")).slice(0, 24);
+      document.getElementById("txnTable").innerHTML = `<table class="data-table"><thead><tr><th>日期</th><th>类型</th><th>金币</th><th>标价</th><th>金币比例</th></tr></thead><tbody>${txns.map(t => `<tr><td>${t.date || "—"}</td><td class="${t.type === MAIL ? "mail" : "auc"}">${t.type || "—"}</td><td>${fmt(t.gold)}</td><td>${money(t.price)}</td><td><strong>${fmt(rateOf(t))} 金/元</strong><br><span class="muted">每万 ${money(costPer10k(rateOf(t)))}</span></td></tr>`).join("")}</tbody></table>`;
+    }
+
+    function render() {
+      document.getElementById("subtitle").textContent = `读取 ${state.txns.length} 条公开金价交易记录，展示邮寄和拍卖金币比例走势。`;
+      renderKpis();
+      renderChart();
+      renderTables();
+    }
+
+    document.getElementById("goldOlderBtn").addEventListener("click", () => {
+      if (chartOffset < maxChartOffset()) {
+        chartOffset++;
+        renderChart();
+      }
+    });
+    document.getElementById("goldNewerBtn").addEventListener("click", () => {
+      if (chartOffset > 0) {
+        chartOffset--;
+        renderChart();
+      }
+    });
+
+    document.getElementById("reloadBtn").addEventListener("click", () => loadData().catch(error => {
+      document.getElementById("status").textContent = "加载失败：" + (error.message || error);
+    }));
+
+    loadData().catch(error => {
+      document.getElementById("status").textContent = "加载失败：" + (error.message || error);
+    });
+  </script>
+</body>
+</html>
