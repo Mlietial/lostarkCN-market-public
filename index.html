@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>命运方舟市场工具</title>
   <style>
-    *{box-sizing:border-box}body{margin:0;font-family:"Microsoft YaHei",Arial,sans-serif;color:#111827;background:#f6f8fb}.shell{max-width:1040px;margin:0 auto;padding:42px 22px}.top{margin-bottom:22px}h1{margin:0 0 8px;font-size:34px}.sub{color:#64748b;line-height:1.6}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.card{display:block;text-decoration:none;color:inherit;background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:20px;box-shadow:0 12px 28px rgba(15,23,42,.07)}.card h2{margin:0 0 8px;font-size:22px}.card p{margin:0;color:#64748b;line-height:1.55}.support-card{grid-column:1 / -1;text-align:center}.support-card h2{margin-bottom:14px}.support-qr{display:block;width:428px;max-width:100%;height:auto;margin:0 auto;border:1px solid #e5e7eb;border-radius:8px;background:#fff;box-shadow:0 12px 28px rgba(15,23,42,.07)}@media(max-width:720px){.grid{grid-template-columns:1fr}h1{font-size:28px}}
+    *{box-sizing:border-box}body{margin:0;font-family:"Microsoft YaHei",Arial,sans-serif;color:#111827;background:#f6f8fb}.shell{max-width:1040px;margin:0 auto;padding:42px 22px}.top{margin-bottom:22px}h1{margin:0 0 8px;font-size:34px}.sub{color:#64748b;line-height:1.6}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.card{display:block;text-decoration:none;color:inherit;background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:20px;box-shadow:0 12px 28px rgba(15,23,42,.07)}.card h2{margin:0 0 8px;font-size:22px}.card p{margin:0;color:#64748b;line-height:1.55}.support-card{grid-column:1 / -1;text-align:center;cursor:pointer;user-select:none}.support-card h2{margin-bottom:0}.support-card.is-open h2{margin-bottom:14px}.support-card:not(.is-open) .support-qr{display:none}.support-qr{display:block;width:428px;max-width:100%;height:auto;margin:0 auto;border:1px solid #e5e7eb;border-radius:8px;background:#fff;box-shadow:0 12px 28px rgba(15,23,42,.07)}@media(max-width:720px){.grid{grid-template-columns:1fr}h1{font-size:28px}}
   </style>
 </head>
 <body>
@@ -33,5 +33,27 @@
       </section>
     </section>
   </main>
+  <script>
+    const supportCard = document.querySelector('.support-card');
+
+    if (supportCard) {
+      supportCard.setAttribute('role', 'button');
+      supportCard.setAttribute('tabindex', '0');
+      supportCard.setAttribute('aria-expanded', 'false');
+
+      const toggleSupport = () => {
+        const isOpen = supportCard.classList.toggle('is-open');
+        supportCard.setAttribute('aria-expanded', String(isOpen));
+      };
+
+      supportCard.addEventListener('click', toggleSupport);
+      supportCard.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          toggleSupport();
+        }
+      });
+    }
+  </script>
 </body>
 </html>
