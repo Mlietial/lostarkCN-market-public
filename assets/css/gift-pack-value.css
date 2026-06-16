@@ -141,6 +141,22 @@ h1 {
   margin-bottom: 10px;
 }
 
+.author-data-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.author-refresh-btn {
+  min-height: 30px;
+  padding: 5px 10px;
+  font-size: 12px;
+}
+
 .video-btn {
   margin-bottom: 10px;
   white-space: nowrap;

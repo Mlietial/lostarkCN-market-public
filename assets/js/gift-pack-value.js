@@ -25,9 +25,11 @@ const EDITABLE_STORAGE_KEYS = {
 const GIFT_PACK_BACKUP_VERSION = 1;
 const PUBLIC_GIFT_PACK_DATA_URL = "../data/gift-pack-data.json";
 const MIN_GIFT_LOADER_MS = 900;
+const PUBLIC_DATA_EXPORTED_AT_KEY = "giftPackPublicDataExportedAt";
 const GIFT_PACK_EXTRA_STORAGE_KEYS = [
   "giftPackManualValues",
-  "giftPackSettings"
+  "giftPackSettings",
+  PUBLIC_DATA_EXPORTED_AT_KEY
 ];
 
 let editablePageContent = loadJson(EDITABLE_STORAGE_KEYS.pageContent, {});
@@ -420,7 +422,8 @@ const state = {
   selectedPackId: null,
   selectedOptions: {},
   editingPackId: null,
-  showEditColumn: false
+  showEditColumn: false,
+  publicDataExportedAt: localStorage.getItem(PUBLIC_DATA_EXPORTED_AT_KEY) || null
 };
 
 for (const pack of getGiftPacks()) {
@@ -449,6 +452,22 @@ function loadJson(key, fallback) {
 
 function saveJson(key, value) {
   localStorage.setItem(key, JSON.stringify(value));
+}
+
+function hasLocalGiftPackEdits() {
+  const read = (key, fallback) => {
+    try {
+      return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback));
+    } catch (error) {
+      return fallback;
+    }
+  };
+  const packOverrides = read(EDITABLE_STORAGE_KEYS.packOverrides, {});
+  const customPacks = read(EDITABLE_STORAGE_KEYS.customPacks, []);
+  const deletedPacks = read(EDITABLE_STORAGE_KEYS.deletedPacks, []);
+  return Object.keys(packOverrides || {}).length > 0
+    || customPacks.length > 0
+    || deletedPacks.length > 0;
 }
 
 function giftPackStorageKeys() {
@@ -506,6 +525,11 @@ function stringifyBackupValue(value) {
   return typeof value === "string" ? value : JSON.stringify(value ?? null);
 }
 
+function stringifyStorageValue(key, value) {
+  if (key === PUBLIC_DATA_EXPORTED_AT_KEY && typeof value === "string") return JSON.stringify(value);
+  return stringifyBackupValue(value);
+}
+
 function normalizeGiftPackBackupStorage(backup) {
   if (!backup || typeof backup !== "object") throw new Error("invalid backup");
   const storage = {};
@@ -513,7 +537,7 @@ function normalizeGiftPackBackupStorage(backup) {
   if (backup.storage && typeof backup.storage === "object") {
     allowedKeys.forEach(key => {
       if (Object.prototype.hasOwnProperty.call(backup.storage, key) && backup.storage[key] !== undefined) {
-        storage[key] = stringifyBackupValue(backup.storage[key]);
+        storage[key] = stringifyStorageValue(key, backup.storage[key]);
       }
     });
   }
@@ -542,6 +566,55 @@ function validateGiftPackBackupStorage(storage) {
   });
 }
 
+async function fetchPublicGiftPackBackup() {
+  const response = await fetch(`${PUBLIC_GIFT_PACK_DATA_URL}?v=${Date.now()}`, { cache: "no-store" });
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  const backup = await response.json();
+  const storage = normalizeGiftPackBackupStorage(backup);
+  validateGiftPackBackupStorage(storage);
+  return { backup, storage };
+}
+
+function applyPublicGiftPackSnapshot(backup, storage, options = {}) {
+  const forceAuthorPacks = !!options.forceAuthorPacks;
+  const hadLocalGiftPackEdits = hasLocalGiftPackEdits();
+  const localPackOverrides = editablePackOverrides;
+  const localCustomPacks = editableCustomPacks;
+  const localDeletedPacks = editableDeletedPacks;
+  applyGiftPackBackupStorage(storage, false);
+  const shouldApplyAuthorPacks = forceAuthorPacks || !hadLocalGiftPackEdits;
+  if (shouldApplyAuthorPacks && Array.isArray(backup.snapshot?.packs) && !Object.prototype.hasOwnProperty.call(storage, EDITABLE_STORAGE_KEYS.customPacks)) {
+    const defaultIds = new Set(giftPacks.map(pack => pack.id));
+    const nextOverrides = {};
+    const nextCustomPacks = [];
+    backup.snapshot.packs.forEach(pack => {
+      if (!pack?.id) return;
+      if (defaultIds.has(pack.id)) nextOverrides[pack.id] = sanitizePack(pack, giftPacks.find(item => item.id === pack.id));
+      else nextCustomPacks.push(sanitizePack(pack));
+    });
+    editablePackOverrides = nextOverrides;
+    editableCustomPacks = nextCustomPacks;
+    editableDeletedPacks = [];
+    if (forceAuthorPacks) {
+      localStorage.removeItem(EDITABLE_STORAGE_KEYS.packOverrides);
+      localStorage.removeItem(EDITABLE_STORAGE_KEYS.customPacks);
+      localStorage.removeItem(EDITABLE_STORAGE_KEYS.deletedPacks);
+    }
+  } else if (!forceAuthorPacks && hadLocalGiftPackEdits) {
+    editablePackOverrides = localPackOverrides;
+    editableCustomPacks = localCustomPacks;
+    editableDeletedPacks = localDeletedPacks;
+  }
+  if (backup.exportedAt) {
+    state.publicDataExportedAt = backup.exportedAt;
+    localStorage.setItem(PUBLIC_DATA_EXPORTED_AT_KEY, backup.exportedAt);
+  }
+  for (const pack of getGiftPacks()) {
+    if (!state.selectedOptions[pack.id] && pack.isSelfSelect) state.selectedOptions[pack.id] = new Set(pack.defaultSelected || []);
+  }
+  renderAuthorDataStatus();
+}
+
 function applyGiftPackBackupStorage(storage, persist = false) {
   const parse = key => {
     if (!Object.prototype.hasOwnProperty.call(storage, key)) return undefined;
@@ -564,6 +637,7 @@ function applyGiftPackBackupStorage(storage, persist = false) {
   const links = parse(EDITABLE_STORAGE_KEYS.packLinks);
   const manualValues = parse("giftPackManualValues");
   const settings = parse("giftPackSettings");
+  const publicDataExportedAt = parse(PUBLIC_DATA_EXPORTED_AT_KEY);
 
   if (pageContent && typeof pageContent === "object") editablePageContent = pageContent;
   if (packOverrides && typeof packOverrides === "object") editablePackOverrides = packOverrides;
@@ -577,6 +651,7 @@ function applyGiftPackBackupStorage(storage, persist = false) {
   if (Array.isArray(packs)) packHistory = packs;
   if (links && typeof links === "object") packHistoryLinks = links;
   if (manualValues && typeof manualValues === "object") state.manualValues = manualValues;
+  if (typeof publicDataExportedAt === "string") state.publicDataExportedAt = publicDataExportedAt;
   if (settings && typeof settings === "object") {
     const goldPerRmb = Number(settings.goldPerRmb);
     const royalPerRmb = Number(settings.royalPerRmb);
@@ -620,28 +695,8 @@ async function importGiftPackData(file) {
 
 async function loadPublicGiftPackData() {
   try {
-    const response = await fetch(`${PUBLIC_GIFT_PACK_DATA_URL}?v=${Date.now()}`, { cache: "no-store" });
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    const backup = await response.json();
-    const storage = normalizeGiftPackBackupStorage(backup);
-    validateGiftPackBackupStorage(storage);
-    applyGiftPackBackupStorage(storage, false);
-    if (Array.isArray(backup.snapshot?.packs) && !Object.prototype.hasOwnProperty.call(storage, EDITABLE_STORAGE_KEYS.customPacks)) {
-      const defaultIds = new Set(giftPacks.map(pack => pack.id));
-      const nextOverrides = {};
-      const nextCustomPacks = [];
-      backup.snapshot.packs.forEach(pack => {
-        if (!pack?.id) return;
-        if (defaultIds.has(pack.id)) nextOverrides[pack.id] = sanitizePack(pack, giftPacks.find(item => item.id === pack.id));
-        else nextCustomPacks.push(sanitizePack(pack));
-      });
-      editablePackOverrides = nextOverrides;
-      editableCustomPacks = nextCustomPacks;
-      editableDeletedPacks = [];
-      for (const pack of getGiftPacks()) {
-        if (!state.selectedOptions[pack.id] && pack.isSelfSelect) state.selectedOptions[pack.id] = new Set(pack.defaultSelected || []);
-      }
-    }
+    const { backup, storage } = await fetchPublicGiftPackBackup();
+    applyPublicGiftPackSnapshot(backup, storage, { forceAuthorPacks: false });
   } catch (error) {
     console.warn("礼包公开数据加载失败：", error);
     throw new Error(`gift-pack-data.json 加载失败：${error.message || error}`);
@@ -1065,6 +1120,52 @@ function renderRateTimestamp() {
   element.textContent = state.settingsUpdatedAt
     ? `金价更新时间：${formatDateTime(state.settingsUpdatedAt)}`
     : "金价更新时间：未记录";
+}
+
+function renderAuthorDataStatus(message) {
+  const element = document.getElementById("authorDataUpdatedAt");
+  if (!element) return;
+  const suffix = hasLocalGiftPackEdits() ? "（已保留你的本地修改）" : "";
+  element.textContent = message || (state.publicDataExportedAt
+    ? `作者数据更新时间：${formatDateTime(state.publicDataExportedAt)}${suffix}`
+    : "作者数据更新时间：未记录");
+}
+
+async function refreshAuthorGiftPackData() {
+  const button = document.getElementById("refreshAuthorDataBtn");
+  const oldText = button?.textContent || "";
+  try {
+    if (button) {
+      button.disabled = true;
+      button.textContent = "检查中";
+    }
+    const { backup, storage } = await fetchPublicGiftPackBackup();
+    const currentText = state.publicDataExportedAt ? formatDateTime(state.publicDataExportedAt) : "未记录";
+    const nextText = backup.exportedAt ? formatDateTime(backup.exportedAt) : "未记录";
+    const localNote = hasLocalGiftPackEdits() ? "\n\n检测到你当前浏览器里有本地礼包修改；确认后会改用作者数据。" : "";
+    const ok = window.confirm(`当前作者数据：${currentText}\n最新作者数据：${nextText}${localNote}\n\n是否使用作者数据？`);
+    if (!ok) {
+      renderAuthorDataStatus("已取消使用作者数据");
+      return;
+    }
+    applyPublicGiftPackSnapshot(backup, storage, { forceAuthorPacks: true });
+    await preloadGiftPackImages();
+    applyPageContent();
+    renderRateTimestamp();
+    renderManualValues();
+    renderTable();
+    if (state.selectedPackId) renderModal(findPack(state.selectedPackId));
+    renderAuthorDataStatus("已使用作者数据：" + nextText);
+  } catch (error) {
+    console.error(error);
+    window.alert(`作者数据刷新失败：${error.message || error}`);
+    renderAuthorDataStatus("作者数据刷新失败");
+  } finally {
+    if (button) {
+      button.disabled = false;
+      button.textContent = oldText || "刷新";
+    }
+  }
 }
 
 function formatDateTime(value) {
@@ -2366,6 +2467,7 @@ function bindControls() {
   const addPackButton = document.getElementById("addCustomPackBtn");
   const manualToggle = document.getElementById("manualValuesToggleBtn");
   const importInput = document.getElementById("giftPackImportInput");
+  document.getElementById("refreshAuthorDataBtn")?.addEventListener("click", refreshAuthorGiftPackData);
   document.getElementById("exportGiftPackDataBtn")?.addEventListener("click", exportGiftPackData);
   document.getElementById("importGiftPackDataBtn")?.addEventListener("click", () => {
     importInput?.click();
@@ -2509,6 +2611,7 @@ async function initGiftPackPage() {
     if (elapsed < MIN_GIFT_LOADER_MS) await wait(MIN_GIFT_LOADER_MS - elapsed);
     applyPageContent();
     bindControls();
+    renderAuthorDataStatus();
     renderRateTimestamp();
     renderManualValues();
     renderTable();
