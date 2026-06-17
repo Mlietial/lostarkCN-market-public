@@ -82,8 +82,6 @@ const itemPrices = {
   "阿比多斯融合材料": { gold: 82, note: "拍卖单价" },
   "高级-英雄星石箱子": { gold: 2500, note: "拍卖/市场估值" },
   "稀有-英雄星石箱子": { gold: 7000, note: "拍卖/市场估值" },
-  "英雄星石箱子": { royal: 20700 / 7, note: "7个=20700彩钻折算" },
-  "英雄星石自选箱子": { royal: 20000 / 3, note: "3个=20000彩钻折算" },
   "星石加工初始化券": { blue: 1600, note: "1600蓝钻折算" },
   "星石加工初始化/重置券": { blue: 1600, note: "1600蓝钻折算" },
   "星石加工重置券": { blue: 1600, note: "1600蓝钻折算" },
@@ -93,7 +91,6 @@ const itemPrices = {
   "4阶守护石自选箱子": { components: [{ name: "命运守护石", qty: 50 }], note: "命运守护石×50" },
   "4阶碎片自选箱子": { components: [{ name: "命运碎片袋子（中）", qty: 1 }], note: "命运碎片袋子（中）×1" },
   "4阶突破石自选箱子": { components: [{ name: "命运突破石", qty: 5 }], note: "命运突破石×5" },
-  "4阶精炼辅助材料自选箱子": { components: [{ name: "熔岩之息", qty: 1 }], note: "熔岩之息×1" },
   "冰川之息箱子": { components: [{ name: "冰川之息", qty: 5 }], note: "冰川之息×5" },
   "熔岩之息箱子": { components: [{ name: "熔岩之息", qty: 5 }], note: "熔岩之息×5" }
 };
@@ -423,13 +420,14 @@ const state = {
   manualScrollToSelected: false,
   selectedPackId: null,
   selectedOptions: {},
+  selectedChoiceGroups: {},
   editingPackId: null,
   showEditColumn: false,
   publicDataExportedAt: localStorage.getItem(PUBLIC_DATA_EXPORTED_AT_KEY) || null
 };
 
 for (const pack of getGiftPacks()) {
-  if (pack.isSelfSelect) state.selectedOptions[pack.id] = new Set(pack.defaultSelected || []);
+  initializePackSelections(pack);
 }
 
 function setGiftPageLoadState(stateName, message) {
@@ -631,10 +629,12 @@ function applyPublicGiftPackSnapshot(backup, storage, options = {}) {
   const hadLocalGiftPackEdits = hasLocalGiftPackEdits();
   const userGoldRate = getUserGoldRateOverride();
   const userSettings = parseStoredGiftPackSettings();
+  const userManualValues = loadManualValues();
   const localPackOverrides = editablePackOverrides;
   const localCustomPacks = editableCustomPacks;
   const localDeletedPacks = editableDeletedPacks;
   applyGiftPackBackupStorage(storage, false);
+  state.manualValues = { ...state.manualValues, ...userManualValues };
   if (userGoldRate) {
     applyGoldRate(userGoldRate, { updatedAt: userSettings.settingsUpdatedAt || state.settingsUpdatedAt });
     if (userSettings.valuationGoldBaseLocked && Number(userSettings.valuationGoldPerRmb) > 0) {
@@ -670,7 +670,7 @@ function applyPublicGiftPackSnapshot(backup, storage, options = {}) {
     localStorage.setItem(PUBLIC_DATA_EXPORTED_AT_KEY, backup.exportedAt);
   }
   for (const pack of getGiftPacks()) {
-    if (!state.selectedOptions[pack.id] && pack.isSelfSelect) state.selectedOptions[pack.id] = new Set(pack.defaultSelected || []);
+    initializePackSelections(pack);
   }
   renderAuthorDataStatus();
 }
@@ -732,7 +732,7 @@ function applyGiftPackBackupStorage(storage, persist = false) {
     Object.entries(storage).forEach(([key, value]) => localStorage.setItem(key, value));
   }
   for (const pack of getGiftPacks()) {
-    if (!state.selectedOptions[pack.id] && pack.isSelfSelect) state.selectedOptions[pack.id] = new Set(pack.defaultSelected || []);
+    initializePackSelections(pack);
   }
 }
 
@@ -837,7 +837,8 @@ function sanitizePack(raw, fallback = {}) {
   const contents = Array.isArray(raw.contents) ? raw.contents : fallback.contents || [];
   const options = Array.isArray(raw.options) ? raw.options : fallback.options || [];
   const randomResults = Array.isArray(raw.randomResults) ? raw.randomResults : fallback.randomResults || [];
-  return {
+  const choiceGroups = Array.isArray(raw.choiceGroups) ? raw.choiceGroups : fallback.choiceGroups || [];
+  return migratePackRules({
     ...fallback,
     ...raw,
     id: raw.id || fallback.id || `custom-${Date.now()}`,
@@ -855,6 +856,17 @@ function sanitizePack(raw, fallback = {}) {
     randomResults: randomResults.map(result => Array.isArray(result)
       ? result.filter(content => content && content.name).map(content => ({ name: String(content.name), qty: Number(content.qty) || 1, unknown: !!content.unknown }))
       : []),
+    choiceGroups: choiceGroups
+      .filter(group => group && group.id && Array.isArray(group.options) && group.options.length)
+      .map(group => ({
+        id: String(group.id),
+        name: String(group.name || "可选内容"),
+        qty: Number(group.qty) || 1,
+        defaultSelected: String(group.defaultSelected || group.options[0]?.name || ""),
+        options: group.options
+          .filter(option => option && option.name)
+          .map(option => ({ name: String(option.name), qty: Number(option.qty) || 1, unknown: !!option.unknown }))
+      })),
     defaultSelected: Array.isArray(raw.defaultSelected) ? raw.defaultSelected : fallback.defaultSelected || [],
     chooseCount: Number(raw.chooseCount ?? fallback.chooseCount) || 5,
     note: raw.note ?? fallback.note ?? "",
@@ -864,6 +876,54 @@ function sanitizePack(raw, fallback = {}) {
     isRandom: !!(raw.isRandom ?? fallback.isRandom),
     isSelfSelect: !!(raw.isSelfSelect ?? fallback.isSelfSelect),
     isCustom: !!(raw.isCustom ?? fallback.isCustom)
+  });
+}
+
+function migratePackRules(pack) {
+  return migrateRefineSupportChoiceGroups(pack);
+}
+
+function migrateRefineSupportChoiceGroups(pack) {
+  const sourceName = "4阶精炼辅助材料自选箱子";
+  const malformedMarker = "?".repeat(4);
+  const legacyContent = (pack.contents || []).find(content => content.name === sourceName);
+  const isLegacyGroup = group => {
+    const id = String(group?.id || "");
+    const name = String(group?.name || "");
+    return id.includes("advanced-refine-support-material-choice")
+      || id.includes("refine-support-material-choice")
+      || name.includes(sourceName)
+      || name.includes(malformedMarker);
+  };
+  const existingGroups = (pack.choiceGroups || []).filter(group => !isLegacyGroup(group));
+  const legacyGroups = (pack.choiceGroups || []).filter(isLegacyGroup);
+  const existingGroup = legacyGroups[0];
+  const groupQty = Number(legacyContent?.qty || existingGroup?.qty) || 0;
+  if (!groupQty && !legacyGroups.length) return pack;
+  return {
+    ...pack,
+    contents: (pack.contents || []).filter(content => content.name !== sourceName),
+    choiceGroups: [
+      ...existingGroups,
+      refineSupportChoiceGroup(pack.id, groupQty || 1, existingGroup?.defaultSelected)
+    ]
+  };
+}
+
+function refineSupportChoiceGroupId(packId) {
+  return `${packId || "pack"}-refine-support-material-choice`;
+}
+
+function refineSupportChoiceGroup(packId, qty, defaultSelected = "熔岩之息") {
+  return {
+    id: refineSupportChoiceGroupId(packId),
+    name: `4阶精炼辅助材料自选箱子 ×${qty}`,
+    qty,
+    defaultSelected: ["冰川之息", "熔岩之息"].includes(defaultSelected) ? defaultSelected : "熔岩之息",
+    options: [
+      { name: "冰川之息", qty: 9 },
+      { name: "熔岩之息", qty: 3 }
+    ]
   };
 }
 
@@ -876,6 +936,48 @@ function getGiftPacks() {
     .filter(pack => !deleted.has(pack.id))
     .map(pack => sanitizePack(pack));
   return [...overridden, ...custom];
+}
+
+function initializePackSelections(pack) {
+  if (pack.isSelfSelect && !state.selectedOptions[pack.id]) {
+    state.selectedOptions[pack.id] = new Set(pack.defaultSelected || []);
+  }
+  (pack.choiceGroups || []).forEach(group => {
+    const key = choiceGroupStateKey(pack.id, group.id);
+    if (!state.selectedChoiceGroups[key]) {
+      state.selectedChoiceGroups[key] = group.defaultSelected || group.options?.[0]?.name || "";
+    }
+  });
+}
+
+function choiceGroupStateKey(packId, groupId) {
+  return `${packId}::${groupId}`;
+}
+
+function selectedChoiceGroupOption(pack, group) {
+  const selectedName = state.selectedChoiceGroups[choiceGroupStateKey(pack.id, group.id)] || group.defaultSelected;
+  return group.options.find(option => option.name === selectedName) || group.options[0] || null;
+}
+
+function selectedChoiceGroupContents(pack) {
+  return (pack.choiceGroups || []).map(group => {
+    const selected = selectedChoiceGroupOption(pack, group);
+    if (!selected) return null;
+    const perBoxQty = Number(selected.qty) || 0;
+    const groupQty = Number(group.qty) || 1;
+    return {
+      ...selected,
+      qty: perBoxQty * groupQty,
+      perBoxQty,
+      groupQty,
+      choiceGroupName: group.name,
+      choiceGroupSource: `${group.name}：每箱${selected.name}×${perBoxQty}`
+    };
+  }).filter(Boolean);
+}
+
+function packValuationContents(pack) {
+  return [...selectedContents(pack), ...selectedChoiceGroupContents(pack)];
 }
 
 function createCustomPackTemplate() {
@@ -1103,9 +1205,8 @@ function packEditDialogHtml(pack) {
 
 function packHistoryOptionsHtml(packId) {
   const scoped = packHistory.filter(entry => entry.sourcePackId === packId);
-  const matches = scoped.length ? scoped : packHistory;
-  if (!matches.length) return '<option value="">暂无历史记录</option>';
-  return ['<option value="">选择历史版本</option>', ...matches.map(entry => `
+  if (!scoped.length) return '<option value="">暂无关联历史</option>';
+  return ['<option value="">选择历史版本</option>', ...scoped.map(entry => `
     <option value="${escapeAttr(entry.historyId)}">${escapeHtml(entry.name)} · ${fmtNum(entry.price, 0)} · ${formatDateTime(entry.savedAt)}</option>
   `)].join("");
 }
@@ -1439,7 +1540,7 @@ function valueContents(contents) {
     const total = unit.value === null ? null : unit.value * content.qty;
     const minTotal = unit.minValue === undefined || unit.minValue === null ? total : unit.minValue * content.qty;
     const maxTotal = unit.maxValue === undefined || unit.maxValue === null ? total : unit.maxValue * content.qty;
-    return { ...content, unitGold: unit.value, minUnitGold: unit.minValue, maxUnitGold: unit.maxValue, totalGold: total, minTotalGold: minTotal, maxTotalGold: maxTotal, source: unit.source, isRange: unit.isRange };
+    return { ...content, unitGold: unit.value, minUnitGold: unit.minValue, maxUnitGold: unit.maxValue, totalGold: total, minTotalGold: minTotal, maxTotalGold: maxTotal, source: content.choiceGroupSource || unit.source, isRange: unit.isRange };
   });
   const knownGold = lines.reduce((sum, line) => sum + (line.totalGold || 0), 0);
   const minKnownGold = lines.reduce((sum, line) => sum + (line.minTotalGold ?? line.totalGold ?? 0), 0);
@@ -1471,7 +1572,7 @@ function calcPack(pack, options = {}) {
       randomResults: results
     };
   }
-  const contents = selectedContents(pack);
+  const contents = packValuationContents(pack);
   const valued = valueContents(contents);
   const costGold = moneyCostGold(pack, { threeForOne });
   const percent = valued.knownGold > 0 ? valued.knownGold / costGold * 100 : null;
@@ -1562,7 +1663,7 @@ function currencyLabel(currency) {
 
 function filterPacks(packs) {
   return packs.filter(pack => {
-    if (state.filter === "all") return true;
+    if (state.filter === "all") return !pack.expired;
     if (state.filter === "royal") return pack.currency === "royal";
     if (state.filter === "blue") return pack.currency === "blue";
     if (state.filter === "threeForOne") return pack.threeForOne;
@@ -1584,6 +1685,7 @@ function allPackItems() {
     (pack.contents || []).forEach(add);
     (pack.options || []).forEach(add);
     (pack.randomResults || []).flat().forEach(add);
+    (pack.choiceGroups || []).forEach(group => (group.options || []).forEach(add));
   });
   Object.keys(itemPrices).forEach(name => byName.set(name, name));
   Object.values(itemPrices).forEach(def => {
@@ -2082,12 +2184,56 @@ function renderModal(pack) {
           </div>
         ` : ""}
         ${pack.threeForOne && !calc.fullyPriced ? breakEvenHtml(pack, calc) : ""}
-        ${pack.isSelfSelect ? `${selfSelectHtml(pack, calc)}${itemsTableHtml(calc.lines || [])}` : pack.isRandom ? randomBoxHtml(pack, calc) : itemsTableHtml(calc.lines || valueContents(pack.contents || []).lines)}
+        ${choiceGroupsHtml(pack)}
+        ${pack.isSelfSelect ? `${selfSelectHtml(pack, calc)}${itemsTableHtml(calc.lines || [])}` : pack.isRandom ? randomBoxHtml(pack, calc) : itemsTableHtml(calc.lines || valueContents(packValuationContents(pack)).lines)}
       </div>
     </div>
   `;
 
   wireModalEvents(pack);
+}
+
+function choiceGroupsHtml(pack) {
+  if (!pack.choiceGroups?.length) return "";
+  return `
+    <div class="choice-groups-box">
+      ${pack.choiceGroups.map(group => {
+        const selected = selectedChoiceGroupOption(pack, group);
+        const selectedQty = selected ? (Number(selected.qty) || 0) * (Number(group.qty) || 1) : 0;
+        return `
+          <div class="choice-group" data-choice-group="${escapeAttr(group.id)}">
+            <div class="select-toolbar">
+              <div>
+                <strong>${escapeHtml(group.name)}</strong>
+                <div class="subnote">当前计入：${escapeHtml(displayItemName(selected?.name || ""))}×${fmtNum(selectedQty, 0)}</div>
+              </div>
+            </div>
+            <div class="option-grid choice-option-grid">
+              ${group.options.map(option => {
+                const unit = itemUnitGold(option);
+                const totalQty = option.qty * (Number(group.qty) || 1);
+                const total = unit.value === null ? null : unit.value * totalQty;
+                const minTotal = unit.minValue === undefined || unit.minValue === null ? total : unit.minValue * totalQty;
+                const maxTotal = unit.maxValue === undefined || unit.maxValue === null ? total : unit.maxValue * totalQty;
+                const checked = selected?.name === option.name;
+                const source = `${group.name}：每箱${option.name}×${option.qty}`;
+                return `
+                  <label class="option-card">
+                    <input type="radio" name="choice-${escapeAttr(pack.id)}-${escapeAttr(group.id)}" data-choice-group-id="${escapeAttr(group.id)}" data-choice-option-name="${escapeAttr(option.name)}" ${checked ? "checked" : ""}>
+                    <span>
+                      <strong>${escapeHtml(displayItemName(option.name))}×${fmtNum(option.qty, 0)}</strong>
+                      <span class="subnote">${escapeHtml(source)}</span>
+                    </span>
+                    <strong>${total === null ? "未计入" : formatGoldRange(minTotal, maxTotal, total)}</strong>
+                  </label>
+                `;
+              }).join("")}
+            </div>
+          </div>
+        `;
+      }).join("")}
+    </div>
+  `;
 }
 
 function breakEvenHtml(pack, calc) {
@@ -2102,7 +2248,7 @@ function breakEvenHtml(pack, calc) {
 }
 
 function packEditHtml(pack) {
-  const editableContents = pack.isRandom || pack.isSelfSelect ? modalDisplayItems(pack) : pack.contents || [];
+  const editableContents = pack.isRandom || pack.isSelfSelect || pack.choiceGroups?.length ? modalDisplayItems(pack) : pack.contents || [];
   return `
     <div class="pack-edit-box" data-pack-edit-id="${escapeAttr(pack.id)}">
       <h3>编辑礼包内容</h3>
@@ -2131,8 +2277,9 @@ function packEditHtml(pack) {
         <label>
           标签
           <select id="editPackKindInput">
-            <option value="normal" ${!pack.threeForOne && !pack.isCombo ? "selected" : ""}>普通礼包</option>
+            <option value="normal" ${!pack.threeForOne && !pack.isCombo && !pack.isSelfSelect ? "selected" : ""}>普通礼包</option>
             <option value="threeForOne" ${pack.threeForOne ? "selected" : ""}>3赠1</option>
+            <option value="selfSelect" ${pack.isSelfSelect ? "selected" : ""}>自选礼包</option>
             <option value="combo" ${pack.isCombo ? "selected" : ""}>奖励屋组合</option>
           </select>
         </label>
@@ -2159,6 +2306,7 @@ function packEditHtml(pack) {
         <button id="addContentRowBtn" type="button" class="ghost-btn">添加内容物</button>
         <button id="applyHistoryPackBtn" type="button" class="ghost-btn">套用历史</button>
         <button id="linkHistoryPackBtn" type="button" class="ghost-btn">关联历史</button>
+        <button id="unlinkHistoryPackBtn" type="button" class="ghost-btn">取消关联</button>
         <button id="savePackEditBtn" type="button" class="ghost-btn">保存礼包</button>
         <button id="deletePackBtn" type="button" class="danger-btn">删除礼包</button>
       </div>
@@ -2325,8 +2473,17 @@ function randomBoxHtml(pack, calc) {
 }
 
 function wireModalEvents(pack) {
-  if (!pack.isSelfSelect) return;
   const modal = document.getElementById("modalContent");
+  modal.querySelectorAll("[data-choice-group-id]").forEach(input => {
+    input.addEventListener("change", event => {
+      if (!event.target.checked) return;
+      const key = choiceGroupStateKey(pack.id, event.target.dataset.choiceGroupId);
+      state.selectedChoiceGroups[key] = event.target.dataset.choiceOptionName;
+      renderTable();
+      renderModal(pack);
+    });
+  });
+  if (!pack.isSelfSelect) return;
   modal.querySelectorAll("[data-option-name]").forEach(input => {
     input.addEventListener("change", event => {
       const selected = state.selectedOptions[pack.id] || new Set();
@@ -2393,9 +2550,17 @@ function wirePackEditEvents(pack) {
     if (!history) return;
     packHistoryLinks[pack.id] = history.sourcePackId || history.id;
     saveJson(EDITABLE_STORAGE_KEYS.packLinks, packHistoryLinks);
+    openPackEditor(pack.id);
+  });
+  document.getElementById("unlinkHistoryPackBtn")?.addEventListener("click", () => {
+    delete packHistoryLinks[pack.id];
+    saveJson(EDITABLE_STORAGE_KEYS.packLinks, packHistoryLinks);
+    openPackEditor(pack.id);
   });
   document.getElementById("savePackEditBtn")?.addEventListener("click", () => {
     const kind = document.getElementById("editPackKindInput").value;
+    const editedContents = readContentEditRows();
+    const selfSelectCount = Math.min(Number(pack.chooseCount) || 5, editedContents.length || Number(pack.chooseCount) || 5);
     const next = sanitizePack({
       ...pack,
       name: document.getElementById("editPackNameInput").value.trim() || pack.name,
@@ -2403,16 +2568,15 @@ function wirePackEditEvents(pack) {
       currency: document.getElementById("editPackCurrencyInput").value,
       image: imageInput.value.trim(),
       note: document.getElementById("editPackNoteInput")?.value.trim() || "",
-      contents: readContentEditRows(),
+      contents: kind === "selfSelect" ? [] : editedContents,
+      options: kind === "selfSelect" ? editedContents : [],
+      defaultSelected: kind === "selfSelect" ? editedContents.slice(0, selfSelectCount).map(content => content.name) : [],
+      chooseCount: kind === "selfSelect" ? selfSelectCount : pack.chooseCount,
       expired: document.getElementById("editPackStatusInput").value === "expired",
       threeForOne: kind === "threeForOne",
-      isCombo: kind === "combo"
+      isCombo: kind === "combo",
+      isSelfSelect: kind === "selfSelect"
     }, giftPacks.find(item => item.id === pack.id) || {});
-    const history = selectedPackHistory();
-    if (history) {
-      packHistoryLinks[next.id] = history.sourcePackId || history.id;
-      saveJson(EDITABLE_STORAGE_KEYS.packLinks, packHistoryLinks);
-    }
     savePackEdit(next);
     state.editingPackId = next.id;
     renderManualValues();
@@ -2497,8 +2661,9 @@ function modalDisplayItems(pack) {
     : pack.isSelfSelect
       ? pack.options
       : pack.contents || [];
+  const choiceOptions = (pack.choiceGroups || []).flatMap(group => group.options || []);
   const merged = new Map();
-  source.forEach(entry => {
+  [...source, ...choiceOptions].forEach(entry => {
     if (!entry || !entry.name) return;
     const current = merged.get(entry.name) || { name: entry.name, qty: 0 };
     current.qty += Number(entry.qty) || 0;
