@@ -792,6 +792,7 @@ async function syncGoldRateFromDashboard() {
     applyGoldRate(latest.rate, { updatedAt: payload.publishedAt || latest.date });
     renderRateControls();
     renderRateTimestamp();
+    renderAuthorDataStatus();
     return { synced: true, rate: state.goldPerRmb, date: latest.date };
   } catch (error) {
     console.warn("金价公开数据同步失败：", error);
@@ -1218,13 +1219,21 @@ function renderRateTimestamp() {
     : "金价更新时间：未记录";
 }
 
+function authorDataStatusText() {
+  const suffix = hasLocalGiftPackEdits() ? "（已保留你的本地修改）" : "";
+  const authorText = state.publicDataExportedAt
+    ? `作者数据更新时间：${formatDateTime(state.publicDataExportedAt)}${suffix}`
+    : "作者数据更新时间：未记录";
+  const goldText = state.settingsUpdatedAt
+    ? `金价更新时间：${formatDateTime(state.settingsUpdatedAt)}`
+    : "金价更新时间：未记录";
+  return `${authorText} ｜ ${goldText}`;
+}
+
 function renderAuthorDataStatus(message) {
   const element = document.getElementById("authorDataUpdatedAt");
   if (!element) return;
-  const suffix = hasLocalGiftPackEdits() ? "（已保留你的本地修改）" : "";
-  element.textContent = message || (state.publicDataExportedAt
-    ? `作者数据更新时间：${formatDateTime(state.publicDataExportedAt)}${suffix}`
-    : "作者数据更新时间：未记录");
+  element.textContent = message ? `${authorDataStatusText()} ｜ ${message}` : authorDataStatusText();
 }
 
 async function refreshAuthorGiftPackData() {
