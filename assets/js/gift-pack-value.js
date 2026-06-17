@@ -781,8 +781,9 @@ function latestAuctionGoldRateFromDashboard(payload) {
   };
 }
 
-async function syncGoldRateFromDashboard() {
-  if (getUserGoldRateOverride()) return { synced: false, skipped: "manual" };
+async function syncGoldRateFromDashboard(options = {}) {
+  const force = !!options.force;
+  if (!force && getUserGoldRateOverride()) return { synced: false, skipped: "manual" };
   try {
     const response = await fetch(`${PUBLIC_DASHBOARD_DATA_URL}?v=${Date.now()}`, { cache: "no-store" });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -790,6 +791,10 @@ async function syncGoldRateFromDashboard() {
     const latest = latestAuctionGoldRateFromDashboard(payload);
     if (!latest) return { synced: false, skipped: "empty" };
     applyGoldRate(latest.rate, { updatedAt: payload.publishedAt || latest.date });
+    if (options.persist) {
+      localStorage.removeItem(GOLD_RATE_MANUAL_OVERRIDE_KEY);
+      saveSettings({ preserveTimestamp: true });
+    }
     renderRateControls();
     renderRateTimestamp();
     renderAuthorDataStatus();
@@ -1174,8 +1179,8 @@ function loadSettings() {
   }
 }
 
-function saveSettings() {
-  state.settingsUpdatedAt = new Date().toISOString();
+function saveSettings(options = {}) {
+  if (!options.preserveTimestamp) state.settingsUpdatedAt = new Date().toISOString();
   localStorage.setItem("giftPackSettings", JSON.stringify({
     goldPerRmb: state.goldPerRmb,
     royalPerRmb: state.royalPerRmb,
@@ -1244,7 +1249,7 @@ async function refreshAuthorGiftPackData() {
       button.disabled = true;
       button.textContent = "检查中";
     }
-    const goldSync = await syncGoldRateFromDashboard();
+    const goldSync = await syncGoldRateFromDashboard({ force: true, persist: true });
     const { backup, storage } = await fetchPublicGiftPackBackup();
     const currentText = state.publicDataExportedAt ? formatDateTime(state.publicDataExportedAt) : "未记录";
     const nextText = backup.exportedAt ? formatDateTime(backup.exportedAt) : "未记录";
@@ -1260,6 +1265,7 @@ async function refreshAuthorGiftPackData() {
       return;
     }
     applyPublicGiftPackSnapshot(backup, storage, { forceAuthorPacks: true });
+    await syncGoldRateFromDashboard({ force: true, persist: true });
     await preloadGiftPackImages();
     applyPageContent();
     renderRateControls();
