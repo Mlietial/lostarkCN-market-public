@@ -27,6 +27,7 @@ const PUBLIC_GIFT_PACK_DATA_URL = "../data/gift-pack-data.json";
 const PUBLIC_DASHBOARD_DATA_URL = "../data/dashboard-state.json";
 const MIN_GIFT_LOADER_MS = 900;
 const PUBLIC_DATA_EXPORTED_AT_KEY = "giftPackPublicDataExportedAt";
+const GOLD_RATE_MANUAL_OVERRIDE_KEY = "giftPackGoldRateManualOverride";
 const GIFT_PACK_EXTRA_STORAGE_KEYS = [
   "giftPackManualValues",
   "giftPackSettings",
@@ -452,6 +453,7 @@ function parseStoredGiftPackSettings() {
 }
 
 function getUserGoldRateOverride() {
+  if (localStorage.getItem(GOLD_RATE_MANUAL_OVERRIDE_KEY) !== "true") return null;
   const value = Number(parseStoredGiftPackSettings().goldPerRmb);
   return Number.isFinite(value) && value > 0 ? value : null;
 }
@@ -780,18 +782,20 @@ function latestAuctionGoldRateFromDashboard(payload) {
 }
 
 async function syncGoldRateFromDashboard() {
-  if (getUserGoldRateOverride()) return;
+  if (getUserGoldRateOverride()) return { synced: false, skipped: "manual" };
   try {
     const response = await fetch(`${PUBLIC_DASHBOARD_DATA_URL}?v=${Date.now()}`, { cache: "no-store" });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const payload = await response.json();
     const latest = latestAuctionGoldRateFromDashboard(payload);
-    if (!latest) return;
+    if (!latest) return { synced: false, skipped: "empty" };
     applyGoldRate(latest.rate, { updatedAt: payload.publishedAt || latest.date });
     renderRateControls();
     renderRateTimestamp();
+    return { synced: true, rate: state.goldPerRmb, date: latest.date };
   } catch (error) {
     console.warn("金价公开数据同步失败：", error);
+    return { synced: false, error };
   }
 }
 
@@ -1231,17 +1235,22 @@ async function refreshAuthorGiftPackData() {
       button.disabled = true;
       button.textContent = "检查中";
     }
+    const goldSync = await syncGoldRateFromDashboard();
     const { backup, storage } = await fetchPublicGiftPackBackup();
     const currentText = state.publicDataExportedAt ? formatDateTime(state.publicDataExportedAt) : "未记录";
     const nextText = backup.exportedAt ? formatDateTime(backup.exportedAt) : "未记录";
+    const goldNote = goldSync?.synced
+      ? `\n金价已同步：${fmtGold(goldSync.rate)} 金/元`
+      : goldSync?.skipped === "manual"
+        ? "\n金价保留：使用你手动填写的数值"
+        : "\n金价同步：暂无可用更新";
     const localNote = hasLocalGiftPackEdits() ? "\n\n检测到你当前浏览器里有本地礼包修改；确认后会改用作者数据。" : "";
-    const ok = window.confirm(`当前作者数据：${currentText}\n最新作者数据：${nextText}${localNote}\n\n是否使用作者数据？`);
+    const ok = window.confirm(`当前作者数据：${currentText}\n最新作者数据：${nextText}${goldNote}${localNote}\n\n是否使用作者数据？`);
     if (!ok) {
       renderAuthorDataStatus("已取消使用作者数据");
       return;
     }
     applyPublicGiftPackSnapshot(backup, storage, { forceAuthorPacks: true });
-    await syncGoldRateFromDashboard();
     await preloadGiftPackImages();
     applyPageContent();
     renderRateControls();
@@ -2608,12 +2617,14 @@ function bindControls() {
   document.getElementById("crystalRateInput").value = state.royalPerRmb;
   document.getElementById("blueSourceInput").value = state.blueSource;
   document.getElementById("goldRateInput").addEventListener("input", event => {
-    applyGoldRate(event.target.value);
-    saveSettings();
-    renderRateControls();
-    renderManualValues();
-    renderTable();
-    if (state.selectedPackId) renderModal(findPack(state.selectedPackId));
+    if (applyGoldRate(event.target.value)) {
+      localStorage.setItem(GOLD_RATE_MANUAL_OVERRIDE_KEY, "true");
+      saveSettings();
+      renderRateControls();
+      renderManualValues();
+      renderTable();
+      if (state.selectedPackId) renderModal(findPack(state.selectedPackId));
+    }
   });
   document.getElementById("crystalRateInput").addEventListener("input", event => {
     const value = Number(event.target.value);
