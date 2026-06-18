@@ -280,6 +280,7 @@ const giftPacks = [
     currency: "royal",
     price: 8800,
     threeForOne: true,
+    expired: true,
     image: img("[3赠1]精炼支援礼包-外观.jpg"),
     detailImages: [
       img("[3赠1]精炼支援礼包-内容1.jpg"),
