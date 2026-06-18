@@ -602,6 +602,52 @@ function validateGiftPackBackupStorage(storage) {
   });
 }
 
+function parseBackupStorageArray(storage, key) {
+  if (!Object.prototype.hasOwnProperty.call(storage, key)) return [];
+  try {
+    const value = JSON.parse(storage[key]);
+    return Array.isArray(value) ? value : [];
+  } catch (error) {
+    return [];
+  }
+}
+
+function authorCustomPacksFromBackup(backup, storage) {
+  const defaultIds = new Set(giftPacks.map(pack => pack.id));
+  const packs = [];
+  parseBackupStorageArray(storage, EDITABLE_STORAGE_KEYS.customPacks).forEach(pack => {
+    if (pack?.id) packs.push(sanitizePack(pack));
+  });
+  if (Array.isArray(backup.snapshot?.packs)) {
+    backup.snapshot.packs.forEach(pack => {
+      if (pack?.id && !defaultIds.has(pack.id)) packs.push(sanitizePack(pack));
+    });
+  }
+  const seen = new Set();
+  return packs.filter(pack => {
+    if (!pack?.id || seen.has(pack.id)) return false;
+    seen.add(pack.id);
+    return true;
+  });
+}
+
+function mergeLocalAndAuthorCustomPacks(localPacks, authorPacks, deletedPackIds = []) {
+  const deleted = new Set(deletedPackIds || []);
+  const seen = new Set();
+  const next = [];
+  (Array.isArray(localPacks) ? localPacks : []).forEach(pack => {
+    if (!pack?.id || seen.has(pack.id)) return;
+    seen.add(pack.id);
+    next.push(pack);
+  });
+  (Array.isArray(authorPacks) ? authorPacks : []).forEach(pack => {
+    if (!pack?.id || seen.has(pack.id) || deleted.has(pack.id)) return;
+    seen.add(pack.id);
+    next.push(pack);
+  });
+  return next;
+}
+
 async function fetchPublicGiftPackBackup() {
   const readEmbeddedBackup = () => {
     try {
@@ -640,6 +686,7 @@ function applyPublicGiftPackSnapshot(backup, storage, options = {}) {
   const localPackOverrides = editablePackOverrides;
   const localCustomPacks = editableCustomPacks;
   const localDeletedPacks = editableDeletedPacks;
+  const authorCustomPacks = authorCustomPacksFromBackup(backup, storage);
   applyGiftPackBackupStorage(storage, false);
   state.manualValues = { ...state.manualValues, ...userManualValues };
   editableChoiceOptionQuantities = { ...editableChoiceOptionQuantities, ...userChoiceOptionQuantities };
@@ -670,8 +717,13 @@ function applyPublicGiftPackSnapshot(backup, storage, options = {}) {
     }
   } else if (!forceAuthorPacks && hadLocalGiftPackEdits) {
     editablePackOverrides = localPackOverrides;
-    editableCustomPacks = localCustomPacks;
+    editableCustomPacks = mergeLocalAndAuthorCustomPacks(localCustomPacks, authorCustomPacks, localDeletedPacks);
     editableDeletedPacks = localDeletedPacks;
+  }
+  if (forceAuthorPacks) {
+    localStorage.removeItem(EDITABLE_STORAGE_KEYS.packOverrides);
+    localStorage.removeItem(EDITABLE_STORAGE_KEYS.customPacks);
+    localStorage.removeItem(EDITABLE_STORAGE_KEYS.deletedPacks);
   }
   if (backup.exportedAt) {
     state.publicDataExportedAt = backup.exportedAt;
