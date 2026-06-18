@@ -603,6 +603,22 @@ function validateGiftPackBackupStorage(storage) {
   });
 }
 
+function resetEditableDataInMemory() {
+  editablePageContent = {};
+  editablePackOverrides = {};
+  editableCustomPacks = [];
+  editableItemIcons = {};
+  editableDeletedPacks = [];
+  customManualItems = [];
+  hiddenManualItems = [];
+  editableItemLabels = {};
+  editableChoiceOptionQuantities = {};
+  rateHistory = [];
+  packHistory = [];
+  packHistoryLinks = {};
+  state.manualValues = {};
+}
+
 function parseBackupStorageArray(storage, key) {
   if (!Object.prototype.hasOwnProperty.call(storage, key)) return [];
   try {
@@ -679,23 +695,32 @@ async function fetchPublicGiftPackBackup() {
 
 function applyPublicGiftPackSnapshot(backup, storage, options = {}) {
   const forceAuthorPacks = !!options.forceAuthorPacks;
-  const hadLocalGiftPackEdits = hasLocalGiftPackEdits();
-  const userGoldRate = getUserGoldRateOverride();
-  const userSettings = parseStoredGiftPackSettings();
-  const userManualValues = loadManualValues();
-  const userChoiceOptionQuantities = editableChoiceOptionQuantities;
-  const localPackOverrides = editablePackOverrides;
-  const localCustomPacks = editableCustomPacks;
-  const localDeletedPacks = editableDeletedPacks;
+  const preserveLocalData = options.preserveLocalData ?? !forceAuthorPacks;
+  const hadLocalGiftPackEdits = preserveLocalData && hasLocalGiftPackEdits();
+  const userGoldRate = preserveLocalData ? getUserGoldRateOverride() : null;
+  const userSettings = preserveLocalData ? parseStoredGiftPackSettings() : {};
+  const userManualValues = preserveLocalData ? loadManualValues() : {};
+  const userChoiceOptionQuantities = preserveLocalData ? editableChoiceOptionQuantities : {};
+  const localPackOverrides = preserveLocalData ? editablePackOverrides : {};
+  const localCustomPacks = preserveLocalData ? editableCustomPacks : [];
+  const localDeletedPacks = preserveLocalData ? editableDeletedPacks : [];
   const authorCustomPacks = authorCustomPacksFromBackup(backup, storage);
-  applyGiftPackBackupStorage(storage, false);
-  state.manualValues = { ...state.manualValues, ...userManualValues };
-  editableChoiceOptionQuantities = { ...editableChoiceOptionQuantities, ...userChoiceOptionQuantities };
-  if (userGoldRate) {
-    applyGoldRate(userGoldRate, { updatedAt: userSettings.settingsUpdatedAt || state.settingsUpdatedAt });
-    if (userSettings.valuationGoldBaseLocked && Number(userSettings.valuationGoldPerRmb) > 0) {
-      state.valuationGoldBaseLocked = true;
-      state.valuationGoldPerRmb = Number(userSettings.valuationGoldPerRmb);
+  if (forceAuthorPacks) {
+    resetEditableDataInMemory();
+  }
+  applyGiftPackBackupStorage(storage, forceAuthorPacks);
+  if (forceAuthorPacks) {
+    localStorage.removeItem(GOLD_RATE_MANUAL_OVERRIDE_KEY);
+  }
+  if (preserveLocalData) {
+    state.manualValues = { ...state.manualValues, ...userManualValues };
+    editableChoiceOptionQuantities = { ...editableChoiceOptionQuantities, ...userChoiceOptionQuantities };
+    if (userGoldRate) {
+      applyGoldRate(userGoldRate, { updatedAt: userSettings.settingsUpdatedAt || state.settingsUpdatedAt });
+      if (userSettings.valuationGoldBaseLocked && Number(userSettings.valuationGoldPerRmb) > 0) {
+        state.valuationGoldBaseLocked = true;
+        state.valuationGoldPerRmb = Number(userSettings.valuationGoldPerRmb);
+      }
     }
   }
   const shouldApplyAuthorPacks = forceAuthorPacks || !hadLocalGiftPackEdits;
@@ -712,19 +737,14 @@ function applyPublicGiftPackSnapshot(backup, storage, options = {}) {
     editableCustomPacks = nextCustomPacks;
     editableDeletedPacks = [];
     if (forceAuthorPacks) {
-      localStorage.removeItem(EDITABLE_STORAGE_KEYS.packOverrides);
-      localStorage.removeItem(EDITABLE_STORAGE_KEYS.customPacks);
-      localStorage.removeItem(EDITABLE_STORAGE_KEYS.deletedPacks);
+      saveJson(EDITABLE_STORAGE_KEYS.packOverrides, editablePackOverrides);
+      saveJson(EDITABLE_STORAGE_KEYS.customPacks, editableCustomPacks);
+      saveJson(EDITABLE_STORAGE_KEYS.deletedPacks, editableDeletedPacks);
     }
-  } else if (!forceAuthorPacks && hadLocalGiftPackEdits) {
+  } else if (preserveLocalData && hadLocalGiftPackEdits) {
     editablePackOverrides = localPackOverrides;
     editableCustomPacks = mergeLocalAndAuthorCustomPacks(localCustomPacks, authorCustomPacks, localDeletedPacks);
     editableDeletedPacks = localDeletedPacks;
-  }
-  if (forceAuthorPacks) {
-    localStorage.removeItem(EDITABLE_STORAGE_KEYS.packOverrides);
-    localStorage.removeItem(EDITABLE_STORAGE_KEYS.customPacks);
-    localStorage.removeItem(EDITABLE_STORAGE_KEYS.deletedPacks);
   }
   if (backup.exportedAt) {
     state.publicDataExportedAt = backup.exportedAt;
@@ -819,7 +839,7 @@ async function importGiftPackData(file) {
 async function loadPublicGiftPackData() {
   try {
     const { backup, storage } = await fetchPublicGiftPackBackup();
-    applyPublicGiftPackSnapshot(backup, storage, { forceAuthorPacks: false });
+    applyPublicGiftPackSnapshot(backup, storage, { forceAuthorPacks: true });
   } catch (error) {
     console.warn("礼包公开数据加载失败：", error);
     throw new Error(`gift-pack-data.json 加载失败：${error.message || error}`);
@@ -1519,9 +1539,8 @@ function renderRateTimestamp() {
 }
 
 function authorDataStatusText() {
-  const suffix = hasLocalGiftPackEdits() ? "（已保留你的本地修改）" : "";
   const authorText = state.publicDataExportedAt
-    ? `作者数据更新时间：${formatDateTime(state.publicDataExportedAt)}${suffix}`
+    ? `作者数据更新时间：${formatDateTime(state.publicDataExportedAt)}`
     : "作者数据更新时间：未记录";
   const goldText = state.settingsUpdatedAt
     ? `金价更新时间：${formatDateTime(state.settingsUpdatedAt)}`
