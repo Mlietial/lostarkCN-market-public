@@ -1026,6 +1026,7 @@ function displayItemWithQty(name, qty) {
 
 function selectablePackContents(pack) {
   if (pack.isRandom || pack.isSelfSelect) return [];
+  const normalContents = normalPackContents(pack);
   const choiceContents = (pack.choiceGroups || []).map(group => {
     const parsed = splitTrailingQtyLabel(group.name, group.qty);
     return {
@@ -1035,7 +1036,19 @@ function selectablePackContents(pack) {
       choiceGroupId: group.id
     };
   });
-  return [...(pack.contents || []), ...choiceContents];
+  return [...normalContents, ...choiceContents];
+}
+
+function choiceGroupOptionNames(pack) {
+  return new Set((pack.choiceGroups || [])
+    .flatMap(group => group.options || [])
+    .map(option => option.name)
+    .filter(Boolean));
+}
+
+function normalPackContents(pack) {
+  const optionNames = choiceGroupOptionNames(pack);
+  return (pack.contents || []).filter(content => !optionNames.has(content.name));
 }
 
 function contentSelectionKey(content, index) {
@@ -1082,9 +1095,10 @@ function selectedChoiceGroupOption(pack, group) {
 
 function selectedChoiceGroupContents(pack) {
   const included = includedContentKeys(pack);
+  const normalContents = normalPackContents(pack);
   return (pack.choiceGroups || []).map((group, index) => {
     const parsedGroup = splitTrailingQtyLabel(group.name, group.qty);
-    const choiceKey = contentSelectionKey({ name: parsedGroup.name }, (pack.contents || []).length + index);
+    const choiceKey = contentSelectionKey({ name: parsedGroup.name }, normalContents.length + index);
     if (!included.has(choiceKey)) return null;
     const selected = selectedChoiceGroupOption(pack, group);
     if (!selected) return null;
@@ -1694,7 +1708,7 @@ function valueContents(contents) {
 function selectedContents(pack) {
   if (!pack.isSelfSelect) {
     const selected = includedContentKeys(pack);
-    return (pack.contents || [])
+    return normalPackContents(pack)
       .map((content, index) => ({ ...content, valuationKey: contentSelectionKey(content, index) }))
       .filter(content => selected.has(content.valuationKey));
   }
@@ -2990,7 +3004,7 @@ function modalDisplayItems(pack) {
     ? pack.randomResults.flat()
     : pack.isSelfSelect
       ? pack.options
-      : pack.contents || [];
+      : normalPackContents(pack);
   const choiceContents = pack.isRandom || pack.isSelfSelect
     ? []
     : (pack.choiceGroups || []).map(group => splitTrailingQtyLabel(group.name, group.qty));
