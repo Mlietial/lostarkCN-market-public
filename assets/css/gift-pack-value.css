@@ -302,10 +302,17 @@ textarea {
 
 .dialog-modal.fit-modal {
   width: min(1080px, calc(100vw - 48px));
-  height: auto;
+  height: min(720px, calc(100vh - 48px));
   max-height: calc(100vh - 48px);
   overflow: hidden;
   padding: 14px;
+}
+
+.dialog-modal.fit-modal #editDialogContent,
+.dialog-modal.fit-modal .manual-panel,
+.dialog-modal.fit-modal .manual-groups {
+  height: 100%;
+  min-height: 0;
 }
 
 .edit-panel {
@@ -441,6 +448,7 @@ textarea {
   display: grid;
   grid-template-columns: 300px minmax(0, 1fr);
   gap: 10px;
+  height: calc(100% - 54px);
   min-height: 0;
 }
 
@@ -474,8 +482,9 @@ textarea {
   grid-template-columns: 1fr;
   align-content: start;
   gap: 5px;
+  height: 100%;
   min-height: 0;
-  max-height: min(320px, calc(100vh - 260px));
+  max-height: none;
   overflow-y: auto;
   scrollbar-width: none;
 }
@@ -536,7 +545,9 @@ textarea {
 
 .manual-detail {
   min-width: 0;
-  align-self: start;
+  align-self: stretch;
+  min-height: 0;
+  overflow: auto;
   border: 1px solid rgba(68, 137, 205, .16);
   border-radius: 8px;
   background: rgba(255, 255, 255, .58);
@@ -618,6 +629,106 @@ textarea {
   justify-content: flex-end;
   gap: 8px;
   margin-top: 10px;
+}
+
+.choice-qty-editor {
+  margin-top: 12px;
+  border: 1px solid rgba(68, 137, 205, .16);
+  border-radius: 8px;
+  background: rgba(239, 248, 255, .54);
+  padding: 10px;
+}
+
+.choice-qty-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.choice-qty-head h3 {
+  margin: 0 0 4px;
+  color: #183153;
+  font-size: 15px;
+  line-height: 1.2;
+}
+
+.choice-qty-head p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.choice-qty-list {
+  display: grid;
+  gap: 8px;
+}
+
+.choice-qty-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 110px minmax(86px, .35fr) auto;
+  gap: 8px;
+  align-items: end;
+  padding: 8px;
+  border: 1px solid rgba(68, 137, 205, .12);
+  border-radius: 7px;
+  background: rgba(239, 248, 255, .54);
+}
+
+.choice-qty-name {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.choice-qty-name > span {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.choice-qty-name strong,
+.choice-qty-name em {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.choice-qty-name .item-icon {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+  border-radius: 7px;
+}
+
+.choice-qty-name strong {
+  color: #183153;
+  font-size: 12px;
+}
+
+.choice-qty-name em,
+.choice-qty-summary span {
+  color: var(--muted);
+  font-size: 11px;
+  font-style: normal;
+}
+
+.choice-qty-row input {
+  min-height: 34px;
+  padding: 6px 8px;
+}
+
+.choice-qty-summary {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.choice-qty-summary strong {
+  color: #183153;
+  font-size: 12px;
 }
 
 .manual-empty {
@@ -1018,11 +1129,6 @@ textarea {
   overflow: hidden;
 }
 
-.modal.dialog-modal.fit-modal {
-  height: auto;
-  max-height: calc(100vh - 48px);
-}
-
 .modal.fit-modal #modalContent {
   height: 100%;
   min-height: 0;
@@ -1284,7 +1390,8 @@ textarea {
 }
 
 .self-select-box,
-.choice-groups-box {
+.choice-groups-box,
+.need-select-box {
   margin-top: 10px;
   border: 1px solid rgba(37, 99, 235, .22);
   border-radius: 8px;
@@ -1332,6 +1439,14 @@ textarea {
 
 .choice-option-grid .option-card {
   cursor: pointer;
+}
+
+.need-option-grid .option-card {
+  cursor: pointer;
+}
+
+.need-option-grid .option-card.option-disabled {
+  background: rgba(255, 255, 255, .5);
 }
 
 .option-card > span {
@@ -1393,6 +1508,10 @@ textarea {
     grid-template-columns: 1fr;
   }
 
+  .choice-qty-row {
+    grid-template-columns: minmax(0, 1fr) 110px;
+  }
+
   .manual-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1417,6 +1536,7 @@ textarea {
 
   .manual-list,
   .manual-detail-inner,
+  .choice-qty-row,
   .manual-create-row {
     grid-template-columns: 1fr;
   }

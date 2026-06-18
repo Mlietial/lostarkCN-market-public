@@ -17,6 +17,7 @@ const EDITABLE_STORAGE_KEYS = {
   customManualItems: "giftPackCustomManualItems",
   hiddenManualItems: "giftPackHiddenManualItems",
   itemLabels: "giftPackEditableItemLabels",
+  choiceOptionQuantities: "giftPackChoiceOptionQuantities",
   rateHistory: "giftPackRateHistory",
   packHistory: "giftPackPackHistory",
   packLinks: "giftPackHistoryLinks"
@@ -42,6 +43,7 @@ let editableDeletedPacks = loadJson(EDITABLE_STORAGE_KEYS.deletedPacks, []);
 let customManualItems = loadJson(EDITABLE_STORAGE_KEYS.customManualItems, []);
 let hiddenManualItems = loadJson(EDITABLE_STORAGE_KEYS.hiddenManualItems, []);
 let editableItemLabels = loadJson(EDITABLE_STORAGE_KEYS.itemLabels, {});
+let editableChoiceOptionQuantities = loadJson(EDITABLE_STORAGE_KEYS.choiceOptionQuantities, {});
 let rateHistory = loadJson(EDITABLE_STORAGE_KEYS.rateHistory, []);
 let packHistory = loadJson(EDITABLE_STORAGE_KEYS.packHistory, []);
 let packHistoryLinks = loadJson(EDITABLE_STORAGE_KEYS.packLinks, {});
@@ -421,10 +423,14 @@ const state = {
   selectedPackId: null,
   selectedOptions: {},
   selectedChoiceGroups: {},
+  selectedIncludedItems: {},
+  knownIncludedItemKeys: {},
   editingPackId: null,
   showEditColumn: false,
   publicDataExportedAt: localStorage.getItem(PUBLIC_DATA_EXPORTED_AT_KEY) || null
 };
+
+migrateChoiceOptionQuantities();
 
 for (const pack of getGiftPacks()) {
   initializePackSelections(pack);
@@ -630,11 +636,13 @@ function applyPublicGiftPackSnapshot(backup, storage, options = {}) {
   const userGoldRate = getUserGoldRateOverride();
   const userSettings = parseStoredGiftPackSettings();
   const userManualValues = loadManualValues();
+  const userChoiceOptionQuantities = editableChoiceOptionQuantities;
   const localPackOverrides = editablePackOverrides;
   const localCustomPacks = editableCustomPacks;
   const localDeletedPacks = editableDeletedPacks;
   applyGiftPackBackupStorage(storage, false);
   state.manualValues = { ...state.manualValues, ...userManualValues };
+  editableChoiceOptionQuantities = { ...editableChoiceOptionQuantities, ...userChoiceOptionQuantities };
   if (userGoldRate) {
     applyGoldRate(userGoldRate, { updatedAt: userSettings.settingsUpdatedAt || state.settingsUpdatedAt });
     if (userSettings.valuationGoldBaseLocked && Number(userSettings.valuationGoldPerRmb) > 0) {
@@ -692,6 +700,7 @@ function applyGiftPackBackupStorage(storage, persist = false) {
   const customItems = parse(EDITABLE_STORAGE_KEYS.customManualItems);
   const hiddenItems = parse(EDITABLE_STORAGE_KEYS.hiddenManualItems);
   const itemLabels = parse(EDITABLE_STORAGE_KEYS.itemLabels);
+  const choiceOptionQuantities = parse(EDITABLE_STORAGE_KEYS.choiceOptionQuantities);
   const rates = parse(EDITABLE_STORAGE_KEYS.rateHistory);
   const packs = parse(EDITABLE_STORAGE_KEYS.packHistory);
   const links = parse(EDITABLE_STORAGE_KEYS.packLinks);
@@ -707,6 +716,7 @@ function applyGiftPackBackupStorage(storage, persist = false) {
   if (Array.isArray(customItems)) customManualItems = customItems;
   if (Array.isArray(hiddenItems)) hiddenManualItems = hiddenItems;
   if (itemLabels && typeof itemLabels === "object") editableItemLabels = itemLabels;
+  if (choiceOptionQuantities && typeof choiceOptionQuantities === "object") editableChoiceOptionQuantities = choiceOptionQuantities;
   if (Array.isArray(rates)) rateHistory = rates;
   if (Array.isArray(packs)) packHistory = packs;
   if (links && typeof links === "object") packHistoryLinks = links;
@@ -942,6 +952,7 @@ function initializePackSelections(pack) {
   if (pack.isSelfSelect && !state.selectedOptions[pack.id]) {
     state.selectedOptions[pack.id] = new Set(pack.defaultSelected || []);
   }
+  reconcileIncludedContents(pack);
   (pack.choiceGroups || []).forEach(group => {
     const key = choiceGroupStateKey(pack.id, group.id);
     if (!state.selectedChoiceGroups[key]) {
@@ -954,17 +965,131 @@ function choiceGroupStateKey(packId, groupId) {
   return `${packId}::${groupId}`;
 }
 
+function choiceGroupBoxName(group) {
+  return splitTrailingQtyLabel(group.name, group.qty).name;
+}
+
+function choiceOptionQtyKey(boxName, optionName) {
+  return `${boxName}::${optionName}`;
+}
+
+function choiceOptionQty(pack, group, option) {
+  const key = choiceOptionQtyKey(choiceGroupBoxName(group), option.name);
+  const edited = Number(editableChoiceOptionQuantities[key]);
+  if (Number.isFinite(edited) && edited > 0) return edited;
+  return Number(option.qty) || 0;
+}
+
+function saveChoiceOptionQtyEdit(boxName, optionName, value, defaultValue) {
+  const key = choiceOptionQtyKey(boxName, optionName);
+  const qty = Number(value);
+  const defaultQty = Number(defaultValue);
+  if (Number.isFinite(qty) && qty > 0 && (!Number.isFinite(defaultQty) || qty !== defaultQty)) editableChoiceOptionQuantities[key] = qty;
+  else delete editableChoiceOptionQuantities[key];
+  saveJson(EDITABLE_STORAGE_KEYS.choiceOptionQuantities, editableChoiceOptionQuantities);
+}
+
+function migrateChoiceOptionQuantities() {
+  let changed = false;
+  getGiftPacks().forEach(pack => {
+    (pack.choiceGroups || []).forEach(group => {
+      const boxName = choiceGroupBoxName(group);
+      (group.options || []).forEach(option => {
+        const oldKey = `${pack.id}::${group.id}::${option.name}`;
+        if (!Object.prototype.hasOwnProperty.call(editableChoiceOptionQuantities, oldKey)) return;
+        const nextKey = choiceOptionQtyKey(boxName, option.name);
+        if (!Object.prototype.hasOwnProperty.call(editableChoiceOptionQuantities, nextKey)) {
+          editableChoiceOptionQuantities[nextKey] = editableChoiceOptionQuantities[oldKey];
+        }
+        delete editableChoiceOptionQuantities[oldKey];
+        changed = true;
+      });
+    });
+  });
+  if (changed) saveJson(EDITABLE_STORAGE_KEYS.choiceOptionQuantities, editableChoiceOptionQuantities);
+}
+
+function splitTrailingQtyLabel(name, fallbackQty = 1) {
+  const text = String(name || "").trim();
+  const match = text.match(/^(.*?)(?:\s*[×xX]\s*(\d[\d,]*))\s*$/);
+  if (!match) return { name: text, qty: Number(fallbackQty) || 1 };
+  return {
+    name: match[1].trim() || text,
+    qty: Number(match[2].replace(/,/g, "")) || Number(fallbackQty) || 1
+  };
+}
+
+function displayItemWithQty(name, qty) {
+  const label = escapeHtml(displayItemName(name));
+  return `${label}×${fmtNum(qty, 0)}`;
+}
+
+function selectablePackContents(pack) {
+  if (pack.isRandom || pack.isSelfSelect) return [];
+  const choiceContents = (pack.choiceGroups || []).map(group => {
+    const parsed = splitTrailingQtyLabel(group.name, group.qty);
+    return {
+      name: parsed.name,
+      qty: parsed.qty,
+      isChoiceGroupContent: true,
+      choiceGroupId: group.id
+    };
+  });
+  return [...(pack.contents || []), ...choiceContents];
+}
+
+function contentSelectionKey(content, index) {
+  return `${index}::${content.name}`;
+}
+
+function reconcileIncludedContents(pack) {
+  const contents = selectablePackContents(pack);
+  if (!contents.length) return;
+  const validKeys = contents.map(contentSelectionKey);
+  const known = state.knownIncludedItemKeys[pack.id] || new Set();
+  const selected = state.selectedIncludedItems[pack.id];
+  if (!(selected instanceof Set)) {
+    state.selectedIncludedItems[pack.id] = new Set(validKeys);
+    state.knownIncludedItemKeys[pack.id] = new Set(validKeys);
+    return;
+  }
+  for (const key of [...selected]) {
+    if (!validKeys.includes(key)) selected.delete(key);
+  }
+  for (const key of validKeys) {
+    if (!known.has(key)) selected.add(key);
+  }
+  state.knownIncludedItemKeys[pack.id] = new Set(validKeys);
+}
+
+function includedContentKeys(pack) {
+  reconcileIncludedContents(pack);
+  return state.selectedIncludedItems[pack.id] || new Set();
+}
+
+function packNeedSelectionSummary(pack) {
+  const contents = selectablePackContents(pack);
+  if (contents.length <= 1) return "";
+  const selected = includedContentKeys(pack);
+  if (selected.size === contents.length) return "";
+  return `已按需求计入 ${selected.size}/${contents.length} 项`;
+}
+
 function selectedChoiceGroupOption(pack, group) {
   const selectedName = state.selectedChoiceGroups[choiceGroupStateKey(pack.id, group.id)] || group.defaultSelected;
   return group.options.find(option => option.name === selectedName) || group.options[0] || null;
 }
 
 function selectedChoiceGroupContents(pack) {
-  return (pack.choiceGroups || []).map(group => {
+  const included = includedContentKeys(pack);
+  return (pack.choiceGroups || []).map((group, index) => {
+    const parsedGroup = splitTrailingQtyLabel(group.name, group.qty);
+    const choiceKey = contentSelectionKey({ name: parsedGroup.name }, (pack.contents || []).length + index);
+    if (!included.has(choiceKey)) return null;
     const selected = selectedChoiceGroupOption(pack, group);
     if (!selected) return null;
-    const perBoxQty = Number(selected.qty) || 0;
-    const groupQty = Number(group.qty) || 1;
+    const perBoxQty = choiceOptionQty(pack, group, selected);
+    const groupQty = parsedGroup.qty;
     return {
       ...selected,
       qty: perBoxQty * groupQty,
@@ -1052,6 +1177,7 @@ function resetEditableContent() {
   editableCustomPacks = [];
   editableItemIcons = {};
   editableDeletedPacks = [];
+  editableChoiceOptionQuantities = {};
   Object.values(EDITABLE_STORAGE_KEYS).forEach(key => localStorage.removeItem(key));
 }
 
@@ -1443,11 +1569,14 @@ function normalizeManualEntry(raw) {
 function parseManualValueRange(raw) {
   const text = String(raw ?? "").trim();
   if (!text) return null;
-  const parts = text
+  const stackMatch = text.match(/(?:\/|／)\s*(\d[\d,]*)\s*(?:个|個)?\s*$/);
+  const stackSize = stackMatch ? Number(stackMatch[1].replace(/,/g, "")) : null;
+  const valueText = stackMatch ? text.slice(0, stackMatch.index).trim() : text;
+  const parts = valueText
     .replaceAll("，", ",")
     .replace(/[~～—–至到]/g, "-")
     .split("-")
-    .map(part => Number(part.replace(/,/g, "").trim()))
+    .map(part => Number(part.replace(/,/g, "").replace(/金|金币|金幣/g, "").trim()))
     .filter(value => Number.isFinite(value) && value > 0);
   if (!parts.length) return null;
   const min = Math.min(...parts);
@@ -1457,31 +1586,44 @@ function parseManualValueRange(raw) {
     min,
     max,
     raw: text,
-    isRange: min !== max
+    isRange: min !== max,
+    stackSize: Number.isFinite(stackSize) && stackSize > 1 ? stackSize : null
   };
 }
 
-function manualValueToGold(entry) {
+function defaultManualStackSize(name) {
+  const note = itemPrices[name]?.note || "";
+  const match = String(note).match(/\/\s*(\d[\d,]*)\s*(?:个|個)?/);
+  const stackSize = match ? Number(match[1].replace(/,/g, "")) : 1;
+  return Number.isFinite(stackSize) && stackSize > 1 ? stackSize : 1;
+}
+
+function manualEntryStackSize(entry, name) {
+  const stackSize = Number(entry?.stackSize) || defaultManualStackSize(name);
+  return Number.isFinite(stackSize) && stackSize > 1 ? stackSize : 1;
+}
+
+function manualValueToGold(entry, name) {
   if (!entry) return null;
   if (entry.unit === "royal") return royalToValuationGold(entry.value);
   if (entry.unit === "blue") return blueToValuationGold(entry.value);
-  return entry.value;
+  return entry.value / manualEntryStackSize(entry, name);
 }
 
-function manualRangeToGold(entry, edge = "mid") {
+function manualRangeToGold(entry, edge = "mid", name) {
   if (!entry) return null;
   const value = edge === "min" ? entry.min : edge === "max" ? entry.max : entry.value;
   if (entry.unit === "royal") return royalToValuationGold(value);
   if (entry.unit === "blue") return blueToValuationGold(value);
-  return value;
+  return value / manualEntryStackSize(entry, name);
 }
 
 function getManualGold(name) {
   const entry = normalizeManualEntry(state.manualValues[name]);
-  return entry && entry.value > 0 ? manualValueToGold(entry) : null;
+  return entry && entry.value > 0 ? manualValueToGold(entry, name) : null;
 }
 
-function manualSourceText(entry) {
+function manualSourceText(entry, name) {
   if (!entry) return "手动估值";
   const valueText = manualEntryText(entry);
   if (entry.unit === "royal") return `手动估值（${valueText}彩钻，按估值基准金价）`;
@@ -1497,13 +1639,13 @@ function manualEntryText(entry) {
 
 function itemUnitGold(content) {
   const manualEntry = normalizeManualEntry(state.manualValues[content.name]);
-  const manual = manualEntry && manualEntry.value > 0 ? manualValueToGold(manualEntry) : null;
+  const manual = manualEntry && manualEntry.value > 0 ? manualValueToGold(manualEntry, content.name) : null;
   if (manual !== null) {
     return {
       value: manual,
-      minValue: manualRangeToGold(manualEntry, "min"),
-      maxValue: manualRangeToGold(manualEntry, "max"),
-      source: manualSourceText(manualEntry),
+      minValue: manualRangeToGold(manualEntry, "min", content.name),
+      maxValue: manualRangeToGold(manualEntry, "max", content.name),
+      source: manualSourceText(manualEntry, content.name),
       isRange: !!manualEntry.isRange
     };
   }
@@ -1550,7 +1692,12 @@ function valueContents(contents) {
 }
 
 function selectedContents(pack) {
-  if (!pack.isSelfSelect) return pack.contents || [];
+  if (!pack.isSelfSelect) {
+    const selected = includedContentKeys(pack);
+    return (pack.contents || [])
+      .map((content, index) => ({ ...content, valuationKey: contentSelectionKey(content, index) }))
+      .filter(content => selected.has(content.valuationKey));
+  }
   const selected = state.selectedOptions[pack.id] || new Set();
   return pack.options.filter(option => selected.has(option.name));
 }
@@ -1685,7 +1832,10 @@ function allPackItems() {
     (pack.contents || []).forEach(add);
     (pack.options || []).forEach(add);
     (pack.randomResults || []).flat().forEach(add);
-    (pack.choiceGroups || []).forEach(group => (group.options || []).forEach(add));
+    (pack.choiceGroups || []).forEach(group => {
+      add({ name: choiceGroupBoxName(group) });
+      (group.options || []).forEach(add);
+    });
   });
   Object.keys(itemPrices).forEach(name => byName.set(name, name));
   Object.values(itemPrices).forEach(def => {
@@ -1736,6 +1886,23 @@ function displayItemName(name) {
   return editableItemLabels[name] || name;
 }
 
+function choiceBoxDefinition(name) {
+  if (!name) return null;
+  const options = new Map();
+  let boxName = "";
+  getGiftPacks().forEach(pack => {
+    (pack.choiceGroups || []).forEach(group => {
+      const currentBoxName = choiceGroupBoxName(group);
+      if (currentBoxName !== name) return;
+      boxName = currentBoxName;
+      (group.options || []).forEach(option => {
+        if (!options.has(option.name)) options.set(option.name, { ...option });
+      });
+    });
+  });
+  return boxName && options.size ? { name: boxName, options: [...options.values()] } : null;
+}
+
 function renderManualValues() {
   const grid = document.getElementById("manualValuesGrid");
   if (!grid) return;
@@ -1779,11 +1946,60 @@ function renderManualValues() {
   }
 }
 
+function choiceOptionQtyEditorHtml(boxName) {
+  const definition = choiceBoxDefinition(boxName);
+  if (!definition) return "";
+  return `
+    <section class="choice-qty-editor">
+      <div class="choice-qty-head">
+        <div>
+          <h3>内容物数量</h3>
+          <p>这里修改的是每个自选箱打开后给多少个内容物，所有包含这个自选箱的礼包都会一起重算。</p>
+        </div>
+      </div>
+      <div class="choice-qty-list">
+        ${definition.options.map(option => {
+          const key = choiceOptionQtyKey(definition.name, option.name);
+          const defaultQty = Number(option.qty) || 0;
+          const edited = Number(editableChoiceOptionQuantities[key]);
+          const currentQty = Number.isFinite(edited) && edited > 0 ? edited : defaultQty;
+          const hasEdit = Number.isFinite(edited) && edited > 0;
+          return `
+          <div class="choice-qty-row">
+            <div class="choice-qty-name">
+              ${itemIconHtml(option.name)}
+              <span>
+                <strong>${escapeHtml(displayItemName(option.name))}</strong>
+                <em>默认每箱 ${fmtNum(defaultQty, 0)}</em>
+              </span>
+            </div>
+            <label>
+              每箱数量
+              <input type="number" min="0" step="1"
+                data-choice-qty-box="${escapeAttr(definition.name)}"
+                data-choice-qty-option="${escapeAttr(option.name)}"
+                data-choice-qty-default="${escapeAttr(defaultQty)}"
+                value="${escapeAttr(currentQty)}"
+                placeholder="${escapeAttr(defaultQty)}">
+            </label>
+            <div class="choice-qty-summary">
+              <span>${hasEdit ? "已改写" : "使用默认"}</span>
+              <strong>每箱 ${fmtNum(currentQty, 0)}</strong>
+            </div>
+            <button type="button" class="ghost-btn" data-choice-qty-reset="${escapeAttr(key)}" ${hasEdit ? "" : "disabled"}>重置</button>
+          </div>
+        `;
+        }).join("")}
+      </div>
+    </section>
+  `;
+}
+
 function sortedManualItems(names) {
   const collator = new Intl.Collator("zh-CN", { numeric: true, sensitivity: "base" });
   const valueOf = name => {
     const manual = normalizeManualEntry(state.manualValues[name]);
-    if (manual) return manualValueToGold(manual);
+    if (manual) return manualValueToGold(manual, name);
     return defaultItemGold(name) ?? -Infinity;
   };
   return [...names].sort((a, b) => {
@@ -1841,6 +2057,7 @@ function manualDetailHtml(name) {
     return `<div class="manual-empty">暂无可编辑估值项。</div>`;
   }
   const { manual, placeholder, meta, note } = manualItemMeta(name);
+  const choiceQtyEditor = choiceOptionQtyEditorHtml(name);
   const valuePlaceholder = `${placeholder}，也可填 100~200`;
   return `
     <div class="manual-detail-inner" data-manual-current="${escapeAttr(name)}">
@@ -1887,6 +2104,7 @@ function manualDetailHtml(name) {
           <button type="button" class="ghost-btn" id="clearManualValueBtn" data-clear-manual="${escapeAttr(name)}">清除改写</button>
           <button type="button" class="danger-btn" id="removeManualItemBtn" data-remove-manual="${escapeAttr(name)}">删除估值项</button>
         </div>
+        ${choiceQtyEditor}
       </div>
     </div>
   `;
@@ -1977,6 +2195,38 @@ function wireManualDetail() {
     renderManualValues();
     renderTable();
     refreshSelectedModal();
+  });
+  wireChoiceOptionQtyEditor();
+}
+
+function wireChoiceOptionQtyEditor() {
+  document.querySelectorAll("[data-choice-qty-box]").forEach(input => {
+    const apply = (event, refreshEditor = false) => {
+      const target = event.currentTarget;
+      saveChoiceOptionQtyEdit(
+        target.dataset.choiceQtyBox,
+        target.dataset.choiceQtyOption,
+        target.value,
+        target.dataset.choiceQtyDefault
+      );
+      const summary = target.closest(".choice-qty-row")?.querySelector(".choice-qty-summary strong");
+      const qty = Number(target.value);
+      if (summary && Number.isFinite(qty) && qty > 0) summary.textContent = `每箱 ${fmtNum(qty, 0)}`;
+      renderTable();
+      refreshSelectedModal();
+      if (refreshEditor) renderManualValues();
+    };
+    input.addEventListener("input", event => apply(event));
+    input.addEventListener("change", event => apply(event, true));
+  });
+  document.querySelectorAll("[data-choice-qty-reset]").forEach(button => {
+    button.addEventListener("click", event => {
+      delete editableChoiceOptionQuantities[event.currentTarget.dataset.choiceQtyReset];
+      saveJson(EDITABLE_STORAGE_KEYS.choiceOptionQuantities, editableChoiceOptionQuantities);
+      renderManualValues();
+      renderTable();
+      refreshSelectedModal();
+    });
   });
 }
 
@@ -2069,7 +2319,7 @@ function updateManualValue(name) {
   const select = [...document.querySelectorAll("[data-manual-unit]")].find(element => element.dataset.manualUnit === name);
   const parsed = parseManualValueRange(input?.value);
   const unit = select?.value || "gold";
-  if (parsed) state.manualValues[name] = { raw: parsed.raw, value: parsed.value, min: parsed.min, max: parsed.max, isRange: parsed.isRange, unit };
+  if (parsed) state.manualValues[name] = { raw: parsed.raw, value: parsed.value, min: parsed.min, max: parsed.max, isRange: parsed.isRange, stackSize: parsed.stackSize, unit };
   else delete state.manualValues[name];
   saveManualValues();
   renderTable();
@@ -2098,7 +2348,7 @@ function renderTable() {
     const percentText = pack.isRandom && calc.randomResults
       ? "见结果区间"
       : formatPercentRange(calc.minPercent, calc.maxPercent, calc.percent);
-    const note = [pack.isCombo ? "奖励屋组合" : "", pack.isRandom ? "随机箱无概率，不算期望值" : "", !calc.fullyPriced ? "含未估值内容" : ""].filter(Boolean).join(" · ");
+    const note = [pack.isCombo ? "奖励屋组合" : "", packNeedSelectionSummary(pack), pack.isRandom ? "随机箱无概率，不算期望值" : "", !calc.fullyPriced ? "含未估值内容" : ""].filter(Boolean).join(" · ");
     return `
       <tr>
         <td>${imageHtml(pack.image, pack.name, "pack-thumb")}</td>
@@ -2184,6 +2434,7 @@ function renderModal(pack) {
           </div>
         ` : ""}
         ${pack.threeForOne && !calc.fullyPriced ? breakEvenHtml(pack, calc) : ""}
+        ${includedContentsHtml(pack)}
         ${choiceGroupsHtml(pack)}
         ${pack.isSelfSelect ? `${selfSelectHtml(pack, calc)}${itemsTableHtml(calc.lines || [])}` : pack.isRandom ? randomBoxHtml(pack, calc) : itemsTableHtml(calc.lines || valueContents(packValuationContents(pack)).lines)}
       </div>
@@ -2199,7 +2450,8 @@ function choiceGroupsHtml(pack) {
     <div class="choice-groups-box">
       ${pack.choiceGroups.map(group => {
         const selected = selectedChoiceGroupOption(pack, group);
-        const selectedQty = selected ? (Number(selected.qty) || 0) * (Number(group.qty) || 1) : 0;
+        const groupQty = splitTrailingQtyLabel(group.name, group.qty).qty;
+        const selectedQty = selected ? choiceOptionQty(pack, group, selected) * groupQty : 0;
         return `
           <div class="choice-group" data-choice-group="${escapeAttr(group.id)}">
             <div class="select-toolbar">
@@ -2211,17 +2463,18 @@ function choiceGroupsHtml(pack) {
             <div class="option-grid choice-option-grid">
               ${group.options.map(option => {
                 const unit = itemUnitGold(option);
-                const totalQty = option.qty * (Number(group.qty) || 1);
+                const optionQty = choiceOptionQty(pack, group, option);
+                const totalQty = optionQty * groupQty;
                 const total = unit.value === null ? null : unit.value * totalQty;
                 const minTotal = unit.minValue === undefined || unit.minValue === null ? total : unit.minValue * totalQty;
                 const maxTotal = unit.maxValue === undefined || unit.maxValue === null ? total : unit.maxValue * totalQty;
                 const checked = selected?.name === option.name;
-                const source = `${group.name}：每箱${option.name}×${option.qty}`;
+                const source = `${group.name}：每箱${option.name}×${optionQty}`;
                 return `
                   <label class="option-card">
                     <input type="radio" name="choice-${escapeAttr(pack.id)}-${escapeAttr(group.id)}" data-choice-group-id="${escapeAttr(group.id)}" data-choice-option-name="${escapeAttr(option.name)}" ${checked ? "checked" : ""}>
                     <span>
-                      <strong>${escapeHtml(displayItemName(option.name))}×${fmtNum(option.qty, 0)}</strong>
+                      <strong>${escapeHtml(displayItemName(option.name))}×${fmtNum(optionQty, 0)}</strong>
                       <span class="subnote">${escapeHtml(source)}</span>
                     </span>
                     <strong>${total === null ? "未计入" : formatGoldRange(minTotal, maxTotal, total)}</strong>
@@ -2232,6 +2485,65 @@ function choiceGroupsHtml(pack) {
           </div>
         `;
       }).join("")}
+    </div>
+  `;
+}
+
+function valuedIncludedContent(pack, content) {
+  if (!content.isChoiceGroupContent) {
+    const unit = itemUnitGold(content);
+    const total = unit.value === null ? null : unit.value * content.qty;
+    const minTotal = unit.minValue === undefined || unit.minValue === null ? total : unit.minValue * content.qty;
+    const maxTotal = unit.maxValue === undefined || unit.maxValue === null ? total : unit.maxValue * content.qty;
+    return { source: unit.source, total, minTotal, maxTotal };
+  }
+  const group = (pack.choiceGroups || []).find(item => item.id === content.choiceGroupId);
+  const selected = group ? selectedChoiceGroupOption(pack, group) : null;
+  if (!group || !selected) return { source: "", total: null, minTotal: null, maxTotal: null };
+  const unit = itemUnitGold(selected);
+  const groupQty = splitTrailingQtyLabel(group.name, group.qty).qty;
+  const totalQty = choiceOptionQty(pack, group, selected) * groupQty;
+  const total = unit.value === null ? null : unit.value * totalQty;
+  const minTotal = unit.minValue === undefined || unit.minValue === null ? total : unit.minValue * totalQty;
+  const maxTotal = unit.maxValue === undefined || unit.maxValue === null ? total : unit.maxValue * totalQty;
+  return {
+    source: `当前计入：${displayItemName(selected.name)}×${fmtNum(totalQty, 0)}`,
+    total,
+    minTotal,
+    maxTotal
+  };
+}
+
+function includedContentsHtml(pack) {
+  const contents = selectablePackContents(pack);
+  if (contents.length <= 1) return "";
+  const selected = includedContentKeys(pack);
+  return `
+    <div class="need-select-box">
+      <div class="select-toolbar">
+        <div>
+          <strong>需求计入：已选 ${selected.size}/${contents.length} 项</strong>
+          <div class="subnote">只勾选你真正需要的内容物，未勾选项不参与内容估值和性价比计算。</div>
+        </div>
+        <button type="button" class="ghost-btn" id="includeAllItemsBtn">全选计入</button>
+      </div>
+      <div class="option-grid need-option-grid">
+        ${contents.map((content, index) => {
+          const valued = valuedIncludedContent(pack, content);
+          const key = contentSelectionKey(content, index);
+          const checked = selected.has(key);
+          return `
+            <label class="option-card ${checked ? "" : "option-disabled"}">
+              <input type="checkbox" data-included-content-key="${escapeAttr(key)}" ${checked ? "checked" : ""}>
+              <span>
+                <strong>${displayItemWithQty(content.name, content.qty)}</strong>
+                <span class="subnote">${escapeHtml(valued.source)}</span>
+              </span>
+              <strong>${valued.total === null ? "未计入" : formatGoldRange(valued.minTotal, valued.maxTotal, valued.total)}</strong>
+            </label>
+          `;
+        }).join("")}
+      </div>
     </div>
   `;
 }
@@ -2474,6 +2786,24 @@ function randomBoxHtml(pack, calc) {
 
 function wireModalEvents(pack) {
   const modal = document.getElementById("modalContent");
+  modal.querySelectorAll("[data-included-content-key]").forEach(input => {
+    input.addEventListener("change", event => {
+      const selected = includedContentKeys(pack);
+      if (event.target.checked) selected.add(event.target.dataset.includedContentKey);
+      else selected.delete(event.target.dataset.includedContentKey);
+      state.selectedIncludedItems[pack.id] = selected;
+      renderTable();
+      renderModal(pack);
+    });
+  });
+  document.getElementById("includeAllItemsBtn")?.addEventListener("click", () => {
+    const contents = selectablePackContents(pack);
+    const keys = contents.map((content, index) => contentSelectionKey(content, index));
+    state.selectedIncludedItems[pack.id] = new Set(keys);
+    state.knownIncludedItemKeys[pack.id] = new Set(keys);
+    renderTable();
+    renderModal(pack);
+  });
   modal.querySelectorAll("[data-choice-group-id]").forEach(input => {
     input.addEventListener("change", event => {
       if (!event.target.checked) return;
@@ -2661,9 +2991,11 @@ function modalDisplayItems(pack) {
     : pack.isSelfSelect
       ? pack.options
       : pack.contents || [];
-  const choiceOptions = (pack.choiceGroups || []).flatMap(group => group.options || []);
+  const choiceContents = pack.isRandom || pack.isSelfSelect
+    ? []
+    : (pack.choiceGroups || []).map(group => splitTrailingQtyLabel(group.name, group.qty));
   const merged = new Map();
-  [...source, ...choiceOptions].forEach(entry => {
+  [...source, ...choiceContents].forEach(entry => {
     if (!entry || !entry.name) return;
     const current = merged.get(entry.name) || { name: entry.name, qty: 0 };
     current.qty += Number(entry.qty) || 0;
