@@ -192,6 +192,92 @@
       color: var(--muted);
       font-size: 13px;
     }
+    .yxdr-panel {
+      padding: 18px 20px 20px;
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+    .yxdr-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    .yxdr-head h2 {
+      margin: 0 0 7px;
+      font-size: 20px;
+      line-height: 1.2;
+      font-weight: 900;
+    }
+    .yxdr-source {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .yxdr-source a {
+      color: #2563eb;
+      font-weight: 850;
+      text-decoration: none;
+    }
+    .yxdr-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .yxdr-actions .btn.active {
+      background: #111827;
+      color: #fff;
+      border-color: #111827;
+      box-shadow: 0 8px 20px rgba(17, 24, 39, .12);
+    }
+    .yxdr-state {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #f9fafb;
+      color: #374151;
+      padding: 5px 10px;
+      font-size: 12px;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+    .yxdr-warning {
+      margin: 0 0 12px;
+      border: 1px solid rgba(217, 119, 6, .26);
+      border-radius: 10px;
+      background: #fff7ed;
+      color: #9a3412;
+      padding: 8px 10px;
+      font-size: 12px;
+      line-height: 1.55;
+      font-weight: 750;
+    }
+    .yxdr-frame-wrap {
+      width: 100%;
+      height: 360px;
+      border: 1px solid #edf1f6;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fff;
+    }
+    .yxdr-frame {
+      display: block;
+      width: 100%;
+      height: 980px;
+      border: 0;
+      margin-top: -145px;
+    }
+    .yxdr-frame-note {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
     @media(max-width:860px) {
       .calendar-head {
         display: block;
@@ -206,6 +292,24 @@
       }
       .gold-day-line {
         display: block;
+      }
+      .yxdr-head {
+        display: block;
+      }
+      .yxdr-state {
+        margin-top: 10px;
+      }
+      .yxdr-actions {
+        justify-content: flex-start;
+        margin-top: 10px;
+      }
+      .yxdr-frame-wrap {
+        height: 360px;
+      }
+      .yxdr-frame {
+        min-width: 1040px;
+        height: 920px;
+        margin-top: -115px;
       }
     }
   </style>
@@ -231,6 +335,37 @@
     </section>
 
     <section class="grid kpis" id="kpiGrid"></section>
+
+    <section class="card yxdr-panel" aria-labelledby="yxdrTitle">
+      <div class="yxdr-head">
+        <div>
+          <h2 id="yxdrTitle">YXDR 游戏达人比价金价</h2>
+          <div class="yxdr-source">
+            来源：
+            <a id="yxdrSourceLink" href="https://www.yxdr.com/bijiaqi/mingyunfangzhou/youxibi/ninafu" target="_blank" rel="noopener">yxdr.com 妮娜芙游戏币比价器</a>
+          </div>
+        </div>
+        <div class="yxdr-actions">
+          <button class="btn secondary" id="yxdrReloadBtn" type="button">刷新窗口</button>
+          <button class="btn secondary" type="button" data-yxdr-frame="yxdr">YXDR</button>
+          <button class="btn secondary" type="button" data-yxdr-frame="7881">7881</button>
+          <button class="btn secondary" type="button" data-yxdr-frame="dd373">DD373</button>
+          <button class="btn secondary" type="button" data-yxdr-frame="uu898">UU898</button>
+          <span class="yxdr-state" id="yxdrStatus">正在连接原站...</span>
+        </div>
+      </div>
+      <div class="yxdr-warning">不要频繁刷新 YXDR，短时间多次访问可能会被原站临时禁止。若窗口空白或显示受限，请切换到 7881、DD373 或 UU898 备用页面。</div>
+      <div class="yxdr-frame-wrap">
+        <iframe
+          class="yxdr-frame"
+          id="yxdrFrame"
+          title="YXDR 妮娜芙游戏币实时比价"
+          src="https://www.yxdr.com/bijiaqi/mingyunfangzhou/youxibi/ninafu?baidutongji"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+      <div class="yxdr-frame-note">此窗口直接加载所选原站页面，窗口内容保持 100% 原始尺寸并裁切一部分顶部区域；数据刷新和加载限制由对应原站决定。</div>
+    </section>
 
     <section class="card panel">
       <div class="panel-head">
@@ -270,9 +405,31 @@
     </section>
   </main>
 
-  <script id="EMBEDDED_GOLD_DATA" type="application/json">{"publishedAt":"2026-06-16 09:00","goldTxns":[{"id":"txn-2026-05-26-邮寄交易-2999999-952-0","type":"邮寄交易","gold":2999999,"price":952,"date":"2026-05-26"},{"id":"txn-2026-05-26-邮寄交易-1399999-471-1","type":"邮寄交易","gold":1399999,"price":471,"date":"2026-05-26"},{"id":"txn-2026-05-26-拍卖交易-199999-55-2","type":"拍卖交易","gold":9000000,"price":2500,"date":"2026-05-26"},{"id":"txn-2026-05-26-拍卖交易-1999999-560-3","type":"拍卖交易","gold":1999999,"price":560,"date":"2026-05-26"},{"id":"txn-2026-05-27-邮寄交易-199999-62-0","type":"邮寄交易","gold":199999,"price":62,"date":"2026-05-27"},{"id":"txn-2026-05-27-邮寄交易-149999-49-1","type":"邮寄交易","gold":149999,"price":49,"date":"2026-05-27"},{"id":"txn-2026-05-27-拍卖交易-280000-76.8-2","type":"拍卖交易","gold":280000,"price":76.8,"date":"2026-05-27"},{"id":"txn-2026-05-27-拍卖交易-499999-140-3","type":"拍卖交易","gold":499999,"price":140,"date":"2026-05-27"},{"id":"txn-2026-05-28-邮寄交易-2999999-978-0","type":"邮寄交易","gold":2999999,"price":978,"date":"2026-05-28"},{"id":"txn-2026-05-28-邮寄交易-599999-183.5-1","type":"邮寄交易","gold":599999,"price":183.5,"date":"2026-05-28"},{"id":"txn-2026-05-28-拍卖交易-230000-61.5-2","type":"拍卖交易","gold":230000,"price":61.5,"date":"2026-05-28"},{"id":"txn-2026-05-28-拍卖交易-499999-138.88-3","type":"拍卖交易","gold":499999,"price":138.88,"date":"2026-05-28"},{"id":"txn-2026-05-29-邮寄交易-450000-129-0","type":"邮寄交易","gold":450000,"price":129,"date":"2026-05-29"},{"id":"txn-2026-05-29-邮寄交易-159999-49.9-1","type":"邮寄交易","gold":159999,"price":49.9,"date":"2026-05-29"},{"id":"txn-2026-05-29-拍卖交易-69999-18-2","type":"拍卖交易","gold":69999,"price":18,"date":"2026-05-29"},{"id":"txn-2026-05-29-拍卖交易-730000-200-3","type":"拍卖交易","gold":730000,"price":200,"date":"2026-05-29"},{"id":"txn-2026-05-30-邮寄交易-99999-29-0","type":"邮寄交易","gold":99999,"price":29,"date":"2026-05-30"},{"id":"txn-2026-05-30-邮寄交易-999999-309-1","type":"邮寄交易","gold":999999,"price":309,"date":"2026-05-30"},{"id":"txn-2026-05-30-拍卖交易-213000-56.79-2","type":"拍卖交易","gold":213000,"price":56.79,"date":"2026-05-30"},{"id":"txn-2026-05-30-拍卖交易-499999-136.1-3","type":"拍卖交易","gold":499999,"price":136.1,"date":"2026-05-30"},{"id":"txn-2026-05-31-邮寄交易-6314753-1842-0","type":"邮寄交易","gold":6314753,"price":1842,"date":"2026-05-31"},{"id":"txn-2026-05-31-邮寄交易-359999-112-1","type":"邮寄交易","gold":359999,"price":112,"date":"2026-05-31"},{"id":"txn-2026-05-31-拍卖交易-266000-69.92-2","type":"拍卖交易","gold":266000,"price":69.92,"date":"2026-05-31"},{"id":"txn-2026-05-31-拍卖交易-499999-136-3","type":"拍卖交易","gold":499999,"price":136,"date":"2026-05-31"},{"id":"txn-2026-06-01-邮寄交易-79999-22-0","type":"邮寄交易","gold":79999,"price":22,"date":"2026-06-01"},{"id":"txn-2026-06-01-邮寄交易-2999999-882.32-1","type":"邮寄交易","gold":2999999,"price":882.32,"date":"2026-06-01"},{"id":"txn-2026-06-01-拍卖交易-199999-51.13-2","type":"拍卖交易","gold":199999,"price":51.13,"date":"2026-06-01"},{"id":"txn-2026-06-01-拍卖交易-188888-50-3","type":"拍卖交易","gold":188888,"price":50,"date":"2026-06-01"},{"id":"txn-2026-06-02-邮寄交易-210000-55.5-0","type":"邮寄交易","gold":210000,"price":55.5,"date":"2026-06-02"},{"id":"txn-2026-06-02-邮寄交易-180000-50-1","type":"邮寄交易","gold":180000,"price":50,"date":"2026-06-02"},{"id":"txn-2026-06-02-拍卖交易-159999-38-2","type":"拍卖交易","gold":159999,"price":38,"date":"2026-06-02"},{"id":"txn-2026-06-02-拍卖交易-199999-50-3","type":"拍卖交易","gold":199999,"price":50,"date":"2026-06-02"},{"id":"txn-2026-06-03-邮寄交易-1900000-510-0","type":"邮寄交易","gold":1900000,"price":510,"date":"2026-06-03"},{"id":"txn-2026-06-03-邮寄交易-699999-199.94-1","type":"邮寄交易","gold":699999,"price":199.94,"date":"2026-06-03"},{"id":"txn-2026-06-03-拍卖交易-399999-99.5-2","type":"拍卖交易","gold":399999,"price":99.5,"date":"2026-06-03"},{"id":"txn-2026-06-03-拍卖交易-499999-128.2-3","type":"拍卖交易","gold":499999,"price":128.2,"date":"2026-06-03"},{"id":"txn-2026-06-04-邮寄交易-99999-26.99-0","type":"邮寄交易","gold":99999,"price":26.99,"date":"2026-06-04"},{"id":"txn-2026-06-04-邮寄交易-2999999-850-1","type":"邮寄交易","gold":2999999,"price":850,"date":"2026-06-04"},{"id":"txn-2026-06-04-拍卖交易-199999-48-2","type":"拍卖交易","gold":199999,"price":48,"date":"2026-06-04"},{"id":"txn-2026-06-04-拍卖交易-499999-125-3","type":"拍卖交易","gold":499999,"price":125,"date":"2026-06-04"},{"id":"txn-2026-06-05-邮寄交易-1000000-257.99-0","type":"邮寄交易","gold":1000000,"price":257.99,"date":"2026-06-05"},{"id":"txn-2026-06-05-邮寄交易-180000-50-1","type":"邮寄交易","gold":180000,"price":50,"date":"2026-06-05"},{"id":"txn-2026-06-05-拍卖交易-329999-76-2","type":"拍卖交易","gold":329999,"price":76,"date":"2026-06-05"},{"id":"txn-2026-06-05-拍卖交易-499999-123.8-3","type":"拍卖交易","gold":499999,"price":123.8,"date":"2026-06-05"},{"id":"txn-2026-06-06-邮寄交易-1599999-403-0","type":"邮寄交易","gold":1599999,"price":403,"date":"2026-06-06"},{"id":"txn-2026-06-06-邮寄交易-179999-50-1","type":"邮寄交易","gold":179999,"price":50,"date":"2026-06-06"},{"id":"txn-2026-06-06-拍卖交易-550000-127.16-2","type":"拍卖交易","gold":550000,"price":127.16,"date":"2026-06-06"},{"id":"txn-2026-06-06-拍卖交易-200000-49-3","type":"拍卖交易","gold":200000,"price":49,"date":"2026-06-06"},{"id":"txn-2026-06-07-邮寄交易-399999-105-0","type":"邮寄交易","gold":399999,"price":105,"date":"2026-06-07"},{"id":"txn-2026-06-07-邮寄交易-999999-278.88-1","type":"邮寄交易","gold":999999,"price":278.88,"date":"2026-06-07"},{"id":"txn-2026-06-07-拍卖交易-209999-49.67-2","type":"拍卖交易","gold":209999,"price":49.67,"date":"2026-06-07"},{"id":"txn-2026-06-07-拍卖交易-199999-48.9-3","type":"拍卖交易","gold":199999,"price":48.9,"date":"2026-06-07"},{"id":"txn-2026-06-08-邮寄交易-299999-78.49-0","type":"邮寄交易","gold":299999,"price":78.49,"date":"2026-06-08"},{"id":"txn-2026-06-08-邮寄交易-499999-136.28-1","type":"邮寄交易","gold":499999,"price":136.28,"date":"2026-06-08"},{"id":"txn-2026-06-08-拍卖交易-199999-46-2","type":"拍卖交易","gold":199999,"price":46,"date":"2026-06-08"},{"id":"txn-2026-06-08-拍卖交易-299999-72-3","type":"拍卖交易","gold":299999,"price":72,"date":"2026-06-08"},{"id":"txn-2026-06-09-邮寄交易-399999-102.56-0","type":"邮寄交易","gold":399999,"price":102.56,"date":"2026-06-09"},{"id":"txn-2026-06-09-邮寄交易-999999-278.88-1","type":"邮寄交易","gold":999999,"price":278.88,"date":"2026-06-09"},{"id":"txn-2026-06-09-拍卖交易-329999-72.59-2","type":"拍卖交易","gold":329999,"price":72.59,"date":"2026-06-09"},{"id":"txn-2026-06-09-拍卖交易-255555-61.34-3","type":"拍卖交易","gold":255555,"price":61.34,"date":"2026-06-09"},{"id":"txn-2026-06-10-邮寄交易-2899999-770.67-0","type":"邮寄交易","gold":2899999,"price":770.67,"date":"2026-06-10"},{"id":"txn-2026-06-10-邮寄交易-433333-119-1","type":"邮寄交易","gold":433333,"price":119,"date":"2026-06-10"},{"id":"txn-2026-06-10-拍卖交易-2999999-720-2","type":"拍卖交易","gold":2999999,"price":720,"date":"2026-06-10"},{"id":"txn-2026-06-10-拍卖交易-499999-123.8-3","type":"拍卖交易","gold":499999,"price":123.8,"date":"2026-06-10"},{"id":"txn-2026-06-11-邮寄交易-199999-52.3-0","type":"邮寄交易","gold":199999,"price":52.3,"date":"2026-06-11"},{"id":"txn-2026-06-11-邮寄交易-2999999-823-1","type":"邮寄交易","gold":2999999,"price":823,"date":"2026-06-11"},{"id":"txn-2026-06-11-拍卖交易-218888-50-2","type":"拍卖交易","gold":218888,"price":50,"date":"2026-06-11"},{"id":"txn-2026-06-11-拍卖交易-299999-74-3","type":"拍卖交易","gold":299999,"price":74,"date":"2026-06-11"},{"id":"txn-2026-06-12-邮寄交易-999999-250-0","type":"邮寄交易","gold":999999,"price":250,"date":"2026-06-12"},{"id":"txn-2026-06-12-邮寄交易-4999999-1350-1","type":"邮寄交易","gold":4999999,"price":1350,"date":"2026-06-12"},{"id":"txn-2026-06-12-拍卖交易-199999-46.2-2","type":"拍卖交易","gold":199999,"price":46.2,"date":"2026-06-12"},{"id":"txn-2026-06-12-拍卖交易-499999-121.62-3","type":"拍卖交易","gold":499999,"price":121.62,"date":"2026-06-12"},{"id":"txn-2026-06-13-邮寄交易-299999-75.59-0","type":"邮寄交易","gold":299999,"price":75.59,"date":"2026-06-13"},{"id":"txn-2026-06-13-邮寄交易-2999999-799-1","type":"邮寄交易","gold":2999999,"price":799,"date":"2026-06-13"},{"id":"txn-2026-06-13-拍卖交易-213500-49.99-2","type":"拍卖交易","gold":213500,"price":49.99,"date":"2026-06-13"},{"id":"txn-2026-06-13-拍卖交易-999999-240-3","type":"拍卖交易","gold":999999,"price":240,"date":"2026-06-13"},{"id":"txn-2026-06-14-邮寄交易-770000-200-0","type":"邮寄交易","gold":770000,"price":200,"date":"2026-06-14"},{"id":"txn-2026-06-14-邮寄交易-3000000-824-1","type":"邮寄交易","gold":3000000,"price":824,"date":"2026-06-14"},{"id":"txn-2026-06-14-拍卖交易-250000-59.35-2","type":"拍卖交易","gold":250000,"price":59.35,"date":"2026-06-14"},{"id":"txn-2026-06-14-拍卖交易-5279896-1267.06-3","type":"拍卖交易","gold":5279896,"price":1267.06,"date":"2026-06-14"},{"id":"txn-2026-06-15-邮寄交易-999999-255-0","type":"邮寄交易","gold":999999,"price":255,"date":"2026-06-15"},{"id":"txn-2026-06-15-邮寄交易-499999-134.4-1","type":"邮寄交易","gold":499999,"price":134.4,"date":"2026-06-15"},{"id":"txn-2026-06-15-拍卖交易-249999-56-2","type":"拍卖交易","gold":249999,"price":56,"date":"2026-06-15"},{"id":"txn-2026-06-15-拍卖交易-499999-119-3","type":"拍卖交易","gold":499999,"price":119,"date":"2026-06-15"},{"id":"txn-2026-06-16-邮寄交易-499999-123.6-0","type":"邮寄交易","gold":499999,"price":123.6,"date":"2026-06-16"},{"id":"txn-2026-06-16-邮寄交易-950000-255.2-1","type":"邮寄交易","gold":950000,"price":255.2,"date":"2026-06-16"},{"id":"txn-2026-06-16-拍卖交易-310000-71.23-2","type":"拍卖交易","gold":310000,"price":71.23,"date":"2026-06-16"},{"id":"txn-2026-06-16-拍卖交易-500000-119.5-3","type":"拍卖交易","gold":500000,"price":119.5,"date":"2026-06-16"}]}</script>
+  <script id="EMBEDDED_GOLD_DATA" type="application/json">{"publishedAt":"2026-06-18 10:00","goldTxns":[{"id":"txn-2026-05-26-邮寄交易-2999999-952-0","type":"邮寄交易","gold":2999999,"price":952,"date":"2026-05-26"},{"id":"txn-2026-05-26-邮寄交易-1399999-471-1","type":"邮寄交易","gold":1399999,"price":471,"date":"2026-05-26"},{"id":"txn-2026-05-26-拍卖交易-199999-55-2","type":"拍卖交易","gold":9000000,"price":2500,"date":"2026-05-26"},{"id":"txn-2026-05-26-拍卖交易-1999999-560-3","type":"拍卖交易","gold":1999999,"price":560,"date":"2026-05-26"},{"id":"txn-2026-05-27-邮寄交易-199999-62-0","type":"邮寄交易","gold":199999,"price":62,"date":"2026-05-27"},{"id":"txn-2026-05-27-邮寄交易-149999-49-1","type":"邮寄交易","gold":149999,"price":49,"date":"2026-05-27"},{"id":"txn-2026-05-27-拍卖交易-280000-76.8-2","type":"拍卖交易","gold":280000,"price":76.8,"date":"2026-05-27"},{"id":"txn-2026-05-27-拍卖交易-499999-140-3","type":"拍卖交易","gold":499999,"price":140,"date":"2026-05-27"},{"id":"txn-2026-05-28-邮寄交易-2999999-978-0","type":"邮寄交易","gold":2999999,"price":978,"date":"2026-05-28"},{"id":"txn-2026-05-28-邮寄交易-599999-183.5-1","type":"邮寄交易","gold":599999,"price":183.5,"date":"2026-05-28"},{"id":"txn-2026-05-28-拍卖交易-230000-61.5-2","type":"拍卖交易","gold":230000,"price":61.5,"date":"2026-05-28"},{"id":"txn-2026-05-28-拍卖交易-499999-138.88-3","type":"拍卖交易","gold":499999,"price":138.88,"date":"2026-05-28"},{"id":"txn-2026-05-29-邮寄交易-450000-129-0","type":"邮寄交易","gold":450000,"price":129,"date":"2026-05-29"},{"id":"txn-2026-05-29-邮寄交易-159999-49.9-1","type":"邮寄交易","gold":159999,"price":49.9,"date":"2026-05-29"},{"id":"txn-2026-05-29-拍卖交易-69999-18-2","type":"拍卖交易","gold":69999,"price":18,"date":"2026-05-29"},{"id":"txn-2026-05-29-拍卖交易-730000-200-3","type":"拍卖交易","gold":730000,"price":200,"date":"2026-05-29"},{"id":"txn-2026-05-30-邮寄交易-99999-29-0","type":"邮寄交易","gold":99999,"price":29,"date":"2026-05-30"},{"id":"txn-2026-05-30-邮寄交易-999999-309-1","type":"邮寄交易","gold":999999,"price":309,"date":"2026-05-30"},{"id":"txn-2026-05-30-拍卖交易-213000-56.79-2","type":"拍卖交易","gold":213000,"price":56.79,"date":"2026-05-30"},{"id":"txn-2026-05-30-拍卖交易-499999-136.1-3","type":"拍卖交易","gold":499999,"price":136.1,"date":"2026-05-30"},{"id":"txn-2026-05-31-邮寄交易-6314753-1842-0","type":"邮寄交易","gold":6314753,"price":1842,"date":"2026-05-31"},{"id":"txn-2026-05-31-邮寄交易-359999-112-1","type":"邮寄交易","gold":359999,"price":112,"date":"2026-05-31"},{"id":"txn-2026-05-31-拍卖交易-266000-69.92-2","type":"拍卖交易","gold":266000,"price":69.92,"date":"2026-05-31"},{"id":"txn-2026-05-31-拍卖交易-499999-136-3","type":"拍卖交易","gold":499999,"price":136,"date":"2026-05-31"},{"id":"txn-2026-06-01-邮寄交易-79999-22-0","type":"邮寄交易","gold":79999,"price":22,"date":"2026-06-01"},{"id":"txn-2026-06-01-邮寄交易-2999999-882.32-1","type":"邮寄交易","gold":2999999,"price":882.32,"date":"2026-06-01"},{"id":"txn-2026-06-01-拍卖交易-199999-51.13-2","type":"拍卖交易","gold":199999,"price":51.13,"date":"2026-06-01"},{"id":"txn-2026-06-01-拍卖交易-188888-50-3","type":"拍卖交易","gold":188888,"price":50,"date":"2026-06-01"},{"id":"txn-2026-06-02-邮寄交易-210000-55.5-0","type":"邮寄交易","gold":210000,"price":55.5,"date":"2026-06-02"},{"id":"txn-2026-06-02-邮寄交易-180000-50-1","type":"邮寄交易","gold":180000,"price":50,"date":"2026-06-02"},{"id":"txn-2026-06-02-拍卖交易-159999-38-2","type":"拍卖交易","gold":159999,"price":38,"date":"2026-06-02"},{"id":"txn-2026-06-02-拍卖交易-199999-50-3","type":"拍卖交易","gold":199999,"price":50,"date":"2026-06-02"},{"id":"txn-2026-06-03-邮寄交易-1900000-510-0","type":"邮寄交易","gold":1900000,"price":510,"date":"2026-06-03"},{"id":"txn-2026-06-03-邮寄交易-699999-199.94-1","type":"邮寄交易","gold":699999,"price":199.94,"date":"2026-06-03"},{"id":"txn-2026-06-03-拍卖交易-399999-99.5-2","type":"拍卖交易","gold":399999,"price":99.5,"date":"2026-06-03"},{"id":"txn-2026-06-03-拍卖交易-499999-128.2-3","type":"拍卖交易","gold":499999,"price":128.2,"date":"2026-06-03"},{"id":"txn-2026-06-04-邮寄交易-99999-26.99-0","type":"邮寄交易","gold":99999,"price":26.99,"date":"2026-06-04"},{"id":"txn-2026-06-04-邮寄交易-2999999-850-1","type":"邮寄交易","gold":2999999,"price":850,"date":"2026-06-04"},{"id":"txn-2026-06-04-拍卖交易-199999-48-2","type":"拍卖交易","gold":199999,"price":48,"date":"2026-06-04"},{"id":"txn-2026-06-04-拍卖交易-499999-125-3","type":"拍卖交易","gold":499999,"price":125,"date":"2026-06-04"},{"id":"txn-2026-06-05-邮寄交易-1000000-257.99-0","type":"邮寄交易","gold":1000000,"price":257.99,"date":"2026-06-05"},{"id":"txn-2026-06-05-邮寄交易-180000-50-1","type":"邮寄交易","gold":180000,"price":50,"date":"2026-06-05"},{"id":"txn-2026-06-05-拍卖交易-329999-76-2","type":"拍卖交易","gold":329999,"price":76,"date":"2026-06-05"},{"id":"txn-2026-06-05-拍卖交易-499999-123.8-3","type":"拍卖交易","gold":499999,"price":123.8,"date":"2026-06-05"},{"id":"txn-2026-06-06-邮寄交易-1599999-403-0","type":"邮寄交易","gold":1599999,"price":403,"date":"2026-06-06"},{"id":"txn-2026-06-06-邮寄交易-179999-50-1","type":"邮寄交易","gold":179999,"price":50,"date":"2026-06-06"},{"id":"txn-2026-06-06-拍卖交易-550000-127.16-2","type":"拍卖交易","gold":550000,"price":127.16,"date":"2026-06-06"},{"id":"txn-2026-06-06-拍卖交易-200000-49-3","type":"拍卖交易","gold":200000,"price":49,"date":"2026-06-06"},{"id":"txn-2026-06-07-邮寄交易-399999-105-0","type":"邮寄交易","gold":399999,"price":105,"date":"2026-06-07"},{"id":"txn-2026-06-07-邮寄交易-999999-278.88-1","type":"邮寄交易","gold":999999,"price":278.88,"date":"2026-06-07"},{"id":"txn-2026-06-07-拍卖交易-209999-49.67-2","type":"拍卖交易","gold":209999,"price":49.67,"date":"2026-06-07"},{"id":"txn-2026-06-07-拍卖交易-199999-48.9-3","type":"拍卖交易","gold":199999,"price":48.9,"date":"2026-06-07"},{"id":"txn-2026-06-08-邮寄交易-299999-78.49-0","type":"邮寄交易","gold":299999,"price":78.49,"date":"2026-06-08"},{"id":"txn-2026-06-08-邮寄交易-499999-136.28-1","type":"邮寄交易","gold":499999,"price":136.28,"date":"2026-06-08"},{"id":"txn-2026-06-08-拍卖交易-199999-46-2","type":"拍卖交易","gold":199999,"price":46,"date":"2026-06-08"},{"id":"txn-2026-06-08-拍卖交易-299999-72-3","type":"拍卖交易","gold":299999,"price":72,"date":"2026-06-08"},{"id":"txn-2026-06-09-邮寄交易-399999-102.56-0","type":"邮寄交易","gold":399999,"price":102.56,"date":"2026-06-09"},{"id":"txn-2026-06-09-邮寄交易-999999-278.88-1","type":"邮寄交易","gold":999999,"price":278.88,"date":"2026-06-09"},{"id":"txn-2026-06-09-拍卖交易-329999-72.59-2","type":"拍卖交易","gold":329999,"price":72.59,"date":"2026-06-09"},{"id":"txn-2026-06-09-拍卖交易-255555-61.34-3","type":"拍卖交易","gold":255555,"price":61.34,"date":"2026-06-09"},{"id":"txn-2026-06-10-邮寄交易-2899999-770.67-0","type":"邮寄交易","gold":2899999,"price":770.67,"date":"2026-06-10"},{"id":"txn-2026-06-10-邮寄交易-433333-119-1","type":"邮寄交易","gold":433333,"price":119,"date":"2026-06-10"},{"id":"txn-2026-06-10-拍卖交易-2999999-720-2","type":"拍卖交易","gold":2999999,"price":720,"date":"2026-06-10"},{"id":"txn-2026-06-10-拍卖交易-499999-123.8-3","type":"拍卖交易","gold":499999,"price":123.8,"date":"2026-06-10"},{"id":"txn-2026-06-11-邮寄交易-199999-52.3-0","type":"邮寄交易","gold":199999,"price":52.3,"date":"2026-06-11"},{"id":"txn-2026-06-11-邮寄交易-2999999-823-1","type":"邮寄交易","gold":2999999,"price":823,"date":"2026-06-11"},{"id":"txn-2026-06-11-拍卖交易-218888-50-2","type":"拍卖交易","gold":218888,"price":50,"date":"2026-06-11"},{"id":"txn-2026-06-11-拍卖交易-299999-74-3","type":"拍卖交易","gold":299999,"price":74,"date":"2026-06-11"},{"id":"txn-2026-06-12-邮寄交易-999999-250-0","type":"邮寄交易","gold":999999,"price":250,"date":"2026-06-12"},{"id":"txn-2026-06-12-邮寄交易-4999999-1350-1","type":"邮寄交易","gold":4999999,"price":1350,"date":"2026-06-12"},{"id":"txn-2026-06-12-拍卖交易-199999-46.2-2","type":"拍卖交易","gold":199999,"price":46.2,"date":"2026-06-12"},{"id":"txn-2026-06-12-拍卖交易-499999-121.62-3","type":"拍卖交易","gold":499999,"price":121.62,"date":"2026-06-12"},{"id":"txn-2026-06-13-邮寄交易-299999-75.59-0","type":"邮寄交易","gold":299999,"price":75.59,"date":"2026-06-13"},{"id":"txn-2026-06-13-邮寄交易-2999999-799-1","type":"邮寄交易","gold":2999999,"price":799,"date":"2026-06-13"},{"id":"txn-2026-06-13-拍卖交易-213500-49.99-2","type":"拍卖交易","gold":213500,"price":49.99,"date":"2026-06-13"},{"id":"txn-2026-06-13-拍卖交易-999999-240-3","type":"拍卖交易","gold":999999,"price":240,"date":"2026-06-13"},{"id":"txn-2026-06-14-邮寄交易-770000-200-0","type":"邮寄交易","gold":770000,"price":200,"date":"2026-06-14"},{"id":"txn-2026-06-14-邮寄交易-3000000-824-1","type":"邮寄交易","gold":3000000,"price":824,"date":"2026-06-14"},{"id":"txn-2026-06-14-拍卖交易-250000-59.35-2","type":"拍卖交易","gold":250000,"price":59.35,"date":"2026-06-14"},{"id":"txn-2026-06-14-拍卖交易-5279896-1267.06-3","type":"拍卖交易","gold":5279896,"price":1267.06,"date":"2026-06-14"},{"id":"txn-2026-06-15-邮寄交易-999999-255-0","type":"邮寄交易","gold":999999,"price":255,"date":"2026-06-15"},{"id":"txn-2026-06-15-邮寄交易-499999-134.4-1","type":"邮寄交易","gold":499999,"price":134.4,"date":"2026-06-15"},{"id":"txn-2026-06-15-拍卖交易-249999-56-2","type":"拍卖交易","gold":249999,"price":56,"date":"2026-06-15"},{"id":"txn-2026-06-15-拍卖交易-499999-119-3","type":"拍卖交易","gold":499999,"price":119,"date":"2026-06-15"},{"id":"txn-2026-06-16-邮寄交易-499999-123.6-0","type":"邮寄交易","gold":499999,"price":123.6,"date":"2026-06-16"},{"id":"txn-2026-06-16-邮寄交易-950000-255.2-1","type":"邮寄交易","gold":950000,"price":255.2,"date":"2026-06-16"},{"id":"txn-2026-06-16-拍卖交易-310000-71.23-2","type":"拍卖交易","gold":310000,"price":71.23,"date":"2026-06-16"},{"id":"txn-2026-06-16-拍卖交易-500000-119.5-3","type":"拍卖交易","gold":500000,"price":119.5,"date":"2026-06-16"},{"id":"txn-2026-06-17-邮寄交易-2999999-743-0","type":"邮寄交易","gold":2999999,"price":743,"date":"2026-06-17"},{"id":"txn-2026-06-17-邮寄交易-499999-134-1","type":"邮寄交易","gold":499999,"price":134,"date":"2026-06-17"},{"id":"txn-2026-06-17-拍卖交易-139999-32.5-2","type":"拍卖交易","gold":139999,"price":32.5,"date":"2026-06-17"},{"id":"txn-2026-06-17-拍卖交易-999999-239.5-3","type":"拍卖交易","gold":999999,"price":239.5,"date":"2026-06-17"},{"id":"txn-2026-06-18-邮寄交易-969999-242.3-0","type":"邮寄交易","gold":969999,"price":242.3,"date":"2026-06-18"},{"id":"txn-2026-06-18-邮寄交易-1999999-528-1","type":"邮寄交易","gold":1999999,"price":528,"date":"2026-06-18"},{"id":"txn-2026-06-18-拍卖交易-219000-50-2","type":"拍卖交易","gold":219000,"price":50,"date":"2026-06-18"},{"id":"txn-2026-06-18-拍卖交易-499999-119.9-3","type":"拍卖交易","gold":499999,"price":119.9,"date":"2026-06-18"}]}</script>
   <script>
     const DATA_URL = "../data/dashboard-state.json";
+    const YXDR_FRAME_SOURCES = {
+      yxdr: {
+        label: "YXDR",
+        linkText: "YXDR 原站页面",
+        url: "https://www.yxdr.com/bijiaqi/mingyunfangzhou/youxibi/ninafu?baidutongji"
+      },
+      "7881": {
+        label: "7881",
+        linkText: "7881 备用页面",
+        url: "https://search.7881.com/list.html?gameId=G5709&carrierId=0&gtid=100001&groupId=G5709P002&serverId=G5709P002003&pageNum=0"
+      },
+      dd373: {
+        label: "DD373",
+        linkText: "DD373 备用页面",
+        url: "https://www.dd373.com/s-7u2tcu-q6m7m8-ek0n8e-0-0-0-qqnsrh-0-0-0-0-0-0-0-0-0.html"
+      },
+      uu898: {
+        label: "UU898",
+        linkText: "UU898 备用页面",
+        url: "https://www.uu898.com/newTrade.aspx?gm=607&area=4475&srv=54491&c=-3&o=5&sa=0&p=1"
+      }
+    };
     const MAIL = "邮寄交易";
     const AUC = "拍卖交易";
     const CHART_PAGE = 30;
@@ -375,6 +532,54 @@
       } catch (error) {
         return {};
       }
+    }
+
+    function setupYxdrFrame() {
+      const frame = document.getElementById("yxdrFrame");
+      const status = document.getElementById("yxdrStatus");
+      const reload = document.getElementById("yxdrReloadBtn");
+      const sourceLink = document.getElementById("yxdrSourceLink");
+      const buttons = document.querySelectorAll("[data-yxdr-frame]");
+      if (!frame || !status || !reload) return;
+
+      function sourceFor(key) {
+        return YXDR_FRAME_SOURCES[key] || YXDR_FRAME_SOURCES.yxdr;
+      }
+
+      function setActiveButton(key) {
+        buttons.forEach(button => {
+          const active = button.dataset.yxdrFrame === key;
+          button.classList.toggle("active", active);
+          button.setAttribute("aria-pressed", String(active));
+        });
+      }
+
+      function loadFrame(key, withCacheBust = false) {
+        const source = sourceFor(key);
+        const joiner = source.url.includes("?") ? "&" : "?";
+        frame.dataset.currentSource = key;
+        status.textContent = "正在连接 " + source.label + "...";
+        if (sourceLink) {
+          sourceLink.href = source.url;
+          sourceLink.textContent = source.linkText || source.label;
+        }
+        setActiveButton(key);
+        frame.src = source.url + (withCacheBust ? joiner + "t=" + Date.now() : "");
+      }
+
+      frame.addEventListener("load", () => {
+        const source = sourceFor(frame.dataset.currentSource || "yxdr");
+        status.textContent = "已连接 " + source.label;
+      });
+      buttons.forEach(button => {
+        button.addEventListener("click", () => {
+          loadFrame(button.dataset.yxdrFrame || "yxdr");
+        });
+      });
+      reload.addEventListener("click", () => {
+        loadFrame(frame.dataset.currentSource || "yxdr", true);
+      });
+      loadFrame("yxdr");
     }
 
     async function fetchGoldData() {
@@ -608,6 +813,7 @@
       setGoldPageLoadState("error", "加载失败：" + (error.message || error));
     }));
 
+    setupYxdrFrame();
     loadData().catch(error => {
       document.getElementById("status").textContent = "加载失败：" + (error.message || error);
       setGoldPageLoadState("error", "加载失败：" + (error.message || error));
