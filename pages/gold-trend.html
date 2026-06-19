@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>金价走势仪表盘</title>
   <style>
-    :root{--bg:#f5f7fb;--text:#111827;--muted:#6b7280;--line:#e5e7eb;--shadow:0 14px 35px rgba(15,23,42,.08);--mail:#2563eb;--auc:#d97706;--good:#059669;--bad:#dc2626}*{box-sizing:border-box}body{margin:0;font-family:"Microsoft YaHei","Noto Sans CJK SC",Arial,sans-serif;color:var(--text);background:linear-gradient(180deg,#f8fafc 0%,var(--bg) 100%)}.app{max-width:1280px;margin:0 auto;padding:24px 22px 34px}.topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:18px}.title h1{font-size:30px;line-height:1.15;margin:0;font-weight:900}.subtitle{margin-top:7px;color:var(--muted);font-size:14px}.actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}.btn{border:0;border-radius:999px;padding:9px 14px;background:#111827;color:#fff;font-weight:800;cursor:pointer;box-shadow:0 8px 20px rgba(17,24,39,.12);font-size:13px;line-height:1;text-decoration:none}.btn.secondary{background:#fff;color:#111827;border:1px solid var(--line);box-shadow:none}.btn:disabled{opacity:.45;cursor:not-allowed}.grid{display:grid;gap:16px}.kpis{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:16px}.card{background:rgba(255,255,255,.94);border:1px solid rgba(229,231,235,.95);border-radius:18px;box-shadow:var(--shadow);backdrop-filter:blur(12px)}.kpi{padding:16px 15px 14px;min-height:126px}.kpi span{display:block;color:var(--muted);font-size:12px;font-weight:800;margin-bottom:8px}.kpi b{display:block;font-size:27px;line-height:1.12;font-weight:950}.kpi em{display:block;margin-top:8px;color:var(--muted);font-size:12px;line-height:1.35;font-style:normal}.panel{padding:18px 20px 20px;margin-bottom:16px;overflow:hidden}.panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:10px}.panel h2{font-size:20px;line-height:1.2;margin:0 0 8px;font-weight:900}.legend{display:flex;align-items:center;gap:14px;flex-wrap:wrap;color:#374151;font-size:13px}.legend span{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}.dot{width:10px;height:10px;border-radius:50%;display:inline-block;background:var(--c)}.chart-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}.chart-range{color:var(--muted);font-size:13px;font-weight:800}.chart-wrap{height:390px;width:100%;max-width:100%;min-width:0;position:relative;overflow:hidden;padding-bottom:6px}.chart-wrap svg{width:100%;height:100%;display:block}.gridline{stroke:#edf1f6;stroke-width:1}.axis-label,.tick{fill:#6b7280;font-size:11px}.series{fill:none;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}.marker{stroke:#fff;stroke-width:2.2}.tooltip{position:absolute;z-index:8;display:none;pointer-events:none;background:rgba(17,24,39,.92);color:#fff;border-radius:10px;padding:7px 9px;font-size:12px;line-height:1.45;box-shadow:0 10px 24px rgba(15,23,42,.22);white-space:nowrap;transform:none}.tooltip.show{display:block}.split{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.table-card{padding:18px 20px 20px;overflow:hidden}.table-scroll{overflow-x:auto}.data-table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:13px}.data-table th,.data-table td{padding:9px 10px;border-bottom:1px solid #edf1f6;text-align:right;white-space:nowrap}.data-table th:first-child,.data-table td:first-child{text-align:left}.data-table th{background:#f9fafb;color:#374151;font-weight:900}.data-table tr:last-child td{border-bottom:0}.mail{color:var(--mail)}.auc{color:var(--auc)}.good{color:var(--good)}.bad{color:var(--bad)}.muted{color:var(--muted)}.status{color:var(--muted);font-size:13px;align-self:center}@media(max-width:860px){.topbar{display:block}.actions{justify-content:flex-start;margin-top:12px}.kpis,.split{grid-template-columns:1fr}.panel{padding:16px 14px}.panel-head{display:block}.chart-controls{justify-content:flex-start;margin-top:10px}.title h1{font-size:26px}}
+    :root{--bg:#f5f7fb;--text:#111827;--muted:#6b7280;--line:#e5e7eb;--shadow:0 14px 35px rgba(15,23,42,.08);--mail:#2563eb;--mail-high:#60a5fa;--auc:#d97706;--auc-high:#f59e0b;--good:#059669;--bad:#dc2626}*{box-sizing:border-box}body{margin:0;font-family:"Microsoft YaHei","Noto Sans CJK SC",Arial,sans-serif;color:var(--text);background:linear-gradient(180deg,#f8fafc 0%,var(--bg) 100%)}.app{max-width:1280px;margin:0 auto;padding:24px 22px 34px}.topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:18px}.title h1{font-size:30px;line-height:1.15;margin:0;font-weight:900}.subtitle{margin-top:7px;color:var(--muted);font-size:14px}.actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}.btn{border:0;border-radius:999px;padding:9px 14px;background:#111827;color:#fff;font-weight:800;cursor:pointer;box-shadow:0 8px 20px rgba(17,24,39,.12);font-size:13px;line-height:1;text-decoration:none}.btn.secondary{background:#fff;color:#111827;border:1px solid var(--line);box-shadow:none}.btn:disabled{opacity:.45;cursor:not-allowed}.grid{display:grid;gap:16px}.kpis{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:16px}.card{background:rgba(255,255,255,.94);border:1px solid rgba(229,231,235,.95);border-radius:18px;box-shadow:var(--shadow);backdrop-filter:blur(12px)}.kpi{padding:16px 15px 14px;min-height:126px}.kpi span{display:block;color:var(--muted);font-size:12px;font-weight:800;margin-bottom:8px}.kpi b{display:block;font-size:27px;line-height:1.12;font-weight:950}.kpi em{display:block;margin-top:8px;color:var(--muted);font-size:12px;line-height:1.35;font-style:normal}.panel{padding:18px 20px 20px;margin-bottom:16px;overflow:hidden}.panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:10px}.panel h2{font-size:20px;line-height:1.2;margin:0 0 8px;font-weight:900}.legend{display:flex;align-items:center;gap:14px;flex-wrap:wrap;color:#374151;font-size:13px}.legend span{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}.dot{width:10px;height:10px;border-radius:50%;display:inline-block;background:var(--c)}.dot.hollow{background:#fff;border:2px solid var(--c)}.chart-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}.chart-range{color:var(--muted);font-size:13px;font-weight:800}.chart-wrap{height:390px;width:100%;max-width:100%;min-width:0;position:relative;overflow:hidden;padding-bottom:6px}.chart-wrap svg{width:100%;height:100%;display:block}.gridline{stroke:#edf1f6;stroke-width:1}.axis-label,.tick{fill:#6b7280;font-size:11px}.series{fill:none;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}.series.max{stroke-width:3;stroke-dasharray:8 8}.marker{stroke:#fff;stroke-width:2.2}.marker.max{stroke-width:2;fill:#fff}.tooltip{position:absolute;z-index:8;display:none;pointer-events:none;background:rgba(17,24,39,.92);color:#fff;border-radius:10px;padding:7px 9px;font-size:12px;line-height:1.45;box-shadow:0 10px 24px rgba(15,23,42,.22);white-space:nowrap;transform:none}.tooltip.show{display:block}.split{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.table-card{padding:18px 20px 20px;overflow:hidden}.table-scroll{overflow-x:auto}.data-table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:13px}.data-table th,.data-table td{padding:9px 10px;border-bottom:1px solid #edf1f6;text-align:right;white-space:nowrap}.data-table th:first-child,.data-table td:first-child{text-align:left}.data-table th{background:#f9fafb;color:#374151;font-weight:900}.data-table tr:last-child td{border-bottom:0}.mail{color:var(--mail)}.auc{color:var(--auc)}.good{color:var(--good)}.bad{color:var(--bad)}.muted{color:var(--muted)}.status{color:var(--muted);font-size:13px;align-self:center}@media(max-width:860px){.topbar{display:block}.actions{justify-content:flex-start;margin-top:12px}.kpis,.split{grid-template-columns:1fr}.panel{padding:16px 14px}.panel-head{display:block}.chart-controls{justify-content:flex-start;margin-top:10px}.title h1{font-size:26px}}
   </style>
   <style>
     .gold-loading .app,
@@ -371,7 +371,7 @@
       <div class="panel-head">
         <div>
           <h2>金币比例走势</h2>
-          <div class="legend"><span><i class="dot" style="--c:var(--mail)"></i>邮寄交易</span><span><i class="dot" style="--c:var(--auc)"></i>拍卖交易</span></div>
+          <div class="legend"><span><i class="dot" style="--c:var(--mail)"></i>邮寄均值</span><span><i class="dot hollow" style="--c:var(--mail-high)"></i>邮寄最高</span><span><i class="dot" style="--c:var(--auc)"></i>拍卖均值</span><span><i class="dot hollow" style="--c:var(--auc-high)"></i>拍卖最高</span></div>
         </div>
         <div class="chart-controls">
           <button class="btn secondary" id="goldOlderBtn" type="button">前30日</button>
@@ -452,6 +452,10 @@
       const i = Math.floor(arr.length / 2);
       return arr.length % 2 ? arr[i] : (arr[i - 1] + arr[i]) / 2;
     };
+    const maxFinite = values => {
+      const arr = values.filter(Number.isFinite);
+      return arr.length ? Math.max(...arr) : null;
+    };
     const clsChange = n => !Number.isFinite(n) || Math.abs(n) < .001 ? "muted" : n > 0 ? "good" : "bad";
 
     function setGoldPageLoadState(mode, message) {
@@ -513,12 +517,17 @@
       });
       return Object.values(byDate).sort((a, b) => a.date.localeCompare(b.date)).map(row => {
         const mailMid = mid(row.mail), aucMid = mid(row.auc);
+        const mailMax = maxFinite(row.mail), aucMax = maxFinite(row.auc);
         return {
           date: row.date,
           mailMid,
           aucMid,
+          mailMax,
+          aucMax,
           mailCost: costPer10k(mailMid),
           aucCost: costPer10k(aucMid),
+          mailMaxCost: costPer10k(mailMax),
+          aucMaxCost: costPer10k(aucMax),
           mailCount: row.mail.length,
           aucCount: row.auc.length,
           count: row.count
@@ -664,7 +673,7 @@
       }
       const rows = visibleHistory();
       const dates = rows.map(row => row.date);
-      const values = rows.flatMap(row => [row.mailMid, row.aucMid]).filter(Number.isFinite);
+      const values = rows.flatMap(row => [row.mailMid, row.aucMid, row.mailMax, row.aucMax]).filter(Number.isFinite);
       const min = Math.min(...values), max = Math.max(...values);
       const pad = Math.max(1, (max - min) * .12);
       const lo = min - pad, hi = max + pad;
@@ -682,9 +691,11 @@
         : "").join("");
       const circles = rows.map(row => [
         Number.isFinite(row.mailMid) ? `<circle class="marker" data-date="${row.date}" data-kind="邮寄" data-cost="${money(row.mailCost)}" data-rate="${fmt(row.mailMid)} 金/元" cx="${x(row.date)}" cy="${y(row.mailMid)}" r="4" fill="var(--mail)"/>` : "",
-        Number.isFinite(row.aucMid) ? `<circle class="marker" data-date="${row.date}" data-kind="拍卖" data-cost="${money(row.aucCost)}" data-rate="${fmt(row.aucMid)} 金/元" cx="${x(row.date)}" cy="${y(row.aucMid)}" r="4" fill="var(--auc)"/>` : ""
+        Number.isFinite(row.mailMax) ? `<circle class="marker max" data-date="${row.date}" data-kind="邮寄最高" data-cost="${money(row.mailMaxCost)}" data-rate="${fmt(row.mailMax)} 金/元" cx="${x(row.date)}" cy="${y(row.mailMax)}" r="4" stroke="var(--mail-high)"/>` : "",
+        Number.isFinite(row.aucMid) ? `<circle class="marker" data-date="${row.date}" data-kind="拍卖" data-cost="${money(row.aucCost)}" data-rate="${fmt(row.aucMid)} 金/元" cx="${x(row.date)}" cy="${y(row.aucMid)}" r="4" fill="var(--auc)"/>` : "",
+        Number.isFinite(row.aucMax) ? `<circle class="marker max" data-date="${row.date}" data-kind="拍卖最高" data-cost="${money(row.aucMaxCost)}" data-rate="${fmt(row.aucMax)} 金/元" cx="${x(row.date)}" cy="${y(row.aucMax)}" r="4" stroke="var(--auc-high)"/>` : ""
       ].join("")).join("");
-      wrap.innerHTML = `<div class="tooltip" id="tooltip"></div><svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><rect x="0" y="0" width="${w}" height="${h}" fill="transparent"/>${grid}${xTicks}<path class="series" d="${pathFor(rows, "mailMid", x, y)}" stroke="var(--mail)"/><path class="series" d="${pathFor(rows, "aucMid", x, y)}" stroke="var(--auc)"/>${circles}<text class="axis-label" x="${m.l}" y="15">金币比例（金/元）</text></svg>`;
+      wrap.innerHTML = `<div class="tooltip" id="tooltip"></div><svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><rect x="0" y="0" width="${w}" height="${h}" fill="transparent"/>${grid}${xTicks}<path class="series" d="${pathFor(rows, "mailMid", x, y)}" stroke="var(--mail)"/><path class="series max" d="${pathFor(rows, "mailMax", x, y)}" stroke="var(--mail-high)"/><path class="series" d="${pathFor(rows, "aucMid", x, y)}" stroke="var(--auc)"/><path class="series max" d="${pathFor(rows, "aucMax", x, y)}" stroke="var(--auc-high)"/>${circles}<text class="axis-label" x="${m.l}" y="15">金币比例（金/元）</text></svg>`;
       document.getElementById("goldRangeLabel").textContent = rows.length ? `${rows[0].date} - ${rows[rows.length - 1].date}` : "—";
       document.getElementById("goldOlderBtn").disabled = chartOffset >= maxChartOffset();
       document.getElementById("goldNewerBtn").disabled = chartOffset <= 0;
