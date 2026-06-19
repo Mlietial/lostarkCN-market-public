@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>命运方舟市场工具</title>
   <style>
-    *{box-sizing:border-box}body{margin:0;font-family:"Microsoft YaHei",Arial,sans-serif;color:#111827;background:#f6f8fb}.shell{max-width:1040px;margin:0 auto;padding:42px 22px}.top{margin-bottom:22px}h1{margin:0 0 8px;font-size:34px}.sub{color:#64748b;line-height:1.6}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.card{display:block;text-decoration:none;color:inherit;background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:20px;box-shadow:0 12px 28px rgba(15,23,42,.07)}.card h2{margin:0 0 8px;font-size:22px}.card p{margin:0;color:#64748b;line-height:1.55}.support-card{grid-column:1 / -1;text-align:center;cursor:pointer;user-select:none}.support-card h2{margin-bottom:0}.support-card.is-open h2{margin-bottom:14px}.support-card:not(.is-open) .support-qr{display:none}.support-qr{display:block;width:428px;max-width:100%;height:auto;margin:0 auto;border:1px solid #e5e7eb;border-radius:8px;background:#fff;box-shadow:0 12px 28px rgba(15,23,42,.07)}@media(max-width:720px){.grid{grid-template-columns:1fr}h1{font-size:28px}}
+    *{box-sizing:border-box}body{margin:0;font-family:"Microsoft YaHei",Arial,sans-serif;color:#111827;background:#f6f8fb}.shell{max-width:1040px;margin:0 auto;padding:42px 22px}.top{margin-bottom:22px}.title-row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:8px}h1{margin:0;font-size:34px}.updated-at{color:#64748b;font-size:13px;font-weight:600;white-space:nowrap}.sub{color:#64748b;line-height:1.6}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.card{display:block;text-decoration:none;color:inherit;background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:20px;box-shadow:0 12px 28px rgba(15,23,42,.07)}.card h2{margin:0 0 8px;font-size:22px}.card p{margin:0;color:#64748b;line-height:1.55}.support-card{grid-column:1 / -1;text-align:center;cursor:pointer;user-select:none}.support-card h2{margin-bottom:0}.support-card.is-open h2{margin-bottom:14px}.support-card:not(.is-open) .support-qr{display:none}.support-qr{display:block;width:428px;max-width:100%;height:auto;margin:0 auto;border:1px solid #e5e7eb;border-radius:8px;background:#fff;box-shadow:0 12px 28px rgba(15,23,42,.07)}@media(max-width:720px){.grid{grid-template-columns:1fr}h1{font-size:28px}.updated-at{font-size:12px}}
   </style>
 </head>
 <body>
   <main class="shell">
     <section class="top">
-      <h1>命运方舟市场工具</h1>
-      <p class="sub">礼包性价比分析、宝石价格指数和公开数据接口统一发布在这里。</p>
+      <div class="title-row"><h1>命运方舟市场工具</h1><span id="dataUpdatedAt" class="updated-at" aria-live="polite"></span></div>
+      <p class="sub">国服命运方舟礼包性价比分析、宝石价格指数和金币走势</p>
     </section>
     <section class="grid">
       <a class="card" href="./pages/gift-pack-value.html">
@@ -34,6 +34,24 @@
     </section>
   </main>
   <script>
+    const dataUpdatedAt = document.getElementById('dataUpdatedAt');
+    const formatDataUpdatedAt = (value) => {
+      if (!value) return '';
+      const normalized = String(value).trim().replace(' ', 'T');
+      const date = new Date(normalized);
+      if (Number.isNaN(date.getTime())) return String(value).trim().slice(0, 16);
+      const pad = (n) => String(n).padStart(2, '0');
+      return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+    };
+
+    fetch('./data/dashboard-state.json', { cache: 'no-store' })
+      .then((response) => response.ok ? response.json() : null)
+      .then((data) => {
+        const text = formatDataUpdatedAt(data && data.publishedAt);
+        if (dataUpdatedAt && text) dataUpdatedAt.textContent = `数据更新时间 ${text}`;
+      })
+      .catch(() => {});
+
     const supportCard = document.querySelector('.support-card');
 
     if (supportCard) {
