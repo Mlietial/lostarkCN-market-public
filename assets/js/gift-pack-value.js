@@ -683,8 +683,7 @@ async function fetchPublicGiftPackBackup() {
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       backup = await response.json();
     } catch (error) {
-      backup = readEmbeddedBackup();
-      if (!backup) throw error;
+      throw error;
     }
   }
   if (!backup) throw new Error("没有可用的内嵌礼包数据");
