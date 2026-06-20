@@ -400,7 +400,7 @@ function reportRate(n){const v=Number(n);return Number.isFinite(v)&&v>0?v.toFixe
 function reportSignedMoney(n){const v=Number(n);if(!Number.isFinite(v))return"—";return(v>=0?"+":"-")+"¥"+Math.abs(v).toLocaleString("zh-CN",{minimumFractionDigits:2,maximumFractionDigits:2});}
 function reportSignedMoneyClass(n){const v=Number(n);return !Number.isFinite(v)||Math.abs(v)<.01?"flat":v>0?"good":"bad";}
 function buildDailyReportSynthRows(rate){if(!(rate>0)||!Array.isArray(synthRecipes))return[];return synthRecipes.map(recipe=>{const targetLast=getGcQuotedGemValue(recipe.target),targetPrice=targetLast&&targetLast.raw!=null?targetLast.raw:null;if(!(targetPrice>0))return null;const options=recipe.paths.map(path=>{const last=getGcQuotedGemValue(path.from),fromPrice=last&&last.raw!=null?last.raw:null;if(!(fromPrice>0))return null;const matGold=fromPrice*path.qty,directCost=targetPrice/rate,synthCost=matGold/rate,diff=directCost-synthCost;return{target:recipe.target,from:path.from,qty:path.qty,matGold,targetPrice,directCost,synthCost,diff};}).filter(Boolean);if(!options.length)return null;options.sort((a,b)=>b.diff-a.diff);return options[0];}).filter(Boolean);}
-function buildDailyGoldReportData(){const latestGcQuoteDate=goldHistory.length?goldHistory[goldHistory.length-1].date:null,stats=getGcStats(latestGcQuoteDate),source=getGcConversionSource(stats),rate=source&&source.rate>0?source.rate:null,synthSource=stats.auc&&stats.auc.mid>0?{type:"拍卖交易",date:stats.quoteDate,rate:stats.auc.mid,selected:false,kind:"中间价"}:null,synthRate=synthSource&&synthSource.rate>0?synthSource.rate:null,reportSource=synthSource||source,reportRate=reportSource&&reportSource.rate>0?reportSource.rate:null,rule=platformRules.withdrawals[normalizeWithdrawChannel(gcWithdrawChannel)];const gemLevel=document.getElementById("gcGemLevel")?.value||"—",gemQty=Number(document.getElementById("gcGemQty")?.value)||0,gemPrice=Number(document.getElementById("gcGemPrice")?.value)||0,buyGold=Number(document.getElementById("gcBuyGold")?.value)||0,payRmb=reportRate&&buyGold>0?buyGold/reportRate:Number(document.getElementById("gcPayRmb")?.value)||0;const totalGem=gemPrice*gemQty,serviceFee=lookupGameFee(totalGem),netGemGold=Math.max(0,totalGem-serviceFee),buyFee=lookupGameFee(buyGold),actualGold=Math.max(0,buyGold-buyFee),surfaceRate=payRmb>0?buyGold/payRmb:null,actualRate=payRmb>0?actualGold/payRmb:null,actualCost10k=actualGold>0?payRmb/actualGold*10000:null;function sale(stat){if(!stat||!(actualGold>0))return null;const result=calculateSaleResult(actualGold,stat.mid);return{gross:result.grossRmb,platformFee:result.platformFee,platformNet:result.platformNet,withdrawFee:result.withdrawal.fee,withdrawAmount:result.withdrawal.amount,eligible:result.withdrawal.eligible,diff:result.withdrawal.amount!=null&&payRmb>0?result.withdrawal.amount-payRmb:null};}return{stats,source,rate,sourceLabel:formatGcConversionSource(source),synthSource,synthRate,synthSourceLabel:formatGcConversionSource(synthSource),reportSource,reportRate,reportSourceLabel:formatGcConversionSource(reportSource),quoteDate:stats.quoteDate||"—",gemQuoteDate:typeof getGcGemQuoteDateLabel==="function"?getGcGemQuoteDateLabel():"—",rule,buy:{gemLevel,gemQty,gemPrice,totalGem,serviceFee,netGemGold,buyGold,buyFee,actualGold,payRmb,surfaceRate,actualRate,actualCost10k},sale:{mail:sale(stats.mail),auc:sale(stats.auc)},synth:buildDailyReportSynthRows(synthRate)};}
+function buildDailyGoldReportData(){const latestGcQuoteDate=goldHistory.length?goldHistory[goldHistory.length-1].date:null,stats=getGcStats(latestGcQuoteDate),source=getGcConversionSource(stats),rate=source&&source.rate>0?source.rate:null,synthSource=stats.auc&&stats.auc.mid>0?{type:"拍卖交易",date:stats.quoteDate,rate:stats.auc.mid,selected:false,kind:"中间价"}:null,synthRate=synthSource&&synthSource.rate>0?synthSource.rate:null,reportSource=synthSource||source,reportRate=reportSource&&reportSource.rate>0?reportSource.rate:null,rule=platformRules.withdrawals[normalizeWithdrawChannel(gcWithdrawChannel)];const gemLevel=document.getElementById("gcGemLevel")?.value||"—",gemQty=Number(document.getElementById("gcGemQty")?.value)||0,gemPrice=Number(document.getElementById("gcGemPrice")?.value)||0,buyGold=Number(document.getElementById("gcBuyGold")?.value)||0,payRmb=Number(document.getElementById("gcPayRmb")?.value)||0;const totalGem=gemPrice*gemQty,serviceFee=lookupGameFee(totalGem),netGemGold=Math.max(0,totalGem-serviceFee),buyFee=lookupGameFee(buyGold),actualGold=Math.max(0,buyGold-buyFee),surfaceRate=payRmb>0?buyGold/payRmb:null,actualRate=payRmb>0?actualGold/payRmb:null,actualCost10k=actualGold>0?payRmb/actualGold*10000:null;function sale(stat){if(!stat||!(actualGold>0))return null;const result=calculateSaleResult(actualGold,stat.mid);return{gross:result.grossRmb,platformFee:result.platformFee,platformNet:result.platformNet,withdrawFee:result.withdrawal.fee,withdrawAmount:result.withdrawal.amount,eligible:result.withdrawal.eligible,diff:result.withdrawal.amount!=null&&payRmb>0?result.withdrawal.amount-payRmb:null};}return{stats,source,rate,sourceLabel:formatGcConversionSource(source),synthSource,synthRate,synthSourceLabel:formatGcConversionSource(synthSource),reportSource,reportRate,reportSourceLabel:formatGcConversionSource(reportSource),quoteDate:stats.quoteDate||"—",gemQuoteDate:typeof getGcGemQuoteDateLabel==="function"?getGcGemQuoteDateLabel():"—",rule,buy:{gemLevel,gemQty,gemPrice,totalGem,serviceFee,netGemGold,buyGold,buyFee,actualGold,payRmb,surfaceRate,actualRate,actualCost10k},sale:{mail:sale(stats.mail),auc:sale(stats.auc)},synth:buildDailyReportSynthRows(synthRate)};}
 function reportInfoLine(label,value,sub,cls){return'<div class="dr-info"><span>'+escapeHtml(label)+'</span><b class="'+(cls||"")+'">'+escapeHtml(value)+'</b>'+(sub?'<em>'+escapeHtml(sub)+'</em>':"")+'</div>';}
 function renderDailyReportImageHtml(report){const gold=buildDailyGoldReportData(),avg=report.summary.avgDay,avgCls=reportChangeClass(avg),marketText=!Number.isFinite(avg)?"暂无昨日对比":Math.abs(avg)<.05?"整体横盘":avg>0?"整体回升":"整体回落";const topCards=[["报告日期",report.reportDate,"区间 "+report.dataStart+" - "+report.dataEnd,""],["宝石均幅",Number.isFinite(avg)?reportSignedPct(avg):"—",marketText+" · 涨 "+report.summary.riseCount+" / 跌 "+report.summary.dropCount,avgCls],["金价来源",gold.reportRate?reportRate(gold.reportRate):"—",gold.reportSourceLabel||"暂无行情",""],["每万金成本",Number.isFinite(gold.buy.actualCost10k)?reportMoney(gold.buy.actualCost10k):gold.reportRate?reportMoney(10000/gold.reportRate):"—",gold.buy.actualRate?"实到 "+reportRate(gold.buy.actualRate):"按行情折算",""],["直购参考",gold.buy.gemLevel+" × "+gold.buy.gemQty,reportGold(gold.buy.totalGem)+" / 报价日 "+gold.gemQuoteDate,""]];const rows=report.rows.map(row=>'<tr><td><b>'+escapeHtml(row.level)+'</b><small>'+escapeHtml(row.currentDate||"—")+'</small></td><td><strong>'+fmtPrice(row.current)+'</strong><small>指数 '+fmt(row.currentIndex)+'</small></td><td>'+reportChangeCell(row.day)+'</td><td>'+reportChangeCell(row.three)+'</td><td>'+reportChangeCell(row.seven)+'</td><td>'+reportChangeCell(row.all)+'</td><td><b>'+reportPositionText(row.range7,"7日")+'</b><small>'+reportPositionText(row.rangeAll,"全局")+'</small></td></tr>').join("");const mail=gold.stats.mail,auc=gold.stats.auc,mailSale=gold.sale.mail,aucSale=gold.sale.auc;const synthRows=gold.synth.length?gold.synth.map(row=>'<tr><td>'+escapeHtml(row.target)+'</td><td>'+escapeHtml(row.from)+' × '+row.qty+'</td><td>'+reportMoney(row.directCost)+'</td><td>'+reportMoney(row.synthCost)+'</td><td class="'+(row.diff>=0?"good":"bad")+'">'+(row.diff>=0?"省 ":"贵 ")+reportMoney(Math.abs(row.diff))+'</td></tr>').join(""):'<tr><td colspan="5" class="muted">暂无可计算的合成数据</td></tr>';const deep=report.engraving.deep.slice(0,4),watch=report.engraving.watch.slice(0,2),core=report.engraving.highCore.slice(0,2);return'<div class="daily-report-card"><style>.daily-report-card{width:1120px;background:#edf2f8;color:#0f172a;font-family:"Source Han Sans SC","Source Han Sans CN","Noto Sans CJK SC","Microsoft YaHei",Arial,sans-serif;padding:18px}.daily-report-card *{box-sizing:border-box}.dr-shell{background:linear-gradient(135deg,#fff 0%,#f8fafc 68%,#eef6ff 100%);border:1px solid #dbe4ef;border-radius:20px;padding:18px;box-shadow:0 16px 38px rgba(15,23,42,.10)}.dr-head{display:flex;gap:16px;align-items:flex-start;margin-bottom:10px}.dr-title h1{display:flex;align-items:baseline;gap:12px;font-size:26px;line-height:1;margin:0 0 6px;font-weight:950;letter-spacing:.02em}.dr-title-date{border:1px solid #dbeafe;background:#eff6ff;color:#1d4ed8;border-radius:999px;padding:5px 10px;font-size:12px;font-weight:900;letter-spacing:0;white-space:nowrap}.dr-title p{margin:0;color:#64748b;font-size:12px}.dr-cards{display:grid;grid-template-columns:1.05fr repeat(4,1fr);gap:8px;margin-bottom:10px}.dr-card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:9px 10px;min-height:68px}.dr-card span{display:block;color:#64748b;font-size:11px;font-weight:850;margin-bottom:5px}.dr-card b{display:block;font-size:18px;line-height:1.1;font-weight:950}.dr-card em{display:block;margin-top:4px;color:#64748b;font-size:10px;line-height:1.25;font-style:normal}.dr-main{display:block}.dr-gold{margin-top:10px}.dr-bottom{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;align-items:start}.dr-section{background:#fff;border:1px solid #e2e8f0;border-radius:14px;overflow:hidden}.dr-section h2,.dr-section h3{margin:0;padding:9px 11px;border-bottom:1px solid #e2e8f0;font-size:15px;font-weight:950}.dr-table{width:100%;border-collapse:collapse;font-size:11.5px}.dr-table th,.dr-table td{padding:6px 7px;border-bottom:1px solid #eef2f7;text-align:right;vertical-align:middle;white-space:nowrap}.dr-table th:first-child,.dr-table td:first-child{text-align:left}.dr-table th{background:#f8fafc;color:#475569;font-weight:950}.dr-table tr:last-child td{border-bottom:0}.dr-table small{display:block;margin-top:1px;color:#64748b;font-size:9.5px}.dr-table strong{font-size:13px}.dr-info-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;padding:8px}.dr-info{border:1px solid #edf2f7;background:#f8fafc;border-radius:9px;padding:6px 7px;min-height:0}.dr-info span{display:block;color:#64748b;font-size:10px;font-weight:850;margin-bottom:3px}.dr-info b{display:block;font-size:13px;line-height:1.12;font-weight:950}.dr-info em{display:block;color:#64748b;font-size:9.5px;line-height:1.25;font-style:normal;margin-top:2px}.dr-synth{padding:0 8px 8px}.dr-mini{padding:8px 10px}.dr-mini-title{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:5px;font-size:12px;font-weight:950}.mini-list{list-style:none;margin:0;padding:0;display:grid;gap:4px}.mini-list li{display:flex;justify-content:space-between;gap:9px;font-size:11.2px;line-height:1.18}.mini-list span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.mini-list b{white-space:nowrap}.dr-note{margin-top:8px;color:#64748b;font-size:10px;line-height:1.35}.chg{font-weight:950}.chg small{font-weight:800}.up{color:#dc2626}.down{color:#059669}.flat,.muted,.empty{color:#64748b}.good{color:#059669}.bad{color:#dc2626}</style><div class="dr-shell"><header class="dr-head"><div class="dr-title"><h1>方舟日报 <span class="dr-title-date">'+escapeHtml(report.reportDate)+'</span></h1><p>生成 '+escapeHtml(report.generatedAt)+' · 对比基于已有采样日，缺失项自动跳过</p></div></header><section class="dr-cards">'+topCards.map(card=>'<div class="dr-card"><span>'+escapeHtml(card[0])+'</span><b class="'+card[3]+'">'+escapeHtml(card[1])+'</b><em>'+escapeHtml(card[2])+'</em></div>').join("")+'</section><section class="dr-main"><div class="dr-section"><h2>宝石价格对比</h2><table class="dr-table"><thead><tr><th>等级</th><th>当前</th><th>较昨日</th><th>近3日</th><th>近7日</th><th>全局</th><th>位置</th></tr></thead><tbody>'+rows+'</tbody></table><div class="dr-note" style="padding:0 11px 9px">全局为当前价对比本表最早有效价；位置展示 7 日 / 全局所处区间。</div></div></section><section class="dr-section dr-gold"><h3>金价 / 直购 / 手续费</h3><div class="dr-info-grid">'+reportInfoLine("金价报价日",gold.quoteDate,gold.reportSourceLabel)+reportInfoLine("邮寄中间价",mail?reportRate(mail.mid):"—",mail?"每万 "+reportMoney(mail.per10k)+" / 卖出净收 "+reportMoney(mail.per10kNet):"暂无")+reportInfoLine("拍卖中间价",auc?reportRate(auc.mid):"—",auc?"每万 "+reportMoney(auc.per10k)+" / 卖出净收 "+reportMoney(auc.per10kNet):"暂无")+reportInfoLine("直购宝石",gold.buy.gemLevel+" × "+gold.buy.gemQty,"单价 "+reportGold(gold.buy.gemPrice)+" / 总价 "+reportGold(gold.buy.totalGem))+reportInfoLine("游戏服务费",reportGold(gold.buy.serviceFee),"卖出到账 "+reportGold(gold.buy.netGemGold))+reportInfoLine("买金实际到账",reportGold(gold.buy.actualGold),"标注 "+reportGold(gold.buy.buyGold)+" / 邮寄费 "+reportGold(gold.buy.buyFee))+reportInfoLine("买入成本",Number.isFinite(gold.buy.actualCost10k)?reportMoney(gold.buy.actualCost10k):"—",(gold.buy.payRmb?("支付 "+reportMoney(gold.buy.payRmb)+" / "+reportRate(gold.buy.actualRate)):"需填写买金数据"))+reportInfoLine("提现规则",gold.rule.label,formatWithdrawRule(gold.rule))+reportInfoLine("邮寄回收",mailSale&&mailSale.withdrawAmount!=null?reportMoney(mailSale.withdrawAmount):"—",mailSale?("平台费 "+reportMoney(mailSale.platformFee)+" / 提现费 "+reportMoney(mailSale.withdrawFee)+" / vs买入 "+reportSignedMoney(mailSale.diff)):"暂无",mailSale?reportSignedMoneyClass(mailSale.diff):"")+reportInfoLine("拍卖回收",aucSale&&aucSale.withdrawAmount!=null?reportMoney(aucSale.withdrawAmount):"—",aucSale?("平台费 "+reportMoney(aucSale.platformFee)+" / 提现费 "+reportMoney(aucSale.withdrawFee)+" / vs买入 "+reportSignedMoney(aucSale.diff)):"暂无",aucSale?reportSignedMoneyClass(aucSale.diff):"")+'</div></section><section class="dr-bottom"><div class="dr-section"><h3>直购价 vs 合成成本</h3><div class="dr-synth"><table class="dr-table"><thead><tr><th>目标</th><th>材料</th><th>直购</th><th>合成</th><th>差额</th></tr></thead><tbody>'+synthRows+'</tbody></table></div></div><div class="dr-section dr-mini"><div class="dr-mini-title">刻印书重点 <span class="muted">'+escapeHtml(report.engravingDate||"—")+'</span></div><div class="dr-mini-title muted">明显低于昨均</div>'+renderReportMiniList(deep,"engravingPct")+'<div class="dr-mini-title muted" style="margin-top:7px">-5% 关注</div>'+renderReportMiniList(watch,"engravingPct")+'<div class="dr-mini-title muted" style="margin-top:7px">高价核心书</div>'+renderReportMiniList(core,"engravingPrice")+'</div></section></div></div>';}
 function buildDailyReportHtml(report){const avg=report.summary.avgDay,avgCls=reportChangeClass(avg),marketText=!Number.isFinite(avg)?"暂无昨日对比":Math.abs(avg)<.05?"整体横盘":avg>0?"整体回升":"整体回落";const cards=[["报告日期",report.reportDate,"数据区间 "+report.dataStart+" - "+report.dataEnd],["较昨日",Number.isFinite(avg)?reportSignedPct(avg):"—",marketText+"，上涨 "+report.summary.riseCount+" 项 / 下跌 "+report.summary.dropCount+" 项"],["近7日低位",report.summary.sevenLowCount+" 项",report.highlights.sevenLow.map(row=>row.level).join("、")||"暂无"],["近7日高位",report.summary.sevenHighCount+" 项",report.highlights.sevenHigh.map(row=>row.level).join("、")||"暂无"]];const tableRows=report.rows.map(row=>'<tr><td><strong>'+row.level+'</strong><small>'+escapeHtml(row.currentDate||"—")+'</small></td><td><b>'+fmtPrice(row.current)+'</b><small>指数 '+fmt(row.currentIndex)+'</small></td><td>'+reportChangeCell(row.day)+'</td><td>'+reportChangeCell(row.three)+'</td><td>'+reportChangeCell(row.seven)+'</td><td>'+reportChangeCell(row.all)+'</td><td><b>'+reportPositionText(row.range7,"7日")+'</b><small>'+fmtPrice(row.range7&&row.range7.min)+' - '+fmtPrice(row.range7&&row.range7.max)+'</small></td><td><b>'+reportPositionText(row.rangeAll,"全局")+'</b><small>'+fmtPrice(row.rangeAll&&row.rangeAll.min)+' - '+fmtPrice(row.rangeAll&&row.rangeAll.max)+'</small></td></tr>').join("");const reportJson=JSON.stringify(report).replace(/</g,"\\u003c");return'<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>方舟日报 '+escapeHtml(report.reportDate)+'</title><style>*{box-sizing:border-box}body{margin:0;background:#f5f7fb;color:#111827;font-family:"Source Han Sans SC","Source Han Sans CN","Noto Sans CJK SC","Microsoft YaHei",Arial,sans-serif}.page{max-width:1180px;margin:0 auto;padding:28px 24px 44px}.top{display:flex;justify-content:space-between;gap:16px;align-items:flex-end;margin-bottom:18px}h1{margin:0;font-size:28px}.sub{color:#6b7280;font-size:13px;margin-top:6px}.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:14px}.card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:14px 15px;box-shadow:0 8px 24px rgba(15,23,42,.06)}.card h3{margin:0 0 8px;font-size:13px;color:#6b7280}.card .value{font-size:24px;font-weight:950}.card p{margin:5px 0 0;color:#6b7280;font-size:12px;line-height:1.45}.grid{display:grid;grid-template-columns:1.4fr .8fr;gap:14px;align-items:start}.section{background:#fff;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;box-shadow:0 8px 24px rgba(15,23,42,.06)}.section h2{margin:0;padding:14px 16px;border-bottom:1px solid #e5e7eb;font-size:18px}table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:10px 10px;border-bottom:1px solid #eef2f7;text-align:right;vertical-align:middle;white-space:nowrap}th:first-child,td:first-child{text-align:left}th{background:#f9fafb;color:#374151;font-weight:900}td small{display:block;margin-top:3px;color:#6b7280;font-size:11px}tr:last-child td{border-bottom:0}.chg{font-weight:900}.chg small{font-weight:750}.up{color:#dc2626}.down{color:#059669}.flat{color:#6b7280}.side{display:grid;gap:14px}.mini{padding:14px 15px}.mini h3{margin:0 0 10px;font-size:15px}.mini-list{list-style:none;margin:0;padding:0;display:grid;gap:8px}.mini-list li{display:flex;justify-content:space-between;gap:12px;font-size:13px}.mini-list span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.mini-list b{white-space:nowrap}.empty{color:#9ca3af;font-size:13px}.note{margin-top:14px;color:#6b7280;font-size:12px;line-height:1.55}.toolbar{display:flex;gap:8px}.toolbar button{border:1px solid #e5e7eb;background:#fff;border-radius:999px;padding:8px 12px;font-weight:850;cursor:pointer}@media(max-width:900px){.cards,.grid{grid-template-columns:1fr}.top{align-items:flex-start;flex-direction:column}th,td{font-size:12px;padding:8px 6px}}@media print{body{background:#fff}.toolbar{display:none}.page{max-width:none;padding:0}.card,.section{box-shadow:none}}</style></head><body><main class="page"><div class="top"><div><h1>方舟日报 '+escapeHtml(report.reportDate)+'</h1><div class="sub">生成时间：'+escapeHtml(report.generatedAt)+'；对比基于已有采样日，缺失价格自动跳过。</div></div><div class="toolbar"><button onclick="window.print()">打印 / PDF</button></div></div><section class="cards">'+cards.map(card=>'<article class="card"><h3>'+card[0]+'</h3><div class="value '+(card[0]==="较昨日"?avgCls:"")+'">'+escapeHtml(card[1])+'</div><p>'+escapeHtml(card[2])+'</p></article>').join("")+'</section><section class="grid"><div class="section"><h2>宝石价格对比</h2><table><thead><tr><th>等级</th><th>当前</th><th>较昨日</th><th>近3日</th><th>近7日</th><th>全局</th><th>7日区间</th><th>全局区间</th></tr></thead><tbody>'+tableRows+'</tbody></table></div><aside class="side"><div class="section mini"><h3>较昨日上涨</h3>'+renderReportMiniList(report.highlights.rises,"gem")+'</div><div class="section mini"><h3>较昨日下跌</h3>'+renderReportMiniList(report.highlights.drops,"gem")+'</div><div class="section mini"><h3>刻印书：明显低于昨均'+(report.engravingDate?"（"+escapeHtml(report.engravingDate)+"）":"")+'</h3>'+renderReportMiniList(report.engraving.deep,"engravingPct")+'</div><div class="section mini"><h3>刻印书：-5% 关注</h3>'+renderReportMiniList(report.engraving.watch,"engravingPct")+'</div><div class="section mini"><h3>刻印书：短线抬价</h3>'+renderReportMiniList(report.engraving.pump,"engravingPct")+'</div><div class="section mini"><h3>高价核心书</h3>'+renderReportMiniList(report.engraving.highCore,"engravingPrice")+'</div></aside></section><div class="note">导出的日报内嵌了本次计算后的结构化数据，便于之后复制或二次处理。</div><script id="REPORT_DATA" type="application/json">'+reportJson+'</scr'+'ipt></main></body></html>';}
@@ -797,7 +797,7 @@ const GC_GEM_QUOTE_MANUAL="manual";
 let gcGemQuoteSelection=GC_GEM_QUOTE_LATEST;
 function readCalculatorValues(){
   const readValue=id=>{const el=document.getElementById(id);return el?el.value:"";};
-  return{gemLevel:readValue("gcGemLevel"),gemQuoteDate:readValue("gcGemQuoteDate")||gcGemQuoteSelection,gemQty:readValue("gcGemQty"),gemPrice:readValue("gcGemPrice"),buyGold:readValue("gcBuyGold")};
+  return{gemLevel:readValue("gcGemLevel"),gemQuoteDate:readValue("gcGemQuoteDate")||gcGemQuoteSelection,gemQty:readValue("gcGemQty"),gemPrice:readValue("gcGemPrice"),buyGold:readValue("gcBuyGold"),buyRate:readValue("gcBuyRate"),payRmb:readValue("gcPayRmb")};
 }
 function saveCalculatorSettings(){
   localStorage.setItem(GC_CALCULATOR_KEY,JSON.stringify(readCalculatorValues()));
@@ -865,7 +865,7 @@ function applyDashboardState(state){
 function applyCalculatorSettings(settings){
   const values=settings&&settings.calculator;
   if(!values)return;
-  [["gcGemLevel","gemLevel"],["gcGemQty","gemQty"],["gcGemPrice","gemPrice"],["gcBuyGold","buyGold"]].forEach(([id,key])=>{
+  [["gcGemLevel","gemLevel"],["gcGemQty","gemQty"],["gcGemPrice","gemPrice"],["gcBuyGold","buyGold"],["gcBuyRate","buyRate"],["gcPayRmb","payRmb"]].forEach(([id,key])=>{
     const input=document.getElementById(id);
     if(input&&values[key]!=null&&values[key]!=="")input.value=values[key];
   });
@@ -1156,22 +1156,32 @@ function setupGcBuyRateSource(){
     buyGoldField.before(field);
     sourceSelect=document.getElementById("gcBuyRateSource");
   }
+  let buyRateInput=document.getElementById("gcBuyRate");
+  if(!buyRateInput){
+    const field=document.createElement("div");
+    field.className="gcalc-field";
+    field.innerHTML='<label>金币比例（金/¥）<input id="gcBuyRate" type="number" step="0.1" value=""></label>';
+    buyGoldField.after(field);
+    buyRateInput=document.getElementById("gcBuyRate");
+  }
   if(!sourceSelect) return;
   [["gcGemQuoteDate","报价日期"],["gcGemLevel","宝石等级"],["gcGemQty","宝石数量"],["gcGemPrice","宝石价格"]].forEach(([id,text])=>{
     const label=document.getElementById(id)?.closest("label");
     if(label&&label.firstChild) label.firstChild.textContent=text;
   });
-  payInput.readOnly=true;
-  payInput.style.background="#f3f4f6";
-  payInput.title="按所选左侧行情比例自动计算";
+  payInput.readOnly=false;
+  payInput.style.background="#fff";
+  payInput.title="可手动修改；修改后会反算金币比例";
   payInput.closest("label").firstChild.textContent="支付金额RMB";
   const grid=document.querySelector("#goldCalc .gcalc-inputs-grid");
-  const fieldOrder=["gcGemQuoteDate","gcGemLevel","gcGemQty","gcGemPrice","gcBuyRateSource","gcBuyGold","gcPayRmb"].map(id=>document.getElementById(id)?.closest(".gcalc-field"));
+  const fieldOrder=["gcGemQuoteDate","gcGemLevel","gcGemQty","gcGemPrice","gcBuyRateSource","gcBuyGold","gcBuyRate","gcPayRmb"].map(id=>document.getElementById(id)?.closest(".gcalc-field"));
   if(grid&&typeof grid.append==="function"&&fieldOrder.every(Boolean)) fieldOrder.forEach(item=>grid.append(item));
   sourceSelect.addEventListener("change",function(){
     setGcBuyRateSourceKey(this.value);
     const source=getGcBuyRateSourceByKey(gcBuyRateSourceKey);
     if(source&&source.date) gcQuoteDate=source.date;
+    updateGcBuyRateFromSource(false);
+    updateGcPayRmbFromBuyRate();
     saveDashboardPreferences();
     renderGcAll();
     showStatus("买金计价来源已更新，金价报价日为 "+(gcQuoteDate||"—")+"。",true);
@@ -1185,7 +1195,6 @@ function renderGcBuyRateSource(){
     select.disabled=true;
     select.innerHTML='<option value="">请先填写左侧行情</option>';
     enhanceGcalcSelect(select,{placeholder:"搜索来源",emptyText:"没有匹配来源"});
-    updateGcPayRmb();
     return;
   }
   let selectedKey=normalizeGcBuyRateSourceKey(gcBuyRateSourceKey);
@@ -1201,19 +1210,36 @@ function renderGcBuyRateSource(){
   setGcBuyRateSourceKey(selectedKey);
   select.innerHTML=refreshed.map(opt=>`<option value="${opt.value}" data-main="${escapeHtml(opt.label)}" data-sub="${escapeHtml(opt.sub||"")}" data-keywords="${escapeHtml(opt.label+" "+(opt.sub||""))}"${opt.value===selectedKey?" selected":""}>${escapeHtml(opt.label+(opt.sub?" · "+opt.sub:""))}</option>`).join("");
   enhanceGcalcSelect(select,{placeholder:"搜索来源/金价",emptyText:"没有匹配来源"});
-  updateGcPayRmb();
+  updateGcBuyRateFromSource(true);
 }
-function updateGcPayRmb(){
-  const payInput=document.getElementById("gcPayRmb");
+function updateGcBuyRateFromSource(onlyIfEmpty=true){
+  const rateInput=document.getElementById("gcBuyRate");
   const select=document.getElementById("gcBuyRateSource");
-  const buyGold=Number(document.getElementById("gcBuyGold")?.value)||0;
+  if(!rateInput) return;
+  if(onlyIfEmpty&&rateInput.value!=="") return;
   const source=getGcBuyRateSourceByKey(select&&select.value!==""?select.value:gcBuyRateSourceKey);
+  if(source&&source.rate>0) rateInput.value=source.rate.toFixed(1);
+}
+function updateGcPayRmbFromBuyRate(){
+  const payInput=document.getElementById("gcPayRmb");
+  const buyGold=Number(document.getElementById("gcBuyGold")?.value)||0;
+  const buyRate=Number(document.getElementById("gcBuyRate")?.value)||0;
   if(!payInput) return;
-  payInput.value=source&&source.rate>0&&buyGold>0
-    ?(buyGold/source.rate).toFixed(2)
+  payInput.value=buyRate>0&&buyGold>0
+    ?(buyGold/buyRate).toFixed(2)
     :"";
 }
+function updateGcBuyRateFromPayRmb(){
+  const rateInput=document.getElementById("gcBuyRate");
+  const buyGold=Number(document.getElementById("gcBuyGold")?.value)||0;
+  const payRmb=Number(document.getElementById("gcPayRmb")?.value)||0;
+  if(rateInput&&buyGold>0&&payRmb>0) rateInput.value=(buyGold/payRmb).toFixed(1);
+}
 function getGcConversionSource(stats=getGcStats()){
+  const manualRate=Number(document.getElementById("gcBuyRate")?.value)||0;
+  if(manualRate>0){
+    return{type:"手动买金比例",date:stats.quoteDate||gcQuoteDate||"手动",rate:manualRate,selected:true,kind:""};
+  }
   const select=document.getElementById("gcBuyRateSource");
   const selected=getGcBuyRateSourceByKey(select&&select.value!==""?select.value:gcBuyRateSourceKey);
   if(selected&&selected.date===stats.quoteDate&&selected.rate>0){
@@ -1239,7 +1265,6 @@ function formatGcConversionSourceFull(source){
 function renderGcBuyResults(){
   const el=document.getElementById("gcBuyResults");
   if(!el) return;
-  updateGcPayRmb();
   const buyGold =Number(document.getElementById("gcBuyGold")?.value)||0;
   const payRmb  =Number(document.getElementById("gcPayRmb")?.value)||0;
   const gemPrice=Number(document.getElementById("gcGemPrice")?.value)||0;
@@ -1538,6 +1563,12 @@ document.getElementById("goldCalc").addEventListener("input",e=>{
   if(e.target.id==="gcBuyRateSource"){
     setGcBuyRateSourceKey(e.target.value);
   }
+  if(e.target.id==="gcBuyGold"||e.target.id==="gcBuyRate"){
+    updateGcPayRmbFromBuyRate();
+  }
+  if(e.target.id==="gcPayRmb"){
+    updateGcBuyRateFromPayRmb();
+  }
   if(e.target.id==="gcGemPrice"){
     gcGemQuoteSelection=GC_GEM_QUOTE_MANUAL;
     renderGcGemQuoteDateOptions();
@@ -1716,6 +1747,7 @@ document.getElementById("importBackupInput")?.addEventListener("change",async fu
 });
 </script>
 <script id="EMBEDDED_DATA" type="application/json">{}</script>
+<script src="../data/dashboard-state.js"></script>
 <script type="module">
 try{
   const readEmbeddedDashboardState=()=>{
@@ -1729,6 +1761,9 @@ try{
   let payload=null;
   if(location.protocol==="file:"){
     payload=readEmbeddedDashboardState();
+    if(!(payload&&payload.version===DASHBOARD_STATE_VERSION&&Array.isArray(payload.gemRows)&&Array.isArray(payload.goldTxns))){
+      payload=window.LOSTARK_PUBLIC_DASHBOARD_STATE||null;
+    }
   }else{
     try{
       const response=await fetch("../data/dashboard-state.json?v="+Date.now(),{cache:"no-store"});

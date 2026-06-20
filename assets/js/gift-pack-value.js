@@ -674,9 +674,17 @@ async function fetchPublicGiftPackBackup() {
       return null;
     }
   };
+  const isUsableBackup = backup => {
+    if (!backup || typeof backup !== "object") return false;
+    if (backup.storage && Object.keys(backup.storage).length) return true;
+    if (backup.editable && Object.keys(backup.editable).length) return true;
+    if (backup.snapshot && typeof backup.snapshot === "object") return true;
+    return false;
+  };
   let backup = null;
   if (location.protocol === "file:") {
     backup = readEmbeddedBackup();
+    if (!isUsableBackup(backup)) backup = window.LOSTARK_PUBLIC_GIFT_PACK_DATA || null;
   } else {
     try {
       const response = await fetch(`${PUBLIC_GIFT_PACK_DATA_URL}?v=${Date.now()}`, { cache: "no-store" });
@@ -867,9 +875,14 @@ async function syncGoldRateFromDashboard(options = {}) {
   const force = !!options.force;
   if (!force && getUserGoldRateOverride()) return { synced: false, skipped: "manual" };
   try {
-    const response = await fetch(`${PUBLIC_DASHBOARD_DATA_URL}?v=${Date.now()}`, { cache: "no-store" });
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    const payload = await response.json();
+    let payload = null;
+    if (location.protocol === "file:") {
+      payload = window.LOSTARK_PUBLIC_DASHBOARD_STATE || null;
+    } else {
+      const response = await fetch(`${PUBLIC_DASHBOARD_DATA_URL}?v=${Date.now()}`, { cache: "no-store" });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      payload = await response.json();
+    }
     const latest = latestAuctionGoldRateFromDashboard(payload);
     if (!latest) return { synced: false, skipped: "empty" };
     applyGoldRate(latest.rate, { updatedAt: payload.publishedAt || latest.date });

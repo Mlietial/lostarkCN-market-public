@@ -406,6 +406,7 @@
   </main>
 
   <script id="EMBEDDED_GOLD_DATA" type="application/json">{}</script>
+  <script src="../data/dashboard-state.js"></script>
   <script>
     const DATA_URL = "../data/dashboard-state.json";
     const YXDR_FRAME_SOURCES = {
@@ -592,7 +593,10 @@
     }
 
     async function fetchGoldData() {
-      if (location.protocol === "file:") return readEmbeddedData();
+      if (location.protocol === "file:") {
+        const embedded = readEmbeddedData();
+        return Array.isArray(embedded?.goldTxns) ? embedded : (window.LOSTARK_PUBLIC_DASHBOARD_STATE || embedded);
+      }
       try {
         const res = await fetch(DATA_URL + "?v=" + Date.now(), { cache: "no-store" });
         if (!res.ok) throw new Error("HTTP " + res.status);

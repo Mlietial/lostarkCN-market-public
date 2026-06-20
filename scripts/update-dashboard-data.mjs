@@ -1,4 +1,4 @@
-import { copyFile, readFile } from "node:fs/promises";
+import { copyFile, readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
 const source = process.argv[2];
@@ -10,6 +10,7 @@ async function validateDashboardData() {
   if (!dashboard || dashboard.version !== 2 || !Array.isArray(dashboard.gemRows) || !Array.isArray(dashboard.goldTxns)) {
     throw new Error("dashboard-state.json format is not supported.");
   }
+  await writeFile("data/dashboard-state.js", `window.LOSTARK_PUBLIC_DASHBOARD_STATE = ${dashboardText.trim()};\n`, "utf8");
   console.log(`Dashboard data ready: ${dashboard.publishedAt || "no publishedAt"}`);
 }
 

@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "update:data": "node scripts/update-dashboard-data.mjs"
+    "update:data": "node scripts/update-dashboard-data.mjs",
+    "build:data-js": "node scripts/build-public-data-js.mjs"
   },
   "private": true,
   "devDependencies": {}
