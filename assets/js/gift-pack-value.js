@@ -25,14 +25,21 @@ const EDITABLE_STORAGE_KEYS = {
 
 const GIFT_PACK_BACKUP_VERSION = 1;
 const PUBLIC_GIFT_PACK_DATA_URL = "../data/gift-pack-data.json";
+const PUBLIC_ITEM_PRICE_DATA_URL = "../data/item-price-data.json";
 const PUBLIC_DASHBOARD_DATA_URL = "../data/dashboard-state.json";
 const MIN_GIFT_LOADER_MS = 900;
 const PUBLIC_DATA_EXPORTED_AT_KEY = "giftPackPublicDataExportedAt";
 const GOLD_RATE_MANUAL_OVERRIDE_KEY = "giftPackGoldRateManualOverride";
+const ITEM_SOURCE_STORAGE_KEY = "giftPackItemSources";
 const GIFT_PACK_EXTRA_STORAGE_KEYS = [
-  "giftPackManualValues",
   "giftPackSettings",
   PUBLIC_DATA_EXPORTED_AT_KEY
+];
+const ITEM_PRICE_STORAGE_KEYS = [
+  "giftPackManualValues",
+  ITEM_SOURCE_STORAGE_KEY,
+  EDITABLE_STORAGE_KEYS.customManualItems,
+  EDITABLE_STORAGE_KEYS.hiddenManualItems
 ];
 
 let editablePageContent = loadJson(EDITABLE_STORAGE_KEYS.pageContent, {});
@@ -47,6 +54,7 @@ let editableChoiceOptionQuantities = loadJson(EDITABLE_STORAGE_KEYS.choiceOption
 let rateHistory = loadJson(EDITABLE_STORAGE_KEYS.rateHistory, []);
 let packHistory = loadJson(EDITABLE_STORAGE_KEYS.packHistory, []);
 let packHistoryLinks = loadJson(EDITABLE_STORAGE_KEYS.packLinks, {});
+let itemSources = loadJson(ITEM_SOURCE_STORAGE_KEY, {});
 let pageContentDefaults = null;
 
 const BLUE_SOURCES = {
@@ -535,7 +543,11 @@ function giftPackStorageKeys() {
   return [...new Set([
     ...Object.values(EDITABLE_STORAGE_KEYS),
     ...GIFT_PACK_EXTRA_STORAGE_KEYS
-  ])];
+  ])].filter(key => !ITEM_PRICE_STORAGE_KEYS.includes(key));
+}
+
+function itemPriceStorageKeys() {
+  return [...ITEM_PRICE_STORAGE_KEYS];
 }
 
 function buildGiftPackBackup() {
@@ -565,6 +577,28 @@ function buildGiftPackBackup() {
   };
 }
 
+function buildItemPriceDataExport() {
+  const storage = {};
+  itemPriceStorageKeys().forEach(key => {
+    const value = localStorage.getItem(key);
+    if (value !== null) storage[key] = value;
+  });
+  storage.giftPackManualValues = JSON.stringify(state.manualValues);
+  storage[ITEM_SOURCE_STORAGE_KEY] = JSON.stringify(itemSources);
+  storage[EDITABLE_STORAGE_KEYS.customManualItems] = JSON.stringify(customManualItems);
+  storage[EDITABLE_STORAGE_KEYS.hiddenManualItems] = JSON.stringify(hiddenManualItems);
+  return {
+    app: "lostark-item-price-data",
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    storage,
+    manualValues: state.manualValues,
+    itemSources,
+    customManualItems,
+    hiddenManualItems
+  };
+}
+
 function downloadJsonFile(filename, data) {
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json;charset=utf-8" });
   const url = URL.createObjectURL(blob);
@@ -580,6 +614,11 @@ function downloadJsonFile(filename, data) {
 function exportGiftPackData() {
   const date = new Date().toISOString().slice(0, 10);
   downloadJsonFile(`gift-pack-data-${date}.json`, buildGiftPackBackup());
+}
+
+function exportItemPriceData() {
+  const date = new Date().toISOString().slice(0, 10);
+  downloadJsonFile(`item-price-data-${date}.json`, buildItemPriceDataExport());
 }
 
 function stringifyBackupValue(value) {
@@ -631,16 +670,11 @@ function resetEditableDataInMemory() {
   editablePageContent = {};
   editablePackOverrides = {};
   editableCustomPacks = [];
-  editableItemIcons = {};
   editableDeletedPacks = [];
-  customManualItems = [];
-  hiddenManualItems = [];
-  editableItemLabels = {};
   editableChoiceOptionQuantities = {};
   rateHistory = [];
   packHistory = [];
   packHistoryLinks = {};
-  state.manualValues = {};
 }
 
 function parseBackupStorageArray(storage, key) {
@@ -722,6 +756,63 @@ async function fetchPublicGiftPackBackup() {
   const storage = normalizeGiftPackBackupStorage(backup);
   validateGiftPackBackupStorage(storage);
   return { backup, storage };
+}
+
+async function fetchPublicItemPriceData() {
+  const readEmbeddedData = () => {
+    try {
+      const text = document.getElementById("EMBEDDED_ITEM_PRICE_DATA")?.textContent || "";
+      return text ? JSON.parse(text) : null;
+    } catch (error) {
+      return null;
+    }
+  };
+  let data = null;
+  if (location.protocol === "file:") {
+    data = readEmbeddedData() || window.LOSTARK_PUBLIC_ITEM_PRICE_DATA || null;
+  } else {
+    const response = await fetch(`${PUBLIC_ITEM_PRICE_DATA_URL}?v=${Date.now()}`, { cache: "no-store" });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    data = await response.json();
+  }
+  if (!data || typeof data !== "object") throw new Error("没有可用的物品估值数据");
+  return data;
+}
+
+function parseItemPriceStorage(data, key) {
+  try {
+    if (data.storage && Object.prototype.hasOwnProperty.call(data.storage, key)) {
+      return JSON.parse(stringifyStorageValue(key, data.storage[key]));
+    }
+  } catch (error) {
+    return undefined;
+  }
+  return undefined;
+}
+
+function applyItemPriceData(data, persist = false) {
+  const manualValues = parseItemPriceStorage(data, "giftPackManualValues") || data.manualValues;
+  const sources = parseItemPriceStorage(data, ITEM_SOURCE_STORAGE_KEY) || data.itemSources;
+  const customItems = parseItemPriceStorage(data, EDITABLE_STORAGE_KEYS.customManualItems) || data.customManualItems;
+  const hiddenItems = parseItemPriceStorage(data, EDITABLE_STORAGE_KEYS.hiddenManualItems) || data.hiddenManualItems;
+  const icons = parseItemPriceStorage(data, EDITABLE_STORAGE_KEYS.itemIcons) || data.itemIcons;
+  const labels = parseItemPriceStorage(data, EDITABLE_STORAGE_KEYS.itemLabels) || data.itemLabels;
+
+  if (manualValues && typeof manualValues === "object") state.manualValues = manualValues;
+  if (sources && typeof sources === "object") itemSources = sources;
+  if (Array.isArray(customItems)) customManualItems = customItems;
+  if (Array.isArray(hiddenItems)) hiddenManualItems = hiddenItems;
+  if (icons && typeof icons === "object") editableItemIcons = icons;
+  if (labels && typeof labels === "object") editableItemLabels = labels;
+
+  if (persist) {
+    saveManualValues();
+    saveJson(ITEM_SOURCE_STORAGE_KEY, itemSources);
+    saveJson(EDITABLE_STORAGE_KEYS.customManualItems, customManualItems);
+    saveJson(EDITABLE_STORAGE_KEYS.hiddenManualItems, hiddenManualItems);
+    saveJson(EDITABLE_STORAGE_KEYS.itemIcons, editableItemIcons);
+    saveJson(EDITABLE_STORAGE_KEYS.itemLabels, editableItemLabels);
+  }
 }
 
 function applyPublicGiftPackSnapshot(backup, storage, options = {}) {
@@ -874,6 +965,16 @@ async function loadPublicGiftPackData() {
   } catch (error) {
     console.warn("礼包公开数据加载失败：", error);
     throw new Error(`gift-pack-data.json 加载失败：${error.message || error}`);
+  }
+}
+
+async function loadPublicItemPriceData() {
+  try {
+    const data = await fetchPublicItemPriceData();
+    applyItemPriceData(data, true);
+  } catch (error) {
+    console.warn("物品估值公开数据加载失败：", error);
+    throw new Error(`item-price-data.json 加载失败：${error.message || error}`);
   }
 }
 
@@ -1714,7 +1815,7 @@ function parseManualValueRange(raw) {
 }
 
 function defaultManualStackSize(name) {
-  const note = itemPrices[name]?.note || "";
+  const note = itemSources[name] || itemPrices[name]?.note || "";
   const match = String(note).match(/\/\s*(\d[\d,]*)\s*(?:个|個)?/);
   const stackSize = match ? Number(match[1].replace(/,/g, "")) : 1;
   return Number.isFinite(stackSize) && stackSize > 1 ? stackSize : 1;
@@ -1767,15 +1868,15 @@ function itemUnitGold(content) {
       value: manual,
       minValue: manualRangeToGold(manualEntry, "min", content.name),
       maxValue: manualRangeToGold(manualEntry, "max", content.name),
-      source: manualSourceText(manualEntry, content.name),
+      source: itemSources[content.name] || manualSourceText(manualEntry, content.name),
       isRange: !!manualEntry.isRange
     };
   }
   const def = itemPrices[content.name];
   if (!def) return { value: null, source: "未计入估值" };
-  if (typeof def.gold === "number") return { value: def.gold, source: def.note || "金币单价" };
-  if (typeof def.royal === "number") return { value: royalToValuationGold(def.royal), source: `${def.note || "彩钻折金币"}（估值基准 ${fmtGold(state.valuationGoldPerRmb)} 金/元）` };
-  if (typeof def.blue === "number") return { value: blueToValuationGold(def.blue), source: `${def.note || "蓝钻折金币"}（估值基准 ${fmtGold(state.valuationGoldPerRmb)} 金/元）` };
+  if (typeof def.gold === "number") return { value: def.gold, source: itemSources[content.name] || def.note || "金币单价" };
+  if (typeof def.royal === "number") return { value: royalToValuationGold(def.royal), source: `${itemSources[content.name] || def.note || "彩钻折金币"}（估值基准 ${fmtGold(state.valuationGoldPerRmb)} 金/元）` };
+  if (typeof def.blue === "number") return { value: blueToValuationGold(def.blue), source: `${itemSources[content.name] || def.note || "蓝钻折金币"}（估值基准 ${fmtGold(state.valuationGoldPerRmb)} 金/元）` };
   if (Array.isArray(def.components) && def.components.length) {
     let missing = false;
     let minValue = 0;
@@ -1787,7 +1888,7 @@ function itemUnitGold(content) {
       maxValue += (unit.maxValue ?? unit.value ?? 0) * component.qty;
       return sum + (unit.value === null ? 0 : unit.value * component.qty);
     }, 0);
-    return missing ? { value: null, source: "组件未定价" } : { value, minValue, maxValue, source: def.note || "组件折算", isRange: Math.round(minValue) !== Math.round(maxValue) };
+    return missing ? { value: null, source: "组件未定价" } : { value, minValue, maxValue, source: itemSources[content.name] || def.note || "组件折算", isRange: Math.round(minValue) !== Math.round(maxValue) };
   }
   return { value: null, source: "未计入估值" };
 }
@@ -2001,7 +2102,7 @@ function defaultManualValue(name, defaultGold) {
 }
 
 function defaultItemSource(name) {
-  return itemPrices[name]?.note || "默认估值";
+  return itemSources[name] || itemPrices[name]?.note || "默认估值";
 }
 
 function displayItemName(name) {
@@ -3203,6 +3304,7 @@ function bindControls() {
   const importInput = document.getElementById("giftPackImportInput");
   document.getElementById("refreshAuthorDataBtn")?.addEventListener("click", refreshAuthorGiftPackData);
   document.getElementById("exportGiftPackDataBtn")?.addEventListener("click", exportGiftPackData);
+  document.getElementById("exportItemPriceDataBtn")?.addEventListener("click", exportItemPriceData);
   document.getElementById("importGiftPackDataBtn")?.addEventListener("click", () => {
     importInput?.click();
   });
@@ -3338,6 +3440,8 @@ async function initGiftPackPage() {
     initPageContentDefaults();
     setGiftPageLoadState("loading", "正在加载 gift-pack-data.json...");
     await loadPublicGiftPackData();
+    setGiftPageLoadState("loading", "正在加载 item-price-data.json...");
+    await loadPublicItemPriceData();
     setGiftPageLoadState("loading", "正在加载公开数据...");
     await syncGoldRateFromDashboard();
     setGiftPageLoadState("loading", "正在加载礼包缩略图...");

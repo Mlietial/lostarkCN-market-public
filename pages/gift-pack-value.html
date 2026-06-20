@@ -83,6 +83,7 @@
           <button id="manualValuesToggleBtn" type="button" class="ghost-btn">显示估值设置</button>
           <button id="addCustomPackBtn" type="button" class="ghost-btn">新增礼包</button>
           <button id="exportGiftPackDataBtn" type="button" class="ghost-btn">导出数据</button>
+          <button id="exportItemPriceDataBtn" type="button" class="ghost-btn">导出估值</button>
           <button id="importGiftPackDataBtn" type="button" class="ghost-btn">导入数据</button>
           <input id="giftPackImportInput" type="file" accept="application/json,.json" hidden>
           <button id="sortBtn" type="button" class="ghost-btn">性价比降序</button>
@@ -149,8 +150,10 @@
   <div id="rateUpdatedAt" class="rate-updated-at">金价更新时间：未记录</div>
 
   <script id="EMBEDDED_GIFT_PACK_DATA" type="application/json">{}</script>
+  <script id="EMBEDDED_ITEM_PRICE_DATA" type="application/json">{}</script>
   <script src="../data/gift-pack-data.js"></script>
+  <script src="../data/item-price-data.js"></script>
   <script src="../data/dashboard-state.js"></script>
-  <script src="../assets/js/gift-pack-value.js?v=20260620-lucky-material-icon"></script>
+  <script src="../assets/js/gift-pack-value.js?v=20260620-item-price-data"></script>
 </body>
 </html>

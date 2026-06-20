@@ -1,0 +1,101 @@
+window.LOSTARK_PUBLIC_ITEM_PRICE_DATA = {
+  "app": "lostark-item-price-data",
+  "version": 1,
+  "exportedAt": "2026-06-20T07:15:03.399Z",
+  "storage": {
+    "giftPackManualValues": "{\"命运破坏石\":{\"raw\":\"331\",\"value\":331,\"min\":331,\"max\":331,\"isRange\":false,\"stackSize\":null,\"unit\":\"gold\"},\"熔岩之息\":{\"raw\":\"240\",\"value\":240,\"min\":240,\"max\":240,\"isRange\":false,\"stackSize\":null,\"unit\":\"gold\"},\"命运碎片袋子（大）\":{\"raw\":\"210\",\"value\":210,\"min\":210,\"max\":210,\"isRange\":false,\"stackSize\":null,\"unit\":\"gold\"},\"冰川之息\":{\"raw\":\"140\",\"value\":140,\"min\":140,\"max\":140,\"isRange\":false,\"stackSize\":null,\"unit\":\"gold\"},\"命运碎片袋子（小）\":{\"raw\":\"64\",\"value\":64,\"min\":64,\"max\":64,\"isRange\":false,\"stackSize\":null,\"unit\":\"gold\"},\"阿比多斯融合材料\":{\"raw\":\"87\",\"value\":87,\"min\":87,\"max\":87,\"isRange\":false,\"unit\":\"gold\"},\"命运突破石\":{\"raw\":\"7\",\"value\":7,\"min\":7,\"max\":7,\"isRange\":false,\"stackSize\":null,\"unit\":\"gold\"},\"命运守护石\":{\"raw\":\"6\",\"value\":6,\"min\":6,\"max\":6,\"isRange\":false,\"stackSize\":null,\"unit\":\"gold\"},\"命运碎片袋子（中）\":{\"raw\":\"142\",\"value\":142,\"min\":142,\"max\":142,\"isRange\":false,\"stackSize\":null,\"unit\":\"gold\"}}",
+    "giftPackItemSources": "{}",
+    "giftPackCustomManualItems": "[]",
+    "giftPackHiddenManualItems": "[\"星石加工初始化/重置券\",\"星石加工重置券\",\"内容物\",\"稀有-英雄星石箱子\"]"
+  },
+  "manualValues": {
+    "命运破坏石": {
+      "raw": "331",
+      "value": 331,
+      "min": 331,
+      "max": 331,
+      "isRange": false,
+      "stackSize": null,
+      "unit": "gold"
+    },
+    "熔岩之息": {
+      "raw": "240",
+      "value": 240,
+      "min": 240,
+      "max": 240,
+      "isRange": false,
+      "stackSize": null,
+      "unit": "gold"
+    },
+    "命运碎片袋子（大）": {
+      "raw": "210",
+      "value": 210,
+      "min": 210,
+      "max": 210,
+      "isRange": false,
+      "stackSize": null,
+      "unit": "gold"
+    },
+    "冰川之息": {
+      "raw": "140",
+      "value": 140,
+      "min": 140,
+      "max": 140,
+      "isRange": false,
+      "stackSize": null,
+      "unit": "gold"
+    },
+    "命运碎片袋子（小）": {
+      "raw": "64",
+      "value": 64,
+      "min": 64,
+      "max": 64,
+      "isRange": false,
+      "stackSize": null,
+      "unit": "gold"
+    },
+    "阿比多斯融合材料": {
+      "raw": "87",
+      "value": 87,
+      "min": 87,
+      "max": 87,
+      "isRange": false,
+      "unit": "gold"
+    },
+    "命运突破石": {
+      "raw": "7",
+      "value": 7,
+      "min": 7,
+      "max": 7,
+      "isRange": false,
+      "stackSize": null,
+      "unit": "gold"
+    },
+    "命运守护石": {
+      "raw": "6",
+      "value": 6,
+      "min": 6,
+      "max": 6,
+      "isRange": false,
+      "stackSize": null,
+      "unit": "gold"
+    },
+    "命运碎片袋子（中）": {
+      "raw": "142",
+      "value": 142,
+      "min": 142,
+      "max": 142,
+      "isRange": false,
+      "stackSize": null,
+      "unit": "gold"
+    }
+  },
+  "itemSources": {},
+  "customManualItems": [],
+  "hiddenManualItems": [
+    "星石加工初始化/重置券",
+    "星石加工重置券",
+    "内容物",
+    "稀有-英雄星石箱子"
+  ]
+};
