@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "publishedAt": "2026-06-20 09:00",
+  "publishedAt": "2026-06-21 09:00",
   "gemRows": [
     {
       "日期": "2026-05-02",
@@ -397,6 +397,15 @@
       "8级": 345000,
       "9级": 957777,
       "10级": 2747777
+    },
+    {
+      "日期": "2026-06-21",
+      "5级": 12100,
+      "6级": 36200,
+      "7级": 111998,
+      "8级": 341888,
+      "9级": 939997,
+      "10级": 2722222
     }
   ],
   "baselines": {},
@@ -1128,6 +1137,34 @@
       "gold": 499999,
       "price": 118.99,
       "date": "2026-06-20"
+    },
+    {
+      "id": "txn-2026-06-21-邮寄交易-599999-150.03-0",
+      "type": "邮寄交易",
+      "gold": 599999,
+      "price": 150.03,
+      "date": "2026-06-21"
+    },
+    {
+      "id": "txn-2026-06-21-邮寄交易-2999999-800-1",
+      "type": "邮寄交易",
+      "gold": 2999999,
+      "price": 800,
+      "date": "2026-06-21"
+    },
+    {
+      "id": "txn-2026-06-21-拍卖交易-419999-95-2",
+      "type": "拍卖交易",
+      "gold": 419999,
+      "price": 95,
+      "date": "2026-06-21"
+    },
+    {
+      "id": "txn-2026-06-21-拍卖交易-499999-117-3",
+      "type": "拍卖交易",
+      "gold": 499999,
+      "price": 117,
+      "date": "2026-06-21"
     }
   ],
   "engravingBookPrices": [
@@ -1141,141 +1178,6 @@
       "pageOrder": 1
     },
     {
-      "date": "2026-06-11",
-      "name": "肾上腺素",
-      "grade": "遗物",
-      "prevAvg": 134979,
-      "recentDeal": 130000,
-      "lowest": 132888,
-      "pageOrder": 1
-    },
-    {
-      "date": "2026-06-13",
-      "name": "肾上腺素",
-      "grade": "遗物",
-      "prevAvg": 134352,
-      "recentDeal": 137992,
-      "lowest": 137993,
-      "pageOrder": 1
-    },
-    {
-      "date": "2026-06-14",
-      "name": "肾上腺素",
-      "grade": "遗物",
-      "prevAvg": 135591,
-      "recentDeal": 134999,
-      "lowest": 132999,
-      "pageOrder": 1
-    },
-    {
-      "date": "2026-06-16",
-      "name": "迅捷利刃",
-      "grade": "遗物",
-      "prevAvg": 128278,
-      "recentDeal": 129998,
-      "lowest": 129998,
-      "pageOrder": 1
-    },
-    {
-      "date": "2026-06-17",
-      "name": "迅捷利刃",
-      "grade": "遗物",
-      "prevAvg": 126912,
-      "recentDeal": 125299,
-      "lowest": 125000,
-      "pageOrder": 1
-    },
-    {
-      "date": "2026-06-18",
-      "name": "迅捷利刃",
-      "grade": "遗物",
-      "prevAvg": 125022,
-      "recentDeal": 128111,
-      "lowest": 127776,
-      "pageOrder": 1
-    },
-    {
-      "date": "2026-06-19",
-      "name": "迅捷利刃",
-      "grade": "遗物",
-      "prevAvg": 125837,
-      "recentDeal": 127000,
-      "lowest": 126500,
-      "pageOrder": 1
-    },
-    {
-      "date": "2026-06-12",
-      "name": "怨恨",
-      "grade": "遗物",
-      "prevAvg": 130799,
-      "recentDeal": 133249,
-      "lowest": 133110,
-      "pageOrder": 1
-    },
-    {
-      "date": "2026-06-15",
-      "name": "怨恨",
-      "grade": "遗物",
-      "prevAvg": 132161,
-      "recentDeal": 131800,
-      "lowest": 131800,
-      "pageOrder": 1
-    },
-    {
-      "date": "2026-06-20",
-      "name": "怨恨",
-      "grade": "遗物",
-      "prevAvg": 128130,
-      "recentDeal": 127996,
-      "lowest": 127996,
-      "pageOrder": 1
-    },
-    {
-      "date": "2026-06-12",
-      "name": "肾上腺素",
-      "grade": "遗物",
-      "prevAvg": 132046,
-      "recentDeal": 128888,
-      "lowest": 129555,
-      "pageOrder": 2
-    },
-    {
-      "date": "2026-06-16",
-      "name": "肾上腺素",
-      "grade": "遗物",
-      "prevAvg": 128788,
-      "recentDeal": 126666,
-      "lowest": 126998,
-      "pageOrder": 2
-    },
-    {
-      "date": "2026-06-17",
-      "name": "肾上腺素",
-      "grade": "遗物",
-      "prevAvg": 123547,
-      "recentDeal": 124567,
-      "lowest": 124996,
-      "pageOrder": 2
-    },
-    {
-      "date": "2026-06-20",
-      "name": "肾上腺素",
-      "grade": "遗物",
-      "prevAvg": 127575,
-      "recentDeal": 125888,
-      "lowest": 127777,
-      "pageOrder": 2
-    },
-    {
-      "date": "2026-06-15",
-      "name": "迅捷利刃",
-      "grade": "遗物",
-      "prevAvg": 130941,
-      "recentDeal": 129999,
-      "lowest": 131000,
-      "pageOrder": 2
-    },
-    {
       "date": "2026-05-29",
       "name": "怨恨",
       "grade": "遗物",
@@ -1285,147 +1187,12 @@
       "pageOrder": 2
     },
     {
-      "date": "2026-06-11",
-      "name": "怨恨",
-      "grade": "遗物",
-      "prevAvg": 132240,
-      "recentDeal": 131399,
-      "lowest": 131499,
-      "pageOrder": 2
-    },
-    {
-      "date": "2026-06-13",
-      "name": "怨恨",
-      "grade": "遗物",
-      "prevAvg": 134026,
-      "recentDeal": 129999,
-      "lowest": 134440,
-      "pageOrder": 2
-    },
-    {
-      "date": "2026-06-14",
-      "name": "怨恨",
-      "grade": "遗物",
-      "prevAvg": 136649,
-      "recentDeal": 10,
-      "lowest": 132222,
-      "pageOrder": 2
-    },
-    {
-      "date": "2026-06-18",
-      "name": "怨恨",
-      "grade": "遗物",
-      "prevAvg": 126089,
-      "recentDeal": 123333,
-      "lowest": 126664,
-      "pageOrder": 2
-    },
-    {
-      "date": "2026-06-19",
-      "name": "怨恨",
-      "grade": "遗物",
-      "prevAvg": 126566,
-      "recentDeal": 125555,
-      "lowest": 126444,
-      "pageOrder": 2
-    },
-    {
-      "date": "2026-06-15",
-      "name": "肾上腺素",
-      "grade": "遗物",
-      "prevAvg": 132832,
-      "recentDeal": 117500,
-      "lowest": 130997,
-      "pageOrder": 3
-    },
-    {
-      "date": "2026-06-18",
-      "name": "肾上腺素",
-      "grade": "遗物",
-      "prevAvg": 124319,
-      "recentDeal": 126998,
-      "lowest": 125555,
-      "pageOrder": 3
-    },
-    {
-      "date": "2026-06-19",
-      "name": "肾上腺素",
-      "grade": "遗物",
-      "prevAvg": 126197,
-      "recentDeal": 125999,
-      "lowest": 125995,
-      "pageOrder": 3
-    },
-    {
       "date": "2026-05-29",
       "name": "迅捷利刃",
       "grade": "遗物",
       "prevAvg": 125359,
       "recentDeal": 125555,
       "lowest": 123000,
-      "pageOrder": 3
-    },
-    {
-      "date": "2026-06-11",
-      "name": "迅捷利刃",
-      "grade": "遗物",
-      "prevAvg": 131764,
-      "recentDeal": 128000,
-      "lowest": 128660,
-      "pageOrder": 3
-    },
-    {
-      "date": "2026-06-12",
-      "name": "迅捷利刃",
-      "grade": "遗物",
-      "prevAvg": 127214,
-      "recentDeal": 127988,
-      "lowest": 127989,
-      "pageOrder": 3
-    },
-    {
-      "date": "2026-06-13",
-      "name": "迅捷利刃",
-      "grade": "遗物",
-      "prevAvg": 128114,
-      "recentDeal": 131950,
-      "lowest": 131950,
-      "pageOrder": 3
-    },
-    {
-      "date": "2026-06-14",
-      "name": "迅捷利刃",
-      "grade": "遗物",
-      "prevAvg": 134486,
-      "recentDeal": 132222,
-      "lowest": 131666,
-      "pageOrder": 3
-    },
-    {
-      "date": "2026-06-20",
-      "name": "迅捷利刃",
-      "grade": "遗物",
-      "prevAvg": 129392,
-      "recentDeal": 126555,
-      "lowest": 126666,
-      "pageOrder": 3
-    },
-    {
-      "date": "2026-06-16",
-      "name": "怨恨",
-      "grade": "遗物",
-      "prevAvg": 128431,
-      "recentDeal": 125995,
-      "lowest": 125995,
-      "pageOrder": 3
-    },
-    {
-      "date": "2026-06-17",
-      "name": "怨恨",
-      "grade": "遗物",
-      "prevAvg": 125391,
-      "recentDeal": 123888,
-      "lowest": 123888,
       "pageOrder": 3
     },
     {
@@ -1438,96 +1205,6 @@
       "pageOrder": 4
     },
     {
-      "date": "2026-06-11",
-      "name": "尖刺重锤",
-      "grade": "遗物",
-      "prevAvg": 119168,
-      "recentDeal": 121088,
-      "lowest": 119997,
-      "pageOrder": 4
-    },
-    {
-      "date": "2026-06-12",
-      "name": "尖刺重锤",
-      "grade": "遗物",
-      "prevAvg": 115666,
-      "recentDeal": 115879,
-      "lowest": 115880,
-      "pageOrder": 4
-    },
-    {
-      "date": "2026-06-13",
-      "name": "尖刺重锤",
-      "grade": "遗物",
-      "prevAvg": 116048,
-      "recentDeal": 116999,
-      "lowest": 116999,
-      "pageOrder": 4
-    },
-    {
-      "date": "2026-06-14",
-      "name": "尖刺重锤",
-      "grade": "遗物",
-      "prevAvg": 116413,
-      "recentDeal": 111111,
-      "lowest": 113330,
-      "pageOrder": 4
-    },
-    {
-      "date": "2026-06-15",
-      "name": "尖刺重锤",
-      "grade": "遗物",
-      "prevAvg": 112467,
-      "recentDeal": 111888,
-      "lowest": 111108,
-      "pageOrder": 4
-    },
-    {
-      "date": "2026-06-16",
-      "name": "尖刺重锤",
-      "grade": "遗物",
-      "prevAvg": 112163,
-      "recentDeal": 108800,
-      "lowest": 108800,
-      "pageOrder": 4
-    },
-    {
-      "date": "2026-06-17",
-      "name": "尖刺重锤",
-      "grade": "遗物",
-      "prevAvg": 112295,
-      "recentDeal": 118859,
-      "lowest": 114444,
-      "pageOrder": 4
-    },
-    {
-      "date": "2026-06-18",
-      "name": "尖刺重锤",
-      "grade": "遗物",
-      "prevAvg": 114539,
-      "recentDeal": 111555,
-      "lowest": 111333,
-      "pageOrder": 4
-    },
-    {
-      "date": "2026-06-19",
-      "name": "尖刺重锤",
-      "grade": "遗物",
-      "prevAvg": 109065,
-      "recentDeal": 109888,
-      "lowest": 109800,
-      "pageOrder": 4
-    },
-    {
-      "date": "2026-06-20",
-      "name": "尖刺重锤",
-      "grade": "遗物",
-      "prevAvg": 114475,
-      "recentDeal": 116666,
-      "lowest": 116660,
-      "pageOrder": 4
-    },
-    {
       "date": "2026-05-29",
       "name": "重量强化",
       "grade": "遗物",
@@ -1535,186 +1212,6 @@
       "recentDeal": 79999,
       "lowest": 80555,
       "pageOrder": 5
-    },
-    {
-      "date": "2026-06-11",
-      "name": "重量强化",
-      "grade": "遗物",
-      "prevAvg": 91254,
-      "recentDeal": 87548,
-      "lowest": 87549,
-      "pageOrder": 5
-    },
-    {
-      "date": "2026-06-12",
-      "name": "重量强化",
-      "grade": "遗物",
-      "prevAvg": 85341,
-      "recentDeal": 81888,
-      "lowest": 81998,
-      "pageOrder": 5
-    },
-    {
-      "date": "2026-06-13",
-      "name": "重量强化",
-      "grade": "遗物",
-      "prevAvg": 89375,
-      "recentDeal": 93885,
-      "lowest": 93111,
-      "pageOrder": 5
-    },
-    {
-      "date": "2026-06-14",
-      "name": "重量强化",
-      "grade": "遗物",
-      "prevAvg": 90292,
-      "recentDeal": 83333,
-      "lowest": 84242,
-      "pageOrder": 5
-    },
-    {
-      "date": "2026-06-15",
-      "name": "重量强化",
-      "grade": "遗物",
-      "prevAvg": 85462,
-      "recentDeal": 84998,
-      "lowest": 83333,
-      "pageOrder": 5
-    },
-    {
-      "date": "2026-06-16",
-      "name": "重量强化",
-      "grade": "遗物",
-      "prevAvg": 83485,
-      "recentDeal": 80888,
-      "lowest": 81108,
-      "pageOrder": 5
-    },
-    {
-      "date": "2026-06-17",
-      "name": "重量强化",
-      "grade": "遗物",
-      "prevAvg": 82134,
-      "recentDeal": 84444,
-      "lowest": 83999,
-      "pageOrder": 5
-    },
-    {
-      "date": "2026-06-18",
-      "name": "重量强化",
-      "grade": "遗物",
-      "prevAvg": 88416,
-      "recentDeal": 83331,
-      "lowest": 83322,
-      "pageOrder": 5
-    },
-    {
-      "date": "2026-06-19",
-      "name": "重量强化",
-      "grade": "遗物",
-      "prevAvg": 83719,
-      "recentDeal": 91665,
-      "lowest": 91665,
-      "pageOrder": 5
-    },
-    {
-      "date": "2026-06-20",
-      "name": "重量强化",
-      "grade": "遗物",
-      "prevAvg": 88738,
-      "recentDeal": 84433,
-      "lowest": 83333,
-      "pageOrder": 5
-    },
-    {
-      "date": "2026-06-11",
-      "name": "奇袭大师",
-      "grade": "遗物",
-      "prevAvg": 51120,
-      "recentDeal": 51000,
-      "lowest": 51992,
-      "pageOrder": 6
-    },
-    {
-      "date": "2026-06-12",
-      "name": "奇袭大师",
-      "grade": "遗物",
-      "prevAvg": 52331,
-      "recentDeal": 51111,
-      "lowest": 51100,
-      "pageOrder": 6
-    },
-    {
-      "date": "2026-06-13",
-      "name": "奇袭大师",
-      "grade": "遗物",
-      "prevAvg": 50889,
-      "recentDeal": 51998,
-      "lowest": 51998,
-      "pageOrder": 6
-    },
-    {
-      "date": "2026-06-14",
-      "name": "奇袭大师",
-      "grade": "遗物",
-      "prevAvg": 51056,
-      "recentDeal": 50888,
-      "lowest": 49888,
-      "pageOrder": 6
-    },
-    {
-      "date": "2026-06-15",
-      "name": "奇袭大师",
-      "grade": "遗物",
-      "prevAvg": 48783,
-      "recentDeal": 46549,
-      "lowest": 45999,
-      "pageOrder": 6
-    },
-    {
-      "date": "2026-06-16",
-      "name": "奇袭大师",
-      "grade": "遗物",
-      "prevAvg": 45676,
-      "recentDeal": 47000,
-      "lowest": 46665,
-      "pageOrder": 6
-    },
-    {
-      "date": "2026-06-17",
-      "name": "奇袭大师",
-      "grade": "遗物",
-      "prevAvg": 45364,
-      "recentDeal": 41990,
-      "lowest": 41998,
-      "pageOrder": 6
-    },
-    {
-      "date": "2026-06-18",
-      "name": "奇袭大师",
-      "grade": "遗物",
-      "prevAvg": 44478,
-      "recentDeal": 49999,
-      "lowest": 49999,
-      "pageOrder": 6
-    },
-    {
-      "date": "2026-06-19",
-      "name": "奇袭大师",
-      "grade": "遗物",
-      "prevAvg": 47781,
-      "recentDeal": 46877,
-      "lowest": 46777,
-      "pageOrder": 6
-    },
-    {
-      "date": "2026-06-20",
-      "name": "奇袭大师",
-      "grade": "遗物",
-      "prevAvg": 46454,
-      "recentDeal": 47899,
-      "lowest": 47899,
-      "pageOrder": 6
     },
     {
       "date": "2026-05-29",
@@ -1726,102 +1223,12 @@
       "pageOrder": 6
     },
     {
-      "date": "2026-06-13",
-      "name": "决斗大师",
-      "grade": "遗物",
-      "prevAvg": 42158,
-      "recentDeal": 41776,
-      "lowest": 41399,
-      "pageOrder": 7
-    },
-    {
-      "date": "2026-06-15",
-      "name": "决斗大师",
-      "grade": "遗物",
-      "prevAvg": 41511,
-      "recentDeal": 42496,
-      "lowest": 42496,
-      "pageOrder": 7
-    },
-    {
-      "date": "2026-06-14",
-      "name": "觉醒",
-      "grade": "遗物",
-      "prevAvg": 38889,
-      "recentDeal": 10,
-      "lowest": 48333,
-      "pageOrder": 7
-    },
-    {
       "date": "2026-05-29",
       "name": "奇袭大师",
       "grade": "遗物",
       "prevAvg": 52732,
       "recentDeal": 49900,
       "lowest": 47777,
-      "pageOrder": 7
-    },
-    {
-      "date": "2026-06-11",
-      "name": "强力侧击",
-      "grade": "遗物",
-      "prevAvg": 47289,
-      "recentDeal": 46466,
-      "lowest": 46466,
-      "pageOrder": 7
-    },
-    {
-      "date": "2026-06-12",
-      "name": "强力侧击",
-      "grade": "遗物",
-      "prevAvg": 43404,
-      "recentDeal": 44650,
-      "lowest": 44652,
-      "pageOrder": 7
-    },
-    {
-      "date": "2026-06-16",
-      "name": "强力侧击",
-      "grade": "遗物",
-      "prevAvg": 42044,
-      "recentDeal": 39999,
-      "lowest": 41555,
-      "pageOrder": 7
-    },
-    {
-      "date": "2026-06-17",
-      "name": "强力侧击",
-      "grade": "遗物",
-      "prevAvg": 41276,
-      "recentDeal": 40555,
-      "lowest": 40664,
-      "pageOrder": 7
-    },
-    {
-      "date": "2026-06-18",
-      "name": "强力侧击",
-      "grade": "遗物",
-      "prevAvg": 42742,
-      "recentDeal": 45000,
-      "lowest": 44444,
-      "pageOrder": 7
-    },
-    {
-      "date": "2026-06-19",
-      "name": "强力侧击",
-      "grade": "遗物",
-      "prevAvg": 43073,
-      "recentDeal": 42665,
-      "lowest": 42666,
-      "pageOrder": 7
-    },
-    {
-      "date": "2026-06-20",
-      "name": "强力侧击",
-      "grade": "遗物",
-      "prevAvg": 42707,
-      "recentDeal": 42300,
-      "lowest": 42332,
       "pageOrder": 7
     },
     {
@@ -1834,192 +1241,12 @@
       "pageOrder": 8
     },
     {
-      "date": "2026-06-11",
-      "name": "决斗大师",
-      "grade": "遗物",
-      "prevAvg": 43208,
-      "recentDeal": 42553,
-      "lowest": 42000,
-      "pageOrder": 8
-    },
-    {
-      "date": "2026-06-14",
-      "name": "决斗大师",
-      "grade": "遗物",
-      "prevAvg": 41860,
-      "recentDeal": 41999,
-      "lowest": 41866,
-      "pageOrder": 8
-    },
-    {
-      "date": "2026-06-16",
-      "name": "决斗大师",
-      "grade": "遗物",
-      "prevAvg": 41295,
-      "recentDeal": 40668,
-      "lowest": 39999,
-      "pageOrder": 8
-    },
-    {
-      "date": "2026-06-17",
-      "name": "决斗大师",
-      "grade": "遗物",
-      "prevAvg": 40036,
-      "recentDeal": 37999,
-      "lowest": 38777,
-      "pageOrder": 8
-    },
-    {
-      "date": "2026-06-18",
-      "name": "决斗大师",
-      "grade": "遗物",
-      "prevAvg": 38467,
-      "recentDeal": 39995,
-      "lowest": 39988,
-      "pageOrder": 8
-    },
-    {
-      "date": "2026-06-19",
-      "name": "决斗大师",
-      "grade": "遗物",
-      "prevAvg": 39153,
-      "recentDeal": 39999,
-      "lowest": 39998,
-      "pageOrder": 8
-    },
-    {
-      "date": "2026-06-20",
-      "name": "决斗大师",
-      "grade": "遗物",
-      "prevAvg": 41238,
-      "recentDeal": 44400,
-      "lowest": 41999,
-      "pageOrder": 8
-    },
-    {
-      "date": "2026-06-15",
-      "name": "觉醒",
-      "grade": "遗物",
-      "prevAvg": 39717,
-      "recentDeal": 41995,
-      "lowest": 41588,
-      "pageOrder": 8
-    },
-    {
-      "date": "2026-06-13",
-      "name": "强力侧击",
-      "grade": "遗物",
-      "prevAvg": 44855,
-      "recentDeal": 42555,
-      "lowest": 38900,
-      "pageOrder": 8
-    },
-    {
-      "date": "2026-06-12",
-      "name": "蓄力强化",
-      "grade": "遗物",
-      "prevAvg": 39536,
-      "recentDeal": 43554,
-      "lowest": 43550,
-      "pageOrder": 8
-    },
-    {
-      "date": "2026-06-12",
-      "name": "决斗大师",
-      "grade": "遗物",
-      "prevAvg": 42671,
-      "recentDeal": 43333,
-      "lowest": 43333,
-      "pageOrder": 9
-    },
-    {
-      "date": "2026-06-13",
-      "name": "觉醒",
-      "grade": "遗物",
-      "prevAvg": 39292,
-      "recentDeal": 38866,
-      "lowest": 38880,
-      "pageOrder": 9
-    },
-    {
-      "date": "2026-06-16",
-      "name": "觉醒",
-      "grade": "遗物",
-      "prevAvg": 39304,
-      "recentDeal": 36666,
-      "lowest": 36997,
-      "pageOrder": 9
-    },
-    {
-      "date": "2026-06-20",
-      "name": "觉醒",
-      "grade": "遗物",
-      "prevAvg": 37266,
-      "recentDeal": 42220,
-      "lowest": 38008,
-      "pageOrder": 9
-    },
-    {
-      "date": "2026-06-14",
-      "name": "强力侧击",
-      "grade": "遗物",
-      "prevAvg": 43305,
-      "recentDeal": 41109,
-      "lowest": 41055,
-      "pageOrder": 9
-    },
-    {
-      "date": "2026-06-15",
-      "name": "强力侧击",
-      "grade": "遗物",
-      "prevAvg": 42089,
-      "recentDeal": 42222,
-      "lowest": 39888,
-      "pageOrder": 9
-    },
-    {
-      "date": "2026-06-17",
-      "name": "蓄力强化",
-      "grade": "遗物",
-      "prevAvg": 35759,
-      "recentDeal": 35555,
-      "lowest": 35532,
-      "pageOrder": 9
-    },
-    {
-      "date": "2026-06-19",
-      "name": "蓄力强化",
-      "grade": "遗物",
-      "prevAvg": 32181,
-      "recentDeal": 39999,
-      "lowest": 39987,
-      "pageOrder": 9
-    },
-    {
       "date": "2026-05-29",
       "name": "咒术人偶",
       "grade": "遗物",
       "prevAvg": 42700,
       "recentDeal": 42221,
       "lowest": 42188,
-      "pageOrder": 9
-    },
-    {
-      "date": "2026-06-11",
-      "name": "咒术人偶",
-      "grade": "遗物",
-      "prevAvg": 39894,
-      "recentDeal": 39000,
-      "lowest": 39000,
-      "pageOrder": 9
-    },
-    {
-      "date": "2026-06-18",
-      "name": "咒术人偶",
-      "grade": "遗物",
-      "prevAvg": 35936,
-      "recentDeal": 39990,
-      "lowest": 39000,
       "pageOrder": 9
     },
     {
@@ -2032,105 +1259,6 @@
       "pageOrder": 10
     },
     {
-      "date": "2026-06-12",
-      "name": "觉醒",
-      "grade": "遗物",
-      "prevAvg": 39744,
-      "recentDeal": 40500,
-      "lowest": 39998,
-      "pageOrder": 10
-    },
-    {
-      "date": "2026-06-18",
-      "name": "觉醒",
-      "grade": "遗物",
-      "prevAvg": 36193,
-      "recentDeal": 37555,
-      "lowest": 35888,
-      "pageOrder": 10
-    },
-    {
-      "date": "2026-06-19",
-      "name": "觉醒",
-      "grade": "遗物",
-      "prevAvg": 36615,
-      "recentDeal": 37775,
-      "lowest": 37655,
-      "pageOrder": 10
-    },
-    {
-      "date": "2026-06-11",
-      "name": "妙手回春",
-      "grade": "遗物",
-      "prevAvg": 36922,
-      "recentDeal": 37497,
-      "lowest": 37498,
-      "pageOrder": 10
-    },
-    {
-      "date": "2026-06-14",
-      "name": "蓄力强化",
-      "grade": "遗物",
-      "prevAvg": 37618,
-      "recentDeal": 38888,
-      "lowest": 37769,
-      "pageOrder": 10
-    },
-    {
-      "date": "2026-06-16",
-      "name": "蓄力强化",
-      "grade": "遗物",
-      "prevAvg": 34953,
-      "recentDeal": 36555,
-      "lowest": 36111,
-      "pageOrder": 10
-    },
-    {
-      "date": "2026-06-13",
-      "name": "咒术人偶",
-      "grade": "遗物",
-      "prevAvg": 40085,
-      "recentDeal": 36999,
-      "lowest": 37750,
-      "pageOrder": 10
-    },
-    {
-      "date": "2026-06-15",
-      "name": "咒术人偶",
-      "grade": "遗物",
-      "prevAvg": 36885,
-      "recentDeal": 38444,
-      "lowest": 37888,
-      "pageOrder": 10
-    },
-    {
-      "date": "2026-06-17",
-      "name": "咒术人偶",
-      "grade": "遗物",
-      "prevAvg": 35326,
-      "recentDeal": 35666,
-      "lowest": 34566,
-      "pageOrder": 10
-    },
-    {
-      "date": "2026-06-20",
-      "name": "咒术人偶",
-      "grade": "遗物",
-      "prevAvg": 37720,
-      "recentDeal": 37144,
-      "lowest": 37000,
-      "pageOrder": 10
-    },
-    {
-      "date": "2026-06-17",
-      "name": "觉醒",
-      "grade": "遗物",
-      "prevAvg": 36898,
-      "recentDeal": 33333,
-      "lowest": 34500,
-      "pageOrder": 11
-    },
-    {
       "date": "2026-05-29",
       "name": "妙手回春",
       "grade": "遗物",
@@ -2138,177 +1266,6 @@
       "recentDeal": 38000,
       "lowest": 38000,
       "pageOrder": 11
-    },
-    {
-      "date": "2026-06-11",
-      "name": "蓄力强化",
-      "grade": "遗物",
-      "prevAvg": 37227,
-      "recentDeal": 37997,
-      "lowest": 37444,
-      "pageOrder": 11
-    },
-    {
-      "date": "2026-06-13",
-      "name": "蓄力强化",
-      "grade": "遗物",
-      "prevAvg": 39742,
-      "recentDeal": 36666,
-      "lowest": 37221,
-      "pageOrder": 11
-    },
-    {
-      "date": "2026-06-15",
-      "name": "蓄力强化",
-      "grade": "遗物",
-      "prevAvg": 36329,
-      "recentDeal": 10,
-      "lowest": 36999,
-      "pageOrder": 11
-    },
-    {
-      "date": "2026-06-18",
-      "name": "蓄力强化",
-      "grade": "遗物",
-      "prevAvg": 33262,
-      "recentDeal": 32222,
-      "lowest": 32000,
-      "pageOrder": 11
-    },
-    {
-      "date": "2026-06-20",
-      "name": "蓄力强化",
-      "grade": "遗物",
-      "prevAvg": 36587,
-      "recentDeal": 35655,
-      "lowest": 35655,
-      "pageOrder": 11
-    },
-    {
-      "date": "2026-06-12",
-      "name": "咒术人偶",
-      "grade": "遗物",
-      "prevAvg": 39657,
-      "recentDeal": 40599,
-      "lowest": 39990,
-      "pageOrder": 11
-    },
-    {
-      "date": "2026-06-14",
-      "name": "咒术人偶",
-      "grade": "遗物",
-      "prevAvg": 39020,
-      "recentDeal": 36999,
-      "lowest": 36888,
-      "pageOrder": 11
-    },
-    {
-      "date": "2026-06-16",
-      "name": "咒术人偶",
-      "grade": "遗物",
-      "prevAvg": 36585,
-      "recentDeal": 35555,
-      "lowest": 35999,
-      "pageOrder": 11
-    },
-    {
-      "date": "2026-06-19",
-      "name": "咒术人偶",
-      "grade": "遗物",
-      "prevAvg": 37355,
-      "recentDeal": 36499,
-      "lowest": 35555,
-      "pageOrder": 11
-    },
-    {
-      "date": "2026-06-11",
-      "name": "觉醒",
-      "grade": "遗物",
-      "prevAvg": 40492,
-      "recentDeal": 37599,
-      "lowest": 36666,
-      "pageOrder": 12
-    },
-    {
-      "date": "2026-06-12",
-      "name": "妙手回春",
-      "grade": "遗物",
-      "prevAvg": 35374,
-      "recentDeal": 33433,
-      "lowest": 33496,
-      "pageOrder": 12
-    },
-    {
-      "date": "2026-06-13",
-      "name": "妙手回春",
-      "grade": "遗物",
-      "prevAvg": 33370,
-      "recentDeal": 34330,
-      "lowest": 34000,
-      "pageOrder": 12
-    },
-    {
-      "date": "2026-06-14",
-      "name": "妙手回春",
-      "grade": "遗物",
-      "prevAvg": 35032,
-      "recentDeal": 38888,
-      "lowest": 35999,
-      "pageOrder": 12
-    },
-    {
-      "date": "2026-06-15",
-      "name": "妙手回春",
-      "grade": "遗物",
-      "prevAvg": 35678,
-      "recentDeal": 32600,
-      "lowest": 32666,
-      "pageOrder": 12
-    },
-    {
-      "date": "2026-06-16",
-      "name": "妙手回春",
-      "grade": "遗物",
-      "prevAvg": 34483,
-      "recentDeal": 33332,
-      "lowest": 33329,
-      "pageOrder": 12
-    },
-    {
-      "date": "2026-06-17",
-      "name": "妙手回春",
-      "grade": "遗物",
-      "prevAvg": 33213,
-      "recentDeal": 32000,
-      "lowest": 31999,
-      "pageOrder": 12
-    },
-    {
-      "date": "2026-06-18",
-      "name": "妙手回春",
-      "grade": "遗物",
-      "prevAvg": 31666,
-      "recentDeal": 32647,
-      "lowest": 31950,
-      "pageOrder": 12
-    },
-    {
-      "date": "2026-06-19",
-      "name": "妙手回春",
-      "grade": "遗物",
-      "prevAvg": 31631,
-      "recentDeal": 31543,
-      "lowest": 31554,
-      "pageOrder": 12
-    },
-    {
-      "date": "2026-06-20",
-      "name": "妙手回春",
-      "grade": "遗物",
-      "prevAvg": 33324,
-      "recentDeal": 33333,
-      "lowest": 32500,
-      "pageOrder": 12
     },
     {
       "date": "2026-05-29",
@@ -2320,102 +1277,12 @@
       "pageOrder": 12
     },
     {
-      "date": "2026-06-11",
-      "name": "法力环绕",
-      "grade": "遗物",
-      "prevAvg": 7782,
-      "recentDeal": 7332,
-      "lowest": 7288,
-      "pageOrder": 13
-    },
-    {
-      "date": "2026-06-14",
-      "name": "法力环绕",
-      "grade": "遗物",
-      "prevAvg": 7110,
-      "recentDeal": 7330,
-      "lowest": 7298,
-      "pageOrder": 13
-    },
-    {
-      "date": "2026-06-17",
-      "name": "法力环绕",
-      "grade": "遗物",
-      "prevAvg": 6546,
-      "recentDeal": 6316,
-      "lowest": 6300,
-      "pageOrder": 13
-    },
-    {
-      "date": "2026-06-18",
-      "name": "法力环绕",
-      "grade": "遗物",
-      "prevAvg": 6762,
-      "recentDeal": 6599,
-      "lowest": 6661,
-      "pageOrder": 13
-    },
-    {
-      "date": "2026-06-19",
-      "name": "法力环绕",
-      "grade": "遗物",
-      "prevAvg": 6688,
-      "recentDeal": 6499,
-      "lowest": 6444,
-      "pageOrder": 13
-    },
-    {
-      "date": "2026-06-20",
-      "name": "法力环绕",
-      "grade": "遗物",
-      "prevAvg": 6501,
-      "recentDeal": 6111,
-      "lowest": 6699,
-      "pageOrder": 13
-    },
-    {
       "date": "2026-05-29",
       "name": "速战速决",
       "grade": "遗物",
       "prevAvg": 10395,
       "recentDeal": 9887,
       "lowest": 9888,
-      "pageOrder": 13
-    },
-    {
-      "date": "2026-06-12",
-      "name": "速战速决",
-      "grade": "遗物",
-      "prevAvg": 7307,
-      "recentDeal": 7543,
-      "lowest": 7405,
-      "pageOrder": 13
-    },
-    {
-      "date": "2026-06-13",
-      "name": "速战速决",
-      "grade": "遗物",
-      "prevAvg": 7027,
-      "recentDeal": 7777,
-      "lowest": 7343,
-      "pageOrder": 13
-    },
-    {
-      "date": "2026-06-16",
-      "name": "速战速决",
-      "grade": "遗物",
-      "prevAvg": 6352,
-      "recentDeal": 7294,
-      "lowest": 6999,
-      "pageOrder": 13
-    },
-    {
-      "date": "2026-06-15",
-      "name": "以太生成",
-      "grade": "遗物",
-      "prevAvg": 6618,
-      "recentDeal": 7288,
-      "lowest": 7276,
       "pageOrder": 13
     },
     {
@@ -2428,105 +1295,6 @@
       "pageOrder": 14
     },
     {
-      "date": "2026-06-12",
-      "name": "法力环绕",
-      "grade": "遗物",
-      "prevAvg": 7248,
-      "recentDeal": 7543,
-      "lowest": 7400,
-      "pageOrder": 14
-    },
-    {
-      "date": "2026-06-15",
-      "name": "法力环绕",
-      "grade": "遗物",
-      "prevAvg": 7082,
-      "recentDeal": 6999,
-      "lowest": 6766,
-      "pageOrder": 14
-    },
-    {
-      "date": "2026-06-16",
-      "name": "法力环绕",
-      "grade": "遗物",
-      "prevAvg": 6870,
-      "recentDeal": 6990,
-      "lowest": 6990,
-      "pageOrder": 14
-    },
-    {
-      "date": "2026-06-14",
-      "name": "速战速决",
-      "grade": "遗物",
-      "prevAvg": 7296,
-      "recentDeal": 7663,
-      "lowest": 7100,
-      "pageOrder": 14
-    },
-    {
-      "date": "2026-06-18",
-      "name": "速战速决",
-      "grade": "遗物",
-      "prevAvg": 5868,
-      "recentDeal": 5896,
-      "lowest": 5888,
-      "pageOrder": 14
-    },
-    {
-      "date": "2026-06-11",
-      "name": "以太生成",
-      "grade": "遗物",
-      "prevAvg": 7777,
-      "recentDeal": 6000,
-      "lowest": 6222,
-      "pageOrder": 14
-    },
-    {
-      "date": "2026-06-13",
-      "name": "以太生成",
-      "grade": "遗物",
-      "prevAvg": 6983,
-      "recentDeal": 6666,
-      "lowest": 6776,
-      "pageOrder": 14
-    },
-    {
-      "date": "2026-06-17",
-      "name": "以太生成",
-      "grade": "遗物",
-      "prevAvg": 5937,
-      "recentDeal": 5936,
-      "lowest": 5898,
-      "pageOrder": 14
-    },
-    {
-      "date": "2026-06-19",
-      "name": "以太生成",
-      "grade": "遗物",
-      "prevAvg": 6005,
-      "recentDeal": 6005,
-      "lowest": 6088,
-      "pageOrder": 14
-    },
-    {
-      "date": "2026-06-20",
-      "name": "以太生成",
-      "grade": "遗物",
-      "prevAvg": 6155,
-      "recentDeal": 5999,
-      "lowest": 6100,
-      "pageOrder": 14
-    },
-    {
-      "date": "2026-06-13",
-      "name": "法力环绕",
-      "grade": "遗物",
-      "prevAvg": 7210,
-      "recentDeal": 6666,
-      "lowest": 6666,
-      "pageOrder": 15
-    },
-    {
       "date": "2026-05-29",
       "name": "身披重甲",
       "grade": "遗物",
@@ -2534,177 +1302,6 @@
       "recentDeal": 8775,
       "lowest": 8500,
       "pageOrder": 15
-    },
-    {
-      "date": "2026-06-20",
-      "name": "身披重甲",
-      "grade": "遗物",
-      "prevAvg": 4354,
-      "recentDeal": 4666,
-      "lowest": 5099,
-      "pageOrder": 15
-    },
-    {
-      "date": "2026-06-11",
-      "name": "速战速决",
-      "grade": "遗物",
-      "prevAvg": 6943,
-      "recentDeal": 8333,
-      "lowest": 5888,
-      "pageOrder": 15
-    },
-    {
-      "date": "2026-06-15",
-      "name": "速战速决",
-      "grade": "遗物",
-      "prevAvg": 6593,
-      "recentDeal": 6995,
-      "lowest": 6200,
-      "pageOrder": 15
-    },
-    {
-      "date": "2026-06-17",
-      "name": "速战速决",
-      "grade": "遗物",
-      "prevAvg": 6632,
-      "recentDeal": 5999,
-      "lowest": 5887,
-      "pageOrder": 15
-    },
-    {
-      "date": "2026-06-19",
-      "name": "速战速决",
-      "grade": "遗物",
-      "prevAvg": 5452,
-      "recentDeal": 5676,
-      "lowest": 5677,
-      "pageOrder": 15
-    },
-    {
-      "date": "2026-06-12",
-      "name": "以太生成",
-      "grade": "遗物",
-      "prevAvg": 7015,
-      "recentDeal": 5111,
-      "lowest": 5555,
-      "pageOrder": 15
-    },
-    {
-      "date": "2026-06-14",
-      "name": "以太生成",
-      "grade": "遗物",
-      "prevAvg": 7033,
-      "recentDeal": 6866,
-      "lowest": 6779,
-      "pageOrder": 15
-    },
-    {
-      "date": "2026-06-16",
-      "name": "以太生成",
-      "grade": "遗物",
-      "prevAvg": 6592,
-      "recentDeal": 6088,
-      "lowest": 6000,
-      "pageOrder": 15
-    },
-    {
-      "date": "2026-06-18",
-      "name": "以太生成",
-      "grade": "遗物",
-      "prevAvg": 6005,
-      "recentDeal": 6195,
-      "lowest": 5888,
-      "pageOrder": 15
-    },
-    {
-      "date": "2026-06-15",
-      "name": "精密短刀",
-      "grade": "遗物",
-      "prevAvg": 4659,
-      "recentDeal": 4950,
-      "lowest": 4455,
-      "pageOrder": 16
-    },
-    {
-      "date": "2026-06-17",
-      "name": "破釜沉舟",
-      "grade": "遗物",
-      "prevAvg": 3523,
-      "recentDeal": 3885,
-      "lowest": 3762,
-      "pageOrder": 16
-    },
-    {
-      "date": "2026-06-11",
-      "name": "身披重甲",
-      "grade": "遗物",
-      "prevAvg": 5357,
-      "recentDeal": 5777,
-      "lowest": 5222,
-      "pageOrder": 16
-    },
-    {
-      "date": "2026-06-12",
-      "name": "身披重甲",
-      "grade": "遗物",
-      "prevAvg": 5029,
-      "recentDeal": 4787,
-      "lowest": 4777,
-      "pageOrder": 16
-    },
-    {
-      "date": "2026-06-13",
-      "name": "身披重甲",
-      "grade": "遗物",
-      "prevAvg": 4976,
-      "recentDeal": 6333,
-      "lowest": 5200,
-      "pageOrder": 16
-    },
-    {
-      "date": "2026-06-14",
-      "name": "身披重甲",
-      "grade": "遗物",
-      "prevAvg": 5130,
-      "recentDeal": 4900,
-      "lowest": 4776,
-      "pageOrder": 16
-    },
-    {
-      "date": "2026-06-16",
-      "name": "身披重甲",
-      "grade": "遗物",
-      "prevAvg": 4201,
-      "recentDeal": 4330,
-      "lowest": 3995,
-      "pageOrder": 16
-    },
-    {
-      "date": "2026-06-18",
-      "name": "身披重甲",
-      "grade": "遗物",
-      "prevAvg": 4131,
-      "recentDeal": 4648,
-      "lowest": 4648,
-      "pageOrder": 16
-    },
-    {
-      "date": "2026-06-19",
-      "name": "身披重甲",
-      "grade": "遗物",
-      "prevAvg": 4382,
-      "recentDeal": 4399,
-      "lowest": 4399,
-      "pageOrder": 16
-    },
-    {
-      "date": "2026-06-20",
-      "name": "速战速决",
-      "grade": "遗物",
-      "prevAvg": 5552,
-      "recentDeal": 5999,
-      "lowest": 4998,
-      "pageOrder": 16
     },
     {
       "date": "2026-05-29",
@@ -2716,42 +1313,6 @@
       "pageOrder": 16
     },
     {
-      "date": "2026-06-14",
-      "name": "护盾猛攻",
-      "grade": "遗物",
-      "prevAvg": 2958,
-      "recentDeal": 3000,
-      "lowest": 3000,
-      "pageOrder": 17
-    },
-    {
-      "date": "2026-06-20",
-      "name": "护盾猛攻",
-      "grade": "遗物",
-      "prevAvg": 2664,
-      "recentDeal": 2887,
-      "lowest": 2888,
-      "pageOrder": 17
-    },
-    {
-      "date": "2026-06-13",
-      "name": "精力充沛",
-      "grade": "遗物",
-      "prevAvg": 3079,
-      "recentDeal": 4321,
-      "lowest": 3799,
-      "pageOrder": 17
-    },
-    {
-      "date": "2026-06-18",
-      "name": "精力充沛",
-      "grade": "遗物",
-      "prevAvg": 2928,
-      "recentDeal": 3010,
-      "lowest": 3099,
-      "pageOrder": 17
-    },
-    {
       "date": "2026-05-29",
       "name": "破釜沉舟",
       "grade": "遗物",
@@ -2761,156 +1322,12 @@
       "pageOrder": 17
     },
     {
-      "date": "2026-06-11",
-      "name": "破釜沉舟",
-      "grade": "遗物",
-      "prevAvg": 3920,
-      "recentDeal": 3888,
-      "lowest": 3388,
-      "pageOrder": 17
-    },
-    {
-      "date": "2026-06-12",
-      "name": "破釜沉舟",
-      "grade": "遗物",
-      "prevAvg": 3726,
-      "recentDeal": 3888,
-      "lowest": 3900,
-      "pageOrder": 17
-    },
-    {
-      "date": "2026-06-15",
-      "name": "破釜沉舟",
-      "grade": "遗物",
-      "prevAvg": 3280,
-      "recentDeal": 3888,
-      "lowest": 3888,
-      "pageOrder": 17
-    },
-    {
-      "date": "2026-06-16",
-      "name": "破釜沉舟",
-      "grade": "遗物",
-      "prevAvg": 3486,
-      "recentDeal": 3180,
-      "lowest": 3099,
-      "pageOrder": 17
-    },
-    {
-      "date": "2026-06-19",
-      "name": "破釜沉舟",
-      "grade": "遗物",
-      "prevAvg": 2796,
-      "recentDeal": 3211,
-      "lowest": 3110,
-      "pageOrder": 17
-    },
-    {
-      "date": "2026-06-17",
-      "name": "身披重甲",
-      "grade": "遗物",
-      "prevAvg": 4108,
-      "recentDeal": 3650,
-      "lowest": 3650,
-      "pageOrder": 17
-    },
-    {
-      "date": "2026-06-11",
-      "name": "法力爆发",
-      "grade": "遗物",
-      "prevAvg": 2737,
-      "recentDeal": 2888,
-      "lowest": 2900,
-      "pageOrder": 18
-    },
-    {
       "date": "2026-05-29",
       "name": "护盾猛攻",
       "grade": "遗物",
       "prevAvg": 4507,
       "recentDeal": 4111,
       "lowest": 4311,
-      "pageOrder": 18
-    },
-    {
-      "date": "2026-06-16",
-      "name": "护盾猛攻",
-      "grade": "遗物",
-      "prevAvg": 2847,
-      "recentDeal": 2665,
-      "lowest": 2660,
-      "pageOrder": 18
-    },
-    {
-      "date": "2026-06-18",
-      "name": "护盾猛攻",
-      "grade": "遗物",
-      "prevAvg": 2715,
-      "recentDeal": 2991,
-      "lowest": 2888,
-      "pageOrder": 18
-    },
-    {
-      "date": "2026-06-12",
-      "name": "精力充沛",
-      "grade": "遗物",
-      "prevAvg": 3025,
-      "recentDeal": 3554,
-      "lowest": 3499,
-      "pageOrder": 18
-    },
-    {
-      "date": "2026-06-15",
-      "name": "精力充沛",
-      "grade": "遗物",
-      "prevAvg": 3018,
-      "recentDeal": 3986,
-      "lowest": 3599,
-      "pageOrder": 18
-    },
-    {
-      "date": "2026-06-17",
-      "name": "精力充沛",
-      "grade": "遗物",
-      "prevAvg": 3025,
-      "recentDeal": 2777,
-      "lowest": 2788,
-      "pageOrder": 18
-    },
-    {
-      "date": "2026-06-19",
-      "name": "精力充沛",
-      "grade": "遗物",
-      "prevAvg": 2825,
-      "recentDeal": 2994,
-      "lowest": 2955,
-      "pageOrder": 18
-    },
-    {
-      "date": "2026-06-13",
-      "name": "破釜沉舟",
-      "grade": "遗物",
-      "prevAvg": 3831,
-      "recentDeal": 3555,
-      "lowest": 3333,
-      "pageOrder": 18
-    },
-    {
-      "date": "2026-06-14",
-      "name": "破釜沉舟",
-      "grade": "遗物",
-      "prevAvg": 3537,
-      "recentDeal": 3333,
-      "lowest": 2949,
-      "pageOrder": 18
-    },
-    {
-      "date": "2026-06-20",
-      "name": "破釜沉舟",
-      "grade": "遗物",
-      "prevAvg": 2994,
-      "recentDeal": 2985,
-      "lowest": 2880,
       "pageOrder": 18
     },
     {
@@ -2923,192 +1340,12 @@
       "pageOrder": 19
     },
     {
-      "date": "2026-06-16",
-      "name": "法力爆发",
-      "grade": "遗物",
-      "prevAvg": 2130,
-      "recentDeal": 2100,
-      "lowest": 2108,
-      "pageOrder": 19
-    },
-    {
-      "date": "2026-06-11",
-      "name": "护盾猛攻",
-      "grade": "遗物",
-      "prevAvg": 3038,
-      "recentDeal": 3333,
-      "lowest": 2796,
-      "pageOrder": 19
-    },
-    {
-      "date": "2026-06-12",
-      "name": "护盾猛攻",
-      "grade": "遗物",
-      "prevAvg": 2972,
-      "recentDeal": 2999,
-      "lowest": 2988,
-      "pageOrder": 19
-    },
-    {
-      "date": "2026-06-13",
-      "name": "护盾猛攻",
-      "grade": "遗物",
-      "prevAvg": 3163,
-      "recentDeal": 3318,
-      "lowest": 3189,
-      "pageOrder": 19
-    },
-    {
-      "date": "2026-06-17",
-      "name": "护盾猛攻",
-      "grade": "遗物",
-      "prevAvg": 2648,
-      "recentDeal": 2665,
-      "lowest": 2600,
-      "pageOrder": 19
-    },
-    {
-      "date": "2026-06-19",
-      "name": "护盾猛攻",
-      "grade": "遗物",
-      "prevAvg": 2507,
-      "recentDeal": 2880,
-      "lowest": 2885,
-      "pageOrder": 19
-    },
-    {
-      "date": "2026-06-14",
-      "name": "精力充沛",
-      "grade": "遗物",
-      "prevAvg": 3447,
-      "recentDeal": 3440,
-      "lowest": 2879,
-      "pageOrder": 19
-    },
-    {
-      "date": "2026-06-20",
-      "name": "精力充沛",
-      "grade": "遗物",
-      "prevAvg": 2818,
-      "recentDeal": 2788,
-      "lowest": 2799,
-      "pageOrder": 19
-    },
-    {
-      "date": "2026-06-15",
-      "name": "精气吸收",
-      "grade": "遗物",
-      "prevAvg": 3024,
-      "recentDeal": 3211,
-      "lowest": 2964,
-      "pageOrder": 19
-    },
-    {
-      "date": "2026-06-18",
-      "name": "破釜沉舟",
-      "grade": "遗物",
-      "prevAvg": 3237,
-      "recentDeal": 2898,
-      "lowest": 2745,
-      "pageOrder": 19
-    },
-    {
-      "date": "2026-06-12",
-      "name": "法力爆发",
-      "grade": "遗物",
-      "prevAvg": 2343,
-      "recentDeal": 2421,
-      "lowest": 2333,
-      "pageOrder": 20
-    },
-    {
-      "date": "2026-06-13",
-      "name": "法力爆发",
-      "grade": "遗物",
-      "prevAvg": 2157,
-      "recentDeal": 2988,
-      "lowest": 2887,
-      "pageOrder": 20
-    },
-    {
-      "date": "2026-06-14",
-      "name": "法力爆发",
-      "grade": "遗物",
-      "prevAvg": 2402,
-      "recentDeal": 2399,
-      "lowest": 2288,
-      "pageOrder": 20
-    },
-    {
-      "date": "2026-06-15",
-      "name": "法力爆发",
-      "grade": "遗物",
-      "prevAvg": 2268,
-      "recentDeal": 2200,
-      "lowest": 2268,
-      "pageOrder": 20
-    },
-    {
-      "date": "2026-06-17",
-      "name": "法力爆发",
-      "grade": "遗物",
-      "prevAvg": 2202,
-      "recentDeal": 2552,
-      "lowest": 2250,
-      "pageOrder": 20
-    },
-    {
-      "date": "2026-06-18",
-      "name": "法力爆发",
-      "grade": "遗物",
-      "prevAvg": 2077,
-      "recentDeal": 1998,
-      "lowest": 1998,
-      "pageOrder": 20
-    },
-    {
-      "date": "2026-06-19",
-      "name": "法力爆发",
-      "grade": "遗物",
-      "prevAvg": 1676,
-      "recentDeal": 1886,
-      "lowest": 1885,
-      "pageOrder": 20
-    },
-    {
-      "date": "2026-06-20",
-      "name": "法力爆发",
-      "grade": "遗物",
-      "prevAvg": 1881,
-      "recentDeal": 1995,
-      "lowest": 1777,
-      "pageOrder": 20
-    },
-    {
       "date": "2026-05-29",
       "name": "精力充沛",
       "grade": "遗物",
       "prevAvg": 3967,
       "recentDeal": 2884,
       "lowest": 2885,
-      "pageOrder": 20
-    },
-    {
-      "date": "2026-06-11",
-      "name": "精力充沛",
-      "grade": "遗物",
-      "prevAvg": 3118,
-      "recentDeal": 3000,
-      "lowest": 2587,
-      "pageOrder": 20
-    },
-    {
-      "date": "2026-06-16",
-      "name": "精力充沛",
-      "grade": "遗物",
-      "prevAvg": 3295,
-      "recentDeal": 2199,
-      "lowest": 1999,
       "pageOrder": 20
     },
     {
@@ -5270,18 +3507,1998 @@
       "recentDeal": 2988,
       "lowest": 2968,
       "pageOrder": 260
+    },
+    {
+      "date": "2026-06-11",
+      "name": "肾上腺素",
+      "grade": "遗物",
+      "prevAvg": 134979,
+      "recentDeal": 130000,
+      "lowest": 132888,
+      "pageOrder": 1
+    },
+    {
+      "date": "2026-06-11",
+      "name": "怨恨",
+      "grade": "遗物",
+      "prevAvg": 132240,
+      "recentDeal": 131399,
+      "lowest": 131499,
+      "pageOrder": 2
+    },
+    {
+      "date": "2026-06-11",
+      "name": "迅捷利刃",
+      "grade": "遗物",
+      "prevAvg": 131764,
+      "recentDeal": 128000,
+      "lowest": 128660,
+      "pageOrder": 3
+    },
+    {
+      "date": "2026-06-11",
+      "name": "尖刺重锤",
+      "grade": "遗物",
+      "prevAvg": 119168,
+      "recentDeal": 121088,
+      "lowest": 119997,
+      "pageOrder": 4
+    },
+    {
+      "date": "2026-06-11",
+      "name": "重量强化",
+      "grade": "遗物",
+      "prevAvg": 91254,
+      "recentDeal": 87548,
+      "lowest": 87549,
+      "pageOrder": 5
+    },
+    {
+      "date": "2026-06-11",
+      "name": "奇袭大师",
+      "grade": "遗物",
+      "prevAvg": 51120,
+      "recentDeal": 51000,
+      "lowest": 51992,
+      "pageOrder": 6
+    },
+    {
+      "date": "2026-06-11",
+      "name": "强力侧击",
+      "grade": "遗物",
+      "prevAvg": 47289,
+      "recentDeal": 46466,
+      "lowest": 46466,
+      "pageOrder": 7
+    },
+    {
+      "date": "2026-06-11",
+      "name": "决斗大师",
+      "grade": "遗物",
+      "prevAvg": 43208,
+      "recentDeal": 42553,
+      "lowest": 42000,
+      "pageOrder": 8
+    },
+    {
+      "date": "2026-06-11",
+      "name": "咒术人偶",
+      "grade": "遗物",
+      "prevAvg": 39894,
+      "recentDeal": 39000,
+      "lowest": 39000,
+      "pageOrder": 9
+    },
+    {
+      "date": "2026-06-11",
+      "name": "妙手回春",
+      "grade": "遗物",
+      "prevAvg": 36922,
+      "recentDeal": 37497,
+      "lowest": 37498,
+      "pageOrder": 10
+    },
+    {
+      "date": "2026-06-11",
+      "name": "蓄力强化",
+      "grade": "遗物",
+      "prevAvg": 37227,
+      "recentDeal": 37997,
+      "lowest": 37444,
+      "pageOrder": 11
+    },
+    {
+      "date": "2026-06-11",
+      "name": "觉醒",
+      "grade": "遗物",
+      "prevAvg": 40492,
+      "recentDeal": 37599,
+      "lowest": 36666,
+      "pageOrder": 12
+    },
+    {
+      "date": "2026-06-11",
+      "name": "法力环绕",
+      "grade": "遗物",
+      "prevAvg": 7782,
+      "recentDeal": 7332,
+      "lowest": 7288,
+      "pageOrder": 13
+    },
+    {
+      "date": "2026-06-11",
+      "name": "以太生成",
+      "grade": "遗物",
+      "prevAvg": 7777,
+      "recentDeal": 6000,
+      "lowest": 6222,
+      "pageOrder": 14
+    },
+    {
+      "date": "2026-06-11",
+      "name": "速战速决",
+      "grade": "遗物",
+      "prevAvg": 6943,
+      "recentDeal": 8333,
+      "lowest": 5888,
+      "pageOrder": 15
+    },
+    {
+      "date": "2026-06-11",
+      "name": "身披重甲",
+      "grade": "遗物",
+      "prevAvg": 5357,
+      "recentDeal": 5777,
+      "lowest": 5222,
+      "pageOrder": 16
+    },
+    {
+      "date": "2026-06-11",
+      "name": "破釜沉舟",
+      "grade": "遗物",
+      "prevAvg": 3920,
+      "recentDeal": 3888,
+      "lowest": 3388,
+      "pageOrder": 17
+    },
+    {
+      "date": "2026-06-11",
+      "name": "法力爆发",
+      "grade": "遗物",
+      "prevAvg": 2737,
+      "recentDeal": 2888,
+      "lowest": 2900,
+      "pageOrder": 18
+    },
+    {
+      "date": "2026-06-11",
+      "name": "护盾猛攻",
+      "grade": "遗物",
+      "prevAvg": 3038,
+      "recentDeal": 3333,
+      "lowest": 2796,
+      "pageOrder": 19
+    },
+    {
+      "date": "2026-06-11",
+      "name": "精力充沛",
+      "grade": "遗物",
+      "prevAvg": 3118,
+      "recentDeal": 3000,
+      "lowest": 2587,
+      "pageOrder": 20
+    },
+    {
+      "date": "2026-06-12",
+      "name": "怨恨",
+      "grade": "遗物",
+      "prevAvg": 130799,
+      "recentDeal": 133249,
+      "lowest": 133110,
+      "pageOrder": 1
+    },
+    {
+      "date": "2026-06-12",
+      "name": "肾上腺素",
+      "grade": "遗物",
+      "prevAvg": 132046,
+      "recentDeal": 128888,
+      "lowest": 129555,
+      "pageOrder": 2
+    },
+    {
+      "date": "2026-06-12",
+      "name": "迅捷利刃",
+      "grade": "遗物",
+      "prevAvg": 127214,
+      "recentDeal": 127988,
+      "lowest": 127989,
+      "pageOrder": 3
+    },
+    {
+      "date": "2026-06-12",
+      "name": "尖刺重锤",
+      "grade": "遗物",
+      "prevAvg": 115666,
+      "recentDeal": 115879,
+      "lowest": 115880,
+      "pageOrder": 4
+    },
+    {
+      "date": "2026-06-12",
+      "name": "重量强化",
+      "grade": "遗物",
+      "prevAvg": 85341,
+      "recentDeal": 81888,
+      "lowest": 81998,
+      "pageOrder": 5
+    },
+    {
+      "date": "2026-06-12",
+      "name": "奇袭大师",
+      "grade": "遗物",
+      "prevAvg": 52331,
+      "recentDeal": 51111,
+      "lowest": 51100,
+      "pageOrder": 6
+    },
+    {
+      "date": "2026-06-12",
+      "name": "强力侧击",
+      "grade": "遗物",
+      "prevAvg": 43404,
+      "recentDeal": 44650,
+      "lowest": 44652,
+      "pageOrder": 7
+    },
+    {
+      "date": "2026-06-12",
+      "name": "蓄力强化",
+      "grade": "遗物",
+      "prevAvg": 39536,
+      "recentDeal": 43554,
+      "lowest": 43550,
+      "pageOrder": 8
+    },
+    {
+      "date": "2026-06-12",
+      "name": "决斗大师",
+      "grade": "遗物",
+      "prevAvg": 42671,
+      "recentDeal": 43333,
+      "lowest": 43333,
+      "pageOrder": 9
+    },
+    {
+      "date": "2026-06-12",
+      "name": "觉醒",
+      "grade": "遗物",
+      "prevAvg": 39744,
+      "recentDeal": 40500,
+      "lowest": 39998,
+      "pageOrder": 10
+    },
+    {
+      "date": "2026-06-12",
+      "name": "咒术人偶",
+      "grade": "遗物",
+      "prevAvg": 39657,
+      "recentDeal": 40599,
+      "lowest": 39990,
+      "pageOrder": 11
+    },
+    {
+      "date": "2026-06-12",
+      "name": "妙手回春",
+      "grade": "遗物",
+      "prevAvg": 35374,
+      "recentDeal": 33433,
+      "lowest": 33496,
+      "pageOrder": 12
+    },
+    {
+      "date": "2026-06-12",
+      "name": "速战速决",
+      "grade": "遗物",
+      "prevAvg": 7307,
+      "recentDeal": 7543,
+      "lowest": 7405,
+      "pageOrder": 13
+    },
+    {
+      "date": "2026-06-12",
+      "name": "法力环绕",
+      "grade": "遗物",
+      "prevAvg": 7248,
+      "recentDeal": 7543,
+      "lowest": 7400,
+      "pageOrder": 14
+    },
+    {
+      "date": "2026-06-12",
+      "name": "以太生成",
+      "grade": "遗物",
+      "prevAvg": 7015,
+      "recentDeal": 5111,
+      "lowest": 5555,
+      "pageOrder": 15
+    },
+    {
+      "date": "2026-06-12",
+      "name": "身披重甲",
+      "grade": "遗物",
+      "prevAvg": 5029,
+      "recentDeal": 4787,
+      "lowest": 4777,
+      "pageOrder": 16
+    },
+    {
+      "date": "2026-06-12",
+      "name": "破釜沉舟",
+      "grade": "遗物",
+      "prevAvg": 3726,
+      "recentDeal": 3888,
+      "lowest": 3900,
+      "pageOrder": 17
+    },
+    {
+      "date": "2026-06-12",
+      "name": "精力充沛",
+      "grade": "遗物",
+      "prevAvg": 3025,
+      "recentDeal": 3554,
+      "lowest": 3499,
+      "pageOrder": 18
+    },
+    {
+      "date": "2026-06-12",
+      "name": "护盾猛攻",
+      "grade": "遗物",
+      "prevAvg": 2972,
+      "recentDeal": 2999,
+      "lowest": 2988,
+      "pageOrder": 19
+    },
+    {
+      "date": "2026-06-12",
+      "name": "法力爆发",
+      "grade": "遗物",
+      "prevAvg": 2343,
+      "recentDeal": 2421,
+      "lowest": 2333,
+      "pageOrder": 20
+    },
+    {
+      "date": "2026-06-13",
+      "name": "肾上腺素",
+      "grade": "遗物",
+      "prevAvg": 134352,
+      "recentDeal": 137992,
+      "lowest": 137993,
+      "pageOrder": 1
+    },
+    {
+      "date": "2026-06-13",
+      "name": "怨恨",
+      "grade": "遗物",
+      "prevAvg": 134026,
+      "recentDeal": 129999,
+      "lowest": 134440,
+      "pageOrder": 2
+    },
+    {
+      "date": "2026-06-13",
+      "name": "迅捷利刃",
+      "grade": "遗物",
+      "prevAvg": 128114,
+      "recentDeal": 131950,
+      "lowest": 131950,
+      "pageOrder": 3
+    },
+    {
+      "date": "2026-06-13",
+      "name": "尖刺重锤",
+      "grade": "遗物",
+      "prevAvg": 116048,
+      "recentDeal": 116999,
+      "lowest": 116999,
+      "pageOrder": 4
+    },
+    {
+      "date": "2026-06-13",
+      "name": "重量强化",
+      "grade": "遗物",
+      "prevAvg": 89375,
+      "recentDeal": 93885,
+      "lowest": 93111,
+      "pageOrder": 5
+    },
+    {
+      "date": "2026-06-13",
+      "name": "奇袭大师",
+      "grade": "遗物",
+      "prevAvg": 50889,
+      "recentDeal": 51998,
+      "lowest": 51998,
+      "pageOrder": 6
+    },
+    {
+      "date": "2026-06-13",
+      "name": "决斗大师",
+      "grade": "遗物",
+      "prevAvg": 42158,
+      "recentDeal": 41776,
+      "lowest": 41399,
+      "pageOrder": 7
+    },
+    {
+      "date": "2026-06-13",
+      "name": "强力侧击",
+      "grade": "遗物",
+      "prevAvg": 44855,
+      "recentDeal": 42555,
+      "lowest": 38900,
+      "pageOrder": 8
+    },
+    {
+      "date": "2026-06-13",
+      "name": "觉醒",
+      "grade": "遗物",
+      "prevAvg": 39292,
+      "recentDeal": 38866,
+      "lowest": 38880,
+      "pageOrder": 9
+    },
+    {
+      "date": "2026-06-13",
+      "name": "咒术人偶",
+      "grade": "遗物",
+      "prevAvg": 40085,
+      "recentDeal": 36999,
+      "lowest": 37750,
+      "pageOrder": 10
+    },
+    {
+      "date": "2026-06-13",
+      "name": "蓄力强化",
+      "grade": "遗物",
+      "prevAvg": 39742,
+      "recentDeal": 36666,
+      "lowest": 37221,
+      "pageOrder": 11
+    },
+    {
+      "date": "2026-06-13",
+      "name": "妙手回春",
+      "grade": "遗物",
+      "prevAvg": 33370,
+      "recentDeal": 34330,
+      "lowest": 34000,
+      "pageOrder": 12
+    },
+    {
+      "date": "2026-06-13",
+      "name": "速战速决",
+      "grade": "遗物",
+      "prevAvg": 7027,
+      "recentDeal": 7777,
+      "lowest": 7343,
+      "pageOrder": 13
+    },
+    {
+      "date": "2026-06-13",
+      "name": "以太生成",
+      "grade": "遗物",
+      "prevAvg": 6983,
+      "recentDeal": 6666,
+      "lowest": 6776,
+      "pageOrder": 14
+    },
+    {
+      "date": "2026-06-13",
+      "name": "法力环绕",
+      "grade": "遗物",
+      "prevAvg": 7210,
+      "recentDeal": 6666,
+      "lowest": 6666,
+      "pageOrder": 15
+    },
+    {
+      "date": "2026-06-13",
+      "name": "身披重甲",
+      "grade": "遗物",
+      "prevAvg": 4976,
+      "recentDeal": 6333,
+      "lowest": 5200,
+      "pageOrder": 16
+    },
+    {
+      "date": "2026-06-13",
+      "name": "精力充沛",
+      "grade": "遗物",
+      "prevAvg": 3079,
+      "recentDeal": 4321,
+      "lowest": 3799,
+      "pageOrder": 17
+    },
+    {
+      "date": "2026-06-13",
+      "name": "破釜沉舟",
+      "grade": "遗物",
+      "prevAvg": 3831,
+      "recentDeal": 3555,
+      "lowest": 3333,
+      "pageOrder": 18
+    },
+    {
+      "date": "2026-06-13",
+      "name": "护盾猛攻",
+      "grade": "遗物",
+      "prevAvg": 3163,
+      "recentDeal": 3318,
+      "lowest": 3189,
+      "pageOrder": 19
+    },
+    {
+      "date": "2026-06-13",
+      "name": "法力爆发",
+      "grade": "遗物",
+      "prevAvg": 2157,
+      "recentDeal": 2988,
+      "lowest": 2887,
+      "pageOrder": 20
+    },
+    {
+      "date": "2026-06-14",
+      "name": "肾上腺素",
+      "grade": "遗物",
+      "prevAvg": 135591,
+      "recentDeal": 134999,
+      "lowest": 132999,
+      "pageOrder": 1
+    },
+    {
+      "date": "2026-06-14",
+      "name": "怨恨",
+      "grade": "遗物",
+      "prevAvg": 136649,
+      "recentDeal": 10,
+      "lowest": 132222,
+      "pageOrder": 2
+    },
+    {
+      "date": "2026-06-14",
+      "name": "迅捷利刃",
+      "grade": "遗物",
+      "prevAvg": 134486,
+      "recentDeal": 132222,
+      "lowest": 131666,
+      "pageOrder": 3
+    },
+    {
+      "date": "2026-06-14",
+      "name": "尖刺重锤",
+      "grade": "遗物",
+      "prevAvg": 116413,
+      "recentDeal": 111111,
+      "lowest": 113330,
+      "pageOrder": 4
+    },
+    {
+      "date": "2026-06-14",
+      "name": "重量强化",
+      "grade": "遗物",
+      "prevAvg": 90292,
+      "recentDeal": 83333,
+      "lowest": 84242,
+      "pageOrder": 5
+    },
+    {
+      "date": "2026-06-14",
+      "name": "奇袭大师",
+      "grade": "遗物",
+      "prevAvg": 51056,
+      "recentDeal": 50888,
+      "lowest": 49888,
+      "pageOrder": 6
+    },
+    {
+      "date": "2026-06-14",
+      "name": "觉醒",
+      "grade": "遗物",
+      "prevAvg": 38889,
+      "recentDeal": 10,
+      "lowest": 48333,
+      "pageOrder": 7
+    },
+    {
+      "date": "2026-06-14",
+      "name": "决斗大师",
+      "grade": "遗物",
+      "prevAvg": 41860,
+      "recentDeal": 41999,
+      "lowest": 41866,
+      "pageOrder": 8
+    },
+    {
+      "date": "2026-06-14",
+      "name": "强力侧击",
+      "grade": "遗物",
+      "prevAvg": 43305,
+      "recentDeal": 41109,
+      "lowest": 41055,
+      "pageOrder": 9
+    },
+    {
+      "date": "2026-06-14",
+      "name": "蓄力强化",
+      "grade": "遗物",
+      "prevAvg": 37618,
+      "recentDeal": 38888,
+      "lowest": 37769,
+      "pageOrder": 10
+    },
+    {
+      "date": "2026-06-14",
+      "name": "咒术人偶",
+      "grade": "遗物",
+      "prevAvg": 39020,
+      "recentDeal": 36999,
+      "lowest": 36888,
+      "pageOrder": 11
+    },
+    {
+      "date": "2026-06-14",
+      "name": "妙手回春",
+      "grade": "遗物",
+      "prevAvg": 35032,
+      "recentDeal": 38888,
+      "lowest": 35999,
+      "pageOrder": 12
+    },
+    {
+      "date": "2026-06-14",
+      "name": "法力环绕",
+      "grade": "遗物",
+      "prevAvg": 7110,
+      "recentDeal": 7330,
+      "lowest": 7298,
+      "pageOrder": 13
+    },
+    {
+      "date": "2026-06-14",
+      "name": "速战速决",
+      "grade": "遗物",
+      "prevAvg": 7296,
+      "recentDeal": 7663,
+      "lowest": 7100,
+      "pageOrder": 14
+    },
+    {
+      "date": "2026-06-14",
+      "name": "以太生成",
+      "grade": "遗物",
+      "prevAvg": 7033,
+      "recentDeal": 6866,
+      "lowest": 6779,
+      "pageOrder": 15
+    },
+    {
+      "date": "2026-06-14",
+      "name": "身披重甲",
+      "grade": "遗物",
+      "prevAvg": 5130,
+      "recentDeal": 4900,
+      "lowest": 4776,
+      "pageOrder": 16
+    },
+    {
+      "date": "2026-06-14",
+      "name": "护盾猛攻",
+      "grade": "遗物",
+      "prevAvg": 2958,
+      "recentDeal": 3000,
+      "lowest": 3000,
+      "pageOrder": 17
+    },
+    {
+      "date": "2026-06-14",
+      "name": "破釜沉舟",
+      "grade": "遗物",
+      "prevAvg": 3537,
+      "recentDeal": 3333,
+      "lowest": 2949,
+      "pageOrder": 18
+    },
+    {
+      "date": "2026-06-14",
+      "name": "精力充沛",
+      "grade": "遗物",
+      "prevAvg": 3447,
+      "recentDeal": 3440,
+      "lowest": 2879,
+      "pageOrder": 19
+    },
+    {
+      "date": "2026-06-14",
+      "name": "法力爆发",
+      "grade": "遗物",
+      "prevAvg": 2402,
+      "recentDeal": 2399,
+      "lowest": 2288,
+      "pageOrder": 20
+    },
+    {
+      "date": "2026-06-15",
+      "name": "怨恨",
+      "grade": "遗物",
+      "prevAvg": 132161,
+      "recentDeal": 131800,
+      "lowest": 131800,
+      "pageOrder": 1
+    },
+    {
+      "date": "2026-06-15",
+      "name": "迅捷利刃",
+      "grade": "遗物",
+      "prevAvg": 130941,
+      "recentDeal": 129999,
+      "lowest": 131000,
+      "pageOrder": 2
+    },
+    {
+      "date": "2026-06-15",
+      "name": "肾上腺素",
+      "grade": "遗物",
+      "prevAvg": 132832,
+      "recentDeal": 117500,
+      "lowest": 130997,
+      "pageOrder": 3
+    },
+    {
+      "date": "2026-06-15",
+      "name": "尖刺重锤",
+      "grade": "遗物",
+      "prevAvg": 112467,
+      "recentDeal": 111888,
+      "lowest": 111108,
+      "pageOrder": 4
+    },
+    {
+      "date": "2026-06-15",
+      "name": "重量强化",
+      "grade": "遗物",
+      "prevAvg": 85462,
+      "recentDeal": 84998,
+      "lowest": 83333,
+      "pageOrder": 5
+    },
+    {
+      "date": "2026-06-15",
+      "name": "奇袭大师",
+      "grade": "遗物",
+      "prevAvg": 48783,
+      "recentDeal": 46549,
+      "lowest": 45999,
+      "pageOrder": 6
+    },
+    {
+      "date": "2026-06-15",
+      "name": "决斗大师",
+      "grade": "遗物",
+      "prevAvg": 41511,
+      "recentDeal": 42496,
+      "lowest": 42496,
+      "pageOrder": 7
+    },
+    {
+      "date": "2026-06-15",
+      "name": "觉醒",
+      "grade": "遗物",
+      "prevAvg": 39717,
+      "recentDeal": 41995,
+      "lowest": 41588,
+      "pageOrder": 8
+    },
+    {
+      "date": "2026-06-15",
+      "name": "强力侧击",
+      "grade": "遗物",
+      "prevAvg": 42089,
+      "recentDeal": 42222,
+      "lowest": 39888,
+      "pageOrder": 9
+    },
+    {
+      "date": "2026-06-15",
+      "name": "咒术人偶",
+      "grade": "遗物",
+      "prevAvg": 36885,
+      "recentDeal": 38444,
+      "lowest": 37888,
+      "pageOrder": 10
+    },
+    {
+      "date": "2026-06-15",
+      "name": "蓄力强化",
+      "grade": "遗物",
+      "prevAvg": 36329,
+      "recentDeal": 10,
+      "lowest": 36999,
+      "pageOrder": 11
+    },
+    {
+      "date": "2026-06-15",
+      "name": "妙手回春",
+      "grade": "遗物",
+      "prevAvg": 35678,
+      "recentDeal": 32600,
+      "lowest": 32666,
+      "pageOrder": 12
+    },
+    {
+      "date": "2026-06-15",
+      "name": "以太生成",
+      "grade": "遗物",
+      "prevAvg": 6618,
+      "recentDeal": 7288,
+      "lowest": 7276,
+      "pageOrder": 13
+    },
+    {
+      "date": "2026-06-15",
+      "name": "法力环绕",
+      "grade": "遗物",
+      "prevAvg": 7082,
+      "recentDeal": 6999,
+      "lowest": 6766,
+      "pageOrder": 14
+    },
+    {
+      "date": "2026-06-15",
+      "name": "速战速决",
+      "grade": "遗物",
+      "prevAvg": 6593,
+      "recentDeal": 6995,
+      "lowest": 6200,
+      "pageOrder": 15
+    },
+    {
+      "date": "2026-06-15",
+      "name": "精密短刀",
+      "grade": "遗物",
+      "prevAvg": 4659,
+      "recentDeal": 4950,
+      "lowest": 4455,
+      "pageOrder": 16
+    },
+    {
+      "date": "2026-06-15",
+      "name": "破釜沉舟",
+      "grade": "遗物",
+      "prevAvg": 3280,
+      "recentDeal": 3888,
+      "lowest": 3888,
+      "pageOrder": 17
+    },
+    {
+      "date": "2026-06-15",
+      "name": "精力充沛",
+      "grade": "遗物",
+      "prevAvg": 3018,
+      "recentDeal": 3986,
+      "lowest": 3599,
+      "pageOrder": 18
+    },
+    {
+      "date": "2026-06-15",
+      "name": "精气吸收",
+      "grade": "遗物",
+      "prevAvg": 3024,
+      "recentDeal": 3211,
+      "lowest": 2964,
+      "pageOrder": 19
+    },
+    {
+      "date": "2026-06-15",
+      "name": "法力爆发",
+      "grade": "遗物",
+      "prevAvg": 2268,
+      "recentDeal": 2200,
+      "lowest": 2268,
+      "pageOrder": 20
+    },
+    {
+      "date": "2026-06-16",
+      "name": "迅捷利刃",
+      "grade": "遗物",
+      "prevAvg": 128278,
+      "recentDeal": 129998,
+      "lowest": 129998,
+      "pageOrder": 1
+    },
+    {
+      "date": "2026-06-16",
+      "name": "肾上腺素",
+      "grade": "遗物",
+      "prevAvg": 128788,
+      "recentDeal": 126666,
+      "lowest": 126998,
+      "pageOrder": 2
+    },
+    {
+      "date": "2026-06-16",
+      "name": "怨恨",
+      "grade": "遗物",
+      "prevAvg": 128431,
+      "recentDeal": 125995,
+      "lowest": 125995,
+      "pageOrder": 3
+    },
+    {
+      "date": "2026-06-16",
+      "name": "尖刺重锤",
+      "grade": "遗物",
+      "prevAvg": 112163,
+      "recentDeal": 108800,
+      "lowest": 108800,
+      "pageOrder": 4
+    },
+    {
+      "date": "2026-06-16",
+      "name": "重量强化",
+      "grade": "遗物",
+      "prevAvg": 83485,
+      "recentDeal": 80888,
+      "lowest": 81108,
+      "pageOrder": 5
+    },
+    {
+      "date": "2026-06-16",
+      "name": "奇袭大师",
+      "grade": "遗物",
+      "prevAvg": 45676,
+      "recentDeal": 47000,
+      "lowest": 46665,
+      "pageOrder": 6
+    },
+    {
+      "date": "2026-06-16",
+      "name": "强力侧击",
+      "grade": "遗物",
+      "prevAvg": 42044,
+      "recentDeal": 39999,
+      "lowest": 41555,
+      "pageOrder": 7
+    },
+    {
+      "date": "2026-06-16",
+      "name": "决斗大师",
+      "grade": "遗物",
+      "prevAvg": 41295,
+      "recentDeal": 40668,
+      "lowest": 39999,
+      "pageOrder": 8
+    },
+    {
+      "date": "2026-06-16",
+      "name": "觉醒",
+      "grade": "遗物",
+      "prevAvg": 39304,
+      "recentDeal": 36666,
+      "lowest": 36997,
+      "pageOrder": 9
+    },
+    {
+      "date": "2026-06-16",
+      "name": "蓄力强化",
+      "grade": "遗物",
+      "prevAvg": 34953,
+      "recentDeal": 36555,
+      "lowest": 36111,
+      "pageOrder": 10
+    },
+    {
+      "date": "2026-06-16",
+      "name": "咒术人偶",
+      "grade": "遗物",
+      "prevAvg": 36585,
+      "recentDeal": 35555,
+      "lowest": 35999,
+      "pageOrder": 11
+    },
+    {
+      "date": "2026-06-16",
+      "name": "妙手回春",
+      "grade": "遗物",
+      "prevAvg": 34483,
+      "recentDeal": 33332,
+      "lowest": 33329,
+      "pageOrder": 12
+    },
+    {
+      "date": "2026-06-16",
+      "name": "速战速决",
+      "grade": "遗物",
+      "prevAvg": 6352,
+      "recentDeal": 7294,
+      "lowest": 6999,
+      "pageOrder": 13
+    },
+    {
+      "date": "2026-06-16",
+      "name": "法力环绕",
+      "grade": "遗物",
+      "prevAvg": 6870,
+      "recentDeal": 6990,
+      "lowest": 6990,
+      "pageOrder": 14
+    },
+    {
+      "date": "2026-06-16",
+      "name": "以太生成",
+      "grade": "遗物",
+      "prevAvg": 6592,
+      "recentDeal": 6088,
+      "lowest": 6000,
+      "pageOrder": 15
+    },
+    {
+      "date": "2026-06-16",
+      "name": "身披重甲",
+      "grade": "遗物",
+      "prevAvg": 4201,
+      "recentDeal": 4330,
+      "lowest": 3995,
+      "pageOrder": 16
+    },
+    {
+      "date": "2026-06-16",
+      "name": "破釜沉舟",
+      "grade": "遗物",
+      "prevAvg": 3486,
+      "recentDeal": 3180,
+      "lowest": 3099,
+      "pageOrder": 17
+    },
+    {
+      "date": "2026-06-16",
+      "name": "护盾猛攻",
+      "grade": "遗物",
+      "prevAvg": 2847,
+      "recentDeal": 2665,
+      "lowest": 2660,
+      "pageOrder": 18
+    },
+    {
+      "date": "2026-06-16",
+      "name": "法力爆发",
+      "grade": "遗物",
+      "prevAvg": 2130,
+      "recentDeal": 2100,
+      "lowest": 2108,
+      "pageOrder": 19
+    },
+    {
+      "date": "2026-06-16",
+      "name": "精力充沛",
+      "grade": "遗物",
+      "prevAvg": 3295,
+      "recentDeal": 2199,
+      "lowest": 1999,
+      "pageOrder": 20
+    },
+    {
+      "date": "2026-06-17",
+      "name": "迅捷利刃",
+      "grade": "遗物",
+      "prevAvg": 126912,
+      "recentDeal": 125299,
+      "lowest": 125000,
+      "pageOrder": 1
+    },
+    {
+      "date": "2026-06-17",
+      "name": "肾上腺素",
+      "grade": "遗物",
+      "prevAvg": 123547,
+      "recentDeal": 124567,
+      "lowest": 124996,
+      "pageOrder": 2
+    },
+    {
+      "date": "2026-06-17",
+      "name": "怨恨",
+      "grade": "遗物",
+      "prevAvg": 125391,
+      "recentDeal": 123888,
+      "lowest": 123888,
+      "pageOrder": 3
+    },
+    {
+      "date": "2026-06-17",
+      "name": "尖刺重锤",
+      "grade": "遗物",
+      "prevAvg": 112295,
+      "recentDeal": 118859,
+      "lowest": 114444,
+      "pageOrder": 4
+    },
+    {
+      "date": "2026-06-17",
+      "name": "重量强化",
+      "grade": "遗物",
+      "prevAvg": 82134,
+      "recentDeal": 84444,
+      "lowest": 83999,
+      "pageOrder": 5
+    },
+    {
+      "date": "2026-06-17",
+      "name": "奇袭大师",
+      "grade": "遗物",
+      "prevAvg": 45364,
+      "recentDeal": 41990,
+      "lowest": 41998,
+      "pageOrder": 6
+    },
+    {
+      "date": "2026-06-17",
+      "name": "强力侧击",
+      "grade": "遗物",
+      "prevAvg": 41276,
+      "recentDeal": 40555,
+      "lowest": 40664,
+      "pageOrder": 7
+    },
+    {
+      "date": "2026-06-17",
+      "name": "决斗大师",
+      "grade": "遗物",
+      "prevAvg": 40036,
+      "recentDeal": 37999,
+      "lowest": 38777,
+      "pageOrder": 8
+    },
+    {
+      "date": "2026-06-17",
+      "name": "蓄力强化",
+      "grade": "遗物",
+      "prevAvg": 35759,
+      "recentDeal": 35555,
+      "lowest": 35532,
+      "pageOrder": 9
+    },
+    {
+      "date": "2026-06-17",
+      "name": "咒术人偶",
+      "grade": "遗物",
+      "prevAvg": 35326,
+      "recentDeal": 35666,
+      "lowest": 34566,
+      "pageOrder": 10
+    },
+    {
+      "date": "2026-06-17",
+      "name": "觉醒",
+      "grade": "遗物",
+      "prevAvg": 36898,
+      "recentDeal": 33333,
+      "lowest": 34500,
+      "pageOrder": 11
+    },
+    {
+      "date": "2026-06-17",
+      "name": "妙手回春",
+      "grade": "遗物",
+      "prevAvg": 33213,
+      "recentDeal": 32000,
+      "lowest": 31999,
+      "pageOrder": 12
+    },
+    {
+      "date": "2026-06-17",
+      "name": "法力环绕",
+      "grade": "遗物",
+      "prevAvg": 6546,
+      "recentDeal": 6316,
+      "lowest": 6300,
+      "pageOrder": 13
+    },
+    {
+      "date": "2026-06-17",
+      "name": "以太生成",
+      "grade": "遗物",
+      "prevAvg": 5937,
+      "recentDeal": 5936,
+      "lowest": 5898,
+      "pageOrder": 14
+    },
+    {
+      "date": "2026-06-17",
+      "name": "速战速决",
+      "grade": "遗物",
+      "prevAvg": 6632,
+      "recentDeal": 5999,
+      "lowest": 5887,
+      "pageOrder": 15
+    },
+    {
+      "date": "2026-06-17",
+      "name": "破釜沉舟",
+      "grade": "遗物",
+      "prevAvg": 3523,
+      "recentDeal": 3885,
+      "lowest": 3762,
+      "pageOrder": 16
+    },
+    {
+      "date": "2026-06-17",
+      "name": "身披重甲",
+      "grade": "遗物",
+      "prevAvg": 4108,
+      "recentDeal": 3650,
+      "lowest": 3650,
+      "pageOrder": 17
+    },
+    {
+      "date": "2026-06-17",
+      "name": "精力充沛",
+      "grade": "遗物",
+      "prevAvg": 3025,
+      "recentDeal": 2777,
+      "lowest": 2788,
+      "pageOrder": 18
+    },
+    {
+      "date": "2026-06-17",
+      "name": "护盾猛攻",
+      "grade": "遗物",
+      "prevAvg": 2648,
+      "recentDeal": 2665,
+      "lowest": 2600,
+      "pageOrder": 19
+    },
+    {
+      "date": "2026-06-17",
+      "name": "法力爆发",
+      "grade": "遗物",
+      "prevAvg": 2202,
+      "recentDeal": 2552,
+      "lowest": 2250,
+      "pageOrder": 20
+    },
+    {
+      "date": "2026-06-18",
+      "name": "迅捷利刃",
+      "grade": "遗物",
+      "prevAvg": 125022,
+      "recentDeal": 128111,
+      "lowest": 127776,
+      "pageOrder": 1
+    },
+    {
+      "date": "2026-06-18",
+      "name": "怨恨",
+      "grade": "遗物",
+      "prevAvg": 126089,
+      "recentDeal": 123333,
+      "lowest": 126664,
+      "pageOrder": 2
+    },
+    {
+      "date": "2026-06-18",
+      "name": "肾上腺素",
+      "grade": "遗物",
+      "prevAvg": 124319,
+      "recentDeal": 126998,
+      "lowest": 125555,
+      "pageOrder": 3
+    },
+    {
+      "date": "2026-06-18",
+      "name": "尖刺重锤",
+      "grade": "遗物",
+      "prevAvg": 114539,
+      "recentDeal": 111555,
+      "lowest": 111333,
+      "pageOrder": 4
+    },
+    {
+      "date": "2026-06-18",
+      "name": "重量强化",
+      "grade": "遗物",
+      "prevAvg": 88416,
+      "recentDeal": 83331,
+      "lowest": 83322,
+      "pageOrder": 5
+    },
+    {
+      "date": "2026-06-18",
+      "name": "奇袭大师",
+      "grade": "遗物",
+      "prevAvg": 44478,
+      "recentDeal": 49999,
+      "lowest": 49999,
+      "pageOrder": 6
+    },
+    {
+      "date": "2026-06-18",
+      "name": "强力侧击",
+      "grade": "遗物",
+      "prevAvg": 42742,
+      "recentDeal": 45000,
+      "lowest": 44444,
+      "pageOrder": 7
+    },
+    {
+      "date": "2026-06-18",
+      "name": "决斗大师",
+      "grade": "遗物",
+      "prevAvg": 38467,
+      "recentDeal": 39995,
+      "lowest": 39988,
+      "pageOrder": 8
+    },
+    {
+      "date": "2026-06-18",
+      "name": "咒术人偶",
+      "grade": "遗物",
+      "prevAvg": 35936,
+      "recentDeal": 39990,
+      "lowest": 39000,
+      "pageOrder": 9
+    },
+    {
+      "date": "2026-06-18",
+      "name": "觉醒",
+      "grade": "遗物",
+      "prevAvg": 36193,
+      "recentDeal": 37555,
+      "lowest": 35888,
+      "pageOrder": 10
+    },
+    {
+      "date": "2026-06-18",
+      "name": "蓄力强化",
+      "grade": "遗物",
+      "prevAvg": 33262,
+      "recentDeal": 32222,
+      "lowest": 32000,
+      "pageOrder": 11
+    },
+    {
+      "date": "2026-06-18",
+      "name": "妙手回春",
+      "grade": "遗物",
+      "prevAvg": 31666,
+      "recentDeal": 32647,
+      "lowest": 31950,
+      "pageOrder": 12
+    },
+    {
+      "date": "2026-06-18",
+      "name": "法力环绕",
+      "grade": "遗物",
+      "prevAvg": 6762,
+      "recentDeal": 6599,
+      "lowest": 6661,
+      "pageOrder": 13
+    },
+    {
+      "date": "2026-06-18",
+      "name": "速战速决",
+      "grade": "遗物",
+      "prevAvg": 5868,
+      "recentDeal": 5896,
+      "lowest": 5888,
+      "pageOrder": 14
+    },
+    {
+      "date": "2026-06-18",
+      "name": "以太生成",
+      "grade": "遗物",
+      "prevAvg": 6005,
+      "recentDeal": 6195,
+      "lowest": 5888,
+      "pageOrder": 15
+    },
+    {
+      "date": "2026-06-18",
+      "name": "身披重甲",
+      "grade": "遗物",
+      "prevAvg": 4131,
+      "recentDeal": 4648,
+      "lowest": 4648,
+      "pageOrder": 16
+    },
+    {
+      "date": "2026-06-18",
+      "name": "精力充沛",
+      "grade": "遗物",
+      "prevAvg": 2928,
+      "recentDeal": 3010,
+      "lowest": 3099,
+      "pageOrder": 17
+    },
+    {
+      "date": "2026-06-18",
+      "name": "护盾猛攻",
+      "grade": "遗物",
+      "prevAvg": 2715,
+      "recentDeal": 2991,
+      "lowest": 2888,
+      "pageOrder": 18
+    },
+    {
+      "date": "2026-06-18",
+      "name": "破釜沉舟",
+      "grade": "遗物",
+      "prevAvg": 3237,
+      "recentDeal": 2898,
+      "lowest": 2745,
+      "pageOrder": 19
+    },
+    {
+      "date": "2026-06-18",
+      "name": "法力爆发",
+      "grade": "遗物",
+      "prevAvg": 2077,
+      "recentDeal": 1998,
+      "lowest": 1998,
+      "pageOrder": 20
+    },
+    {
+      "date": "2026-06-19",
+      "name": "迅捷利刃",
+      "grade": "遗物",
+      "prevAvg": 125837,
+      "recentDeal": 127000,
+      "lowest": 126500,
+      "pageOrder": 1
+    },
+    {
+      "date": "2026-06-19",
+      "name": "怨恨",
+      "grade": "遗物",
+      "prevAvg": 126566,
+      "recentDeal": 125555,
+      "lowest": 126444,
+      "pageOrder": 2
+    },
+    {
+      "date": "2026-06-19",
+      "name": "肾上腺素",
+      "grade": "遗物",
+      "prevAvg": 126197,
+      "recentDeal": 125999,
+      "lowest": 125995,
+      "pageOrder": 3
+    },
+    {
+      "date": "2026-06-19",
+      "name": "尖刺重锤",
+      "grade": "遗物",
+      "prevAvg": 109065,
+      "recentDeal": 109888,
+      "lowest": 109800,
+      "pageOrder": 4
+    },
+    {
+      "date": "2026-06-19",
+      "name": "重量强化",
+      "grade": "遗物",
+      "prevAvg": 83719,
+      "recentDeal": 91665,
+      "lowest": 91665,
+      "pageOrder": 5
+    },
+    {
+      "date": "2026-06-19",
+      "name": "奇袭大师",
+      "grade": "遗物",
+      "prevAvg": 47781,
+      "recentDeal": 46877,
+      "lowest": 46777,
+      "pageOrder": 6
+    },
+    {
+      "date": "2026-06-19",
+      "name": "强力侧击",
+      "grade": "遗物",
+      "prevAvg": 43073,
+      "recentDeal": 42665,
+      "lowest": 42666,
+      "pageOrder": 7
+    },
+    {
+      "date": "2026-06-19",
+      "name": "决斗大师",
+      "grade": "遗物",
+      "prevAvg": 39153,
+      "recentDeal": 39999,
+      "lowest": 39998,
+      "pageOrder": 8
+    },
+    {
+      "date": "2026-06-19",
+      "name": "蓄力强化",
+      "grade": "遗物",
+      "prevAvg": 32181,
+      "recentDeal": 39999,
+      "lowest": 39987,
+      "pageOrder": 9
+    },
+    {
+      "date": "2026-06-19",
+      "name": "觉醒",
+      "grade": "遗物",
+      "prevAvg": 36615,
+      "recentDeal": 37775,
+      "lowest": 37655,
+      "pageOrder": 10
+    },
+    {
+      "date": "2026-06-19",
+      "name": "咒术人偶",
+      "grade": "遗物",
+      "prevAvg": 37355,
+      "recentDeal": 36499,
+      "lowest": 35555,
+      "pageOrder": 11
+    },
+    {
+      "date": "2026-06-19",
+      "name": "妙手回春",
+      "grade": "遗物",
+      "prevAvg": 31631,
+      "recentDeal": 31543,
+      "lowest": 31554,
+      "pageOrder": 12
+    },
+    {
+      "date": "2026-06-19",
+      "name": "法力环绕",
+      "grade": "遗物",
+      "prevAvg": 6688,
+      "recentDeal": 6499,
+      "lowest": 6444,
+      "pageOrder": 13
+    },
+    {
+      "date": "2026-06-19",
+      "name": "以太生成",
+      "grade": "遗物",
+      "prevAvg": 6005,
+      "recentDeal": 6005,
+      "lowest": 6088,
+      "pageOrder": 14
+    },
+    {
+      "date": "2026-06-19",
+      "name": "速战速决",
+      "grade": "遗物",
+      "prevAvg": 5452,
+      "recentDeal": 5676,
+      "lowest": 5677,
+      "pageOrder": 15
+    },
+    {
+      "date": "2026-06-19",
+      "name": "身披重甲",
+      "grade": "遗物",
+      "prevAvg": 4382,
+      "recentDeal": 4399,
+      "lowest": 4399,
+      "pageOrder": 16
+    },
+    {
+      "date": "2026-06-19",
+      "name": "破釜沉舟",
+      "grade": "遗物",
+      "prevAvg": 2796,
+      "recentDeal": 3211,
+      "lowest": 3110,
+      "pageOrder": 17
+    },
+    {
+      "date": "2026-06-19",
+      "name": "精力充沛",
+      "grade": "遗物",
+      "prevAvg": 2825,
+      "recentDeal": 2994,
+      "lowest": 2955,
+      "pageOrder": 18
+    },
+    {
+      "date": "2026-06-19",
+      "name": "护盾猛攻",
+      "grade": "遗物",
+      "prevAvg": 2507,
+      "recentDeal": 2880,
+      "lowest": 2885,
+      "pageOrder": 19
+    },
+    {
+      "date": "2026-06-19",
+      "name": "法力爆发",
+      "grade": "遗物",
+      "prevAvg": 1676,
+      "recentDeal": 1886,
+      "lowest": 1885,
+      "pageOrder": 20
+    },
+    {
+      "date": "2026-06-20",
+      "name": "怨恨",
+      "grade": "遗物",
+      "prevAvg": 128130,
+      "recentDeal": 127996,
+      "lowest": 127996,
+      "pageOrder": 1
+    },
+    {
+      "date": "2026-06-20",
+      "name": "肾上腺素",
+      "grade": "遗物",
+      "prevAvg": 127575,
+      "recentDeal": 125888,
+      "lowest": 127777,
+      "pageOrder": 2
+    },
+    {
+      "date": "2026-06-20",
+      "name": "迅捷利刃",
+      "grade": "遗物",
+      "prevAvg": 129392,
+      "recentDeal": 126555,
+      "lowest": 126666,
+      "pageOrder": 3
+    },
+    {
+      "date": "2026-06-20",
+      "name": "尖刺重锤",
+      "grade": "遗物",
+      "prevAvg": 114475,
+      "recentDeal": 116666,
+      "lowest": 116660,
+      "pageOrder": 4
+    },
+    {
+      "date": "2026-06-20",
+      "name": "重量强化",
+      "grade": "遗物",
+      "prevAvg": 88738,
+      "recentDeal": 84433,
+      "lowest": 83333,
+      "pageOrder": 5
+    },
+    {
+      "date": "2026-06-20",
+      "name": "奇袭大师",
+      "grade": "遗物",
+      "prevAvg": 46454,
+      "recentDeal": 47899,
+      "lowest": 47899,
+      "pageOrder": 6
+    },
+    {
+      "date": "2026-06-20",
+      "name": "强力侧击",
+      "grade": "遗物",
+      "prevAvg": 42707,
+      "recentDeal": 42300,
+      "lowest": 42332,
+      "pageOrder": 7
+    },
+    {
+      "date": "2026-06-20",
+      "name": "决斗大师",
+      "grade": "遗物",
+      "prevAvg": 41238,
+      "recentDeal": 44400,
+      "lowest": 41999,
+      "pageOrder": 8
+    },
+    {
+      "date": "2026-06-20",
+      "name": "觉醒",
+      "grade": "遗物",
+      "prevAvg": 37266,
+      "recentDeal": 42220,
+      "lowest": 38008,
+      "pageOrder": 9
+    },
+    {
+      "date": "2026-06-20",
+      "name": "咒术人偶",
+      "grade": "遗物",
+      "prevAvg": 37720,
+      "recentDeal": 37144,
+      "lowest": 37000,
+      "pageOrder": 10
+    },
+    {
+      "date": "2026-06-20",
+      "name": "蓄力强化",
+      "grade": "遗物",
+      "prevAvg": 36587,
+      "recentDeal": 35655,
+      "lowest": 35655,
+      "pageOrder": 11
+    },
+    {
+      "date": "2026-06-20",
+      "name": "妙手回春",
+      "grade": "遗物",
+      "prevAvg": 33324,
+      "recentDeal": 33333,
+      "lowest": 32500,
+      "pageOrder": 12
+    },
+    {
+      "date": "2026-06-20",
+      "name": "法力环绕",
+      "grade": "遗物",
+      "prevAvg": 6501,
+      "recentDeal": 6111,
+      "lowest": 6699,
+      "pageOrder": 13
+    },
+    {
+      "date": "2026-06-20",
+      "name": "以太生成",
+      "grade": "遗物",
+      "prevAvg": 6155,
+      "recentDeal": 5999,
+      "lowest": 6100,
+      "pageOrder": 14
+    },
+    {
+      "date": "2026-06-20",
+      "name": "身披重甲",
+      "grade": "遗物",
+      "prevAvg": 4354,
+      "recentDeal": 4666,
+      "lowest": 5099,
+      "pageOrder": 15
+    },
+    {
+      "date": "2026-06-20",
+      "name": "速战速决",
+      "grade": "遗物",
+      "prevAvg": 5552,
+      "recentDeal": 5999,
+      "lowest": 4998,
+      "pageOrder": 16
+    },
+    {
+      "date": "2026-06-20",
+      "name": "护盾猛攻",
+      "grade": "遗物",
+      "prevAvg": 2664,
+      "recentDeal": 2887,
+      "lowest": 2888,
+      "pageOrder": 17
+    },
+    {
+      "date": "2026-06-20",
+      "name": "破釜沉舟",
+      "grade": "遗物",
+      "prevAvg": 2994,
+      "recentDeal": 2985,
+      "lowest": 2880,
+      "pageOrder": 18
+    },
+    {
+      "date": "2026-06-20",
+      "name": "精力充沛",
+      "grade": "遗物",
+      "prevAvg": 2818,
+      "recentDeal": 2788,
+      "lowest": 2799,
+      "pageOrder": 19
+    },
+    {
+      "date": "2026-06-20",
+      "name": "法力爆发",
+      "grade": "遗物",
+      "prevAvg": 1881,
+      "recentDeal": 1995,
+      "lowest": 1777,
+      "pageOrder": 20
+    },
+    {
+      "date": "2026-06-21",
+      "name": "肾上腺素",
+      "grade": "遗物",
+      "prevAvg": 128194,
+      "recentDeal": 127000,
+      "lowest": 127000,
+      "pageOrder": 1
+    },
+    {
+      "date": "2026-06-21",
+      "name": "迅捷利刃",
+      "grade": "遗物",
+      "prevAvg": 126882,
+      "recentDeal": 125555,
+      "lowest": 125996,
+      "pageOrder": 2
+    },
+    {
+      "date": "2026-06-21",
+      "name": "怨恨",
+      "grade": "遗物",
+      "prevAvg": 127718,
+      "recentDeal": 124886,
+      "lowest": 124887,
+      "pageOrder": 3
+    },
+    {
+      "date": "2026-06-21",
+      "name": "尖刺重锤",
+      "grade": "遗物",
+      "prevAvg": 115754,
+      "recentDeal": 114889,
+      "lowest": 112000,
+      "pageOrder": 4
+    },
+    {
+      "date": "2026-06-21",
+      "name": "重量强化",
+      "grade": "遗物",
+      "prevAvg": 85160,
+      "recentDeal": 79999,
+      "lowest": 78995,
+      "pageOrder": 5
+    },
+    {
+      "date": "2026-06-21",
+      "name": "奇袭大师",
+      "grade": "遗物",
+      "prevAvg": 50787,
+      "recentDeal": 58888,
+      "lowest": 52750,
+      "pageOrder": 6
+    },
+    {
+      "date": "2026-06-21",
+      "name": "强力侧击",
+      "grade": "遗物",
+      "prevAvg": 41662,
+      "recentDeal": 39111,
+      "lowest": 39942,
+      "pageOrder": 7
+    },
+    {
+      "date": "2026-06-21",
+      "name": "决斗大师",
+      "grade": "遗物",
+      "prevAvg": 41837,
+      "recentDeal": 40353,
+      "lowest": 39887,
+      "pageOrder": 8
+    },
+    {
+      "date": "2026-06-21",
+      "name": "蓄力强化",
+      "grade": "遗物",
+      "prevAvg": 39463,
+      "recentDeal": 47700,
+      "lowest": 39452,
+      "pageOrder": 9
+    },
+    {
+      "date": "2026-06-21",
+      "name": "觉醒",
+      "grade": "遗物",
+      "prevAvg": 38543,
+      "recentDeal": 36122,
+      "lowest": 36444,
+      "pageOrder": 10
+    },
+    {
+      "date": "2026-06-21",
+      "name": "咒术人偶",
+      "grade": "遗物",
+      "prevAvg": 36532,
+      "recentDeal": 31300,
+      "lowest": 33100,
+      "pageOrder": 11
+    },
+    {
+      "date": "2026-06-21",
+      "name": "妙手回春",
+      "grade": "遗物",
+      "prevAvg": 31767,
+      "recentDeal": 29999,
+      "lowest": 30555,
+      "pageOrder": 12
+    },
+    {
+      "date": "2026-06-21",
+      "name": "法力环绕",
+      "grade": "遗物",
+      "prevAvg": 6502,
+      "recentDeal": 6664,
+      "lowest": 6665,
+      "pageOrder": 13
+    },
+    {
+      "date": "2026-06-21",
+      "name": "以太生成",
+      "grade": "遗物",
+      "prevAvg": 6209,
+      "recentDeal": 5975,
+      "lowest": 5000,
+      "pageOrder": 14
+    },
+    {
+      "date": "2026-06-21",
+      "name": "速战速决",
+      "grade": "遗物",
+      "prevAvg": 5454,
+      "recentDeal": 4444,
+      "lowest": 4444,
+      "pageOrder": 15
+    },
+    {
+      "date": "2026-06-21",
+      "name": "身披重甲",
+      "grade": "遗物",
+      "prevAvg": 4694,
+      "recentDeal": 4455,
+      "lowest": 3999,
+      "pageOrder": 16
+    },
+    {
+      "date": "2026-06-21",
+      "name": "破釜沉舟",
+      "grade": "遗物",
+      "prevAvg": 2785,
+      "recentDeal": 2666,
+      "lowest": 2760,
+      "pageOrder": 17
+    },
+    {
+      "date": "2026-06-21",
+      "name": "精力充沛",
+      "grade": "遗物",
+      "prevAvg": 2951,
+      "recentDeal": 3500,
+      "lowest": 2660,
+      "pageOrder": 18
+    },
+    {
+      "date": "2026-06-21",
+      "name": "护盾猛攻",
+      "grade": "遗物",
+      "prevAvg": 2665,
+      "recentDeal": 2222,
+      "lowest": 2100,
+      "pageOrder": 19
+    },
+    {
+      "date": "2026-06-21",
+      "name": "法力爆发",
+      "grade": "遗物",
+      "prevAvg": 1734,
+      "recentDeal": 1444,
+      "lowest": 1498,
+      "pageOrder": 20
     }
   ],
   "settings": {
     "withdrawChannel": "ccb",
     "buyRateSourceIndex": 101,
-    "buyRateSourceKey": "mid:mail:2026-06-20",
-    "quoteDate": "2026-06-20",
-    "publishedAt": "2026-06-20 09:00",
+    "buyRateSourceKey": "mid:mail:2026-06-21",
+    "quoteDate": "2026-06-21",
+    "publishedAt": "2026-06-21 09:00",
     "importTimestamps": {
-      "gem": "2026-06-20 09:00",
-      "gold": "2026-06-20 09:00",
-      "engraving": "2026-06-20 09:00"
+      "gem": "2026-06-21 09:00",
+      "gold": "2026-06-21 09:00",
+      "engraving": "2026-06-21 09:00"
     },
     "heatMode": "price",
     "notesMode": 0,
@@ -5289,7 +5506,7 @@
       "gemLevel": "10级",
       "gemQuoteDate": "latest",
       "gemQty": "1",
-      "gemPrice": "2747777",
+      "gemPrice": "2722222",
       "buyGold": "2999999"
     },
     "watermarkEnabled": true,

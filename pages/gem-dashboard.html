@@ -1720,7 +1720,7 @@ document.getElementById("exportBackupBtn")?.addEventListener("click",()=>{
   const blob=new Blob([JSON.stringify(buildDashboardState(),null,2)],{type:"application/json;charset=utf-8"});
   const a=document.createElement("a");
   a.href=URL.createObjectURL(blob);
-  a.download="宝石价格指数仪表盘备份.json";
+  a.download="dashboard-state-"+(String(buildDashboardState().publishedAt||new Date().toISOString()).match(/\d{4}-\d{2}-\d{2}/)?.[0]||new Date().toISOString().slice(0,10))+".json";
   a.click();
   setTimeout(()=>URL.revokeObjectURL(a.href),1000);
   document.getElementById("statusline").textContent="已导出完整数据备份。";
