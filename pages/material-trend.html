@@ -40,6 +40,8 @@
     .select,.search{border:1px solid var(--line);border-radius:999px;background:#fff;color:#111827;padding:8px 12px;font-size:13px;font-weight:750;outline:0}
     .search{width:220px}
     .price-mode{display:flex;align-items:center;gap:8px}
+    .price-mode-row{display:flex;align-items:center;gap:8px}
+    .ratio-note{position:fixed;left:18px;bottom:18px;z-index:28;max-width:min(420px,calc(100vw - 36px));padding:10px 14px;border:1px solid rgba(229,231,235,.95);border-radius:12px;background:rgba(255,255,255,.96);box-shadow:0 12px 28px rgba(15,23,42,.12);color:#334155;font-size:14px;font-weight:900;line-height:1.35}
     .ratio-input{display:none;width:118px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#111827;padding:8px 12px;font-size:13px;font-weight:750;outline:0}
     .ratio-input.open{display:block}
     .charts{grid-template-columns:repeat(var(--chart-cols,3),minmax(0,1fr));align-items:start}
@@ -134,13 +136,15 @@
       </div>
       <div class="tools">
         <div class="price-mode">
-          <select id="priceMode" class="select" aria-label="价格显示方式">
-            <option value="gold">金币价格</option>
-            <option value="mail">邮寄比例 RMB</option>
-            <option value="auction">拍卖比例 RMB</option>
-            <option value="custom">自定义比例 RMB</option>
-          </select>
-          <input id="customRatio" class="ratio-input" type="number" min="1" step="1" placeholder="金币/元" aria-label="自定义金币比例">
+          <div class="price-mode-row">
+            <select id="priceMode" class="select" aria-label="价格显示方式">
+              <option value="gold">金币价格</option>
+              <option value="mail">邮寄比例 RMB</option>
+              <option value="auction">拍卖比例 RMB</option>
+              <option value="custom">自定义比例 RMB</option>
+            </select>
+            <input id="customRatio" class="ratio-input" type="number" min="1" step="1" placeholder="金币/元" aria-label="自定义金币比例">
+          </div>
         </div>
         <input id="search" class="search" type="search" placeholder="筛选材料">
         <select id="sort" class="select">
@@ -171,6 +175,7 @@
 
     <section id="charts" class="grid charts"></section>
   </main>
+  <div id="ratioNote" class="ratio-note">按金币显示</div>
   <div id="tooltip" class="tooltip"></div>
 
   <script src="../data/dashboard-state.js"></script>
@@ -250,6 +255,22 @@
       if (state.priceMode === "gold") return 1;
       if (state.priceMode === "custom") return Number(state.customRatio) > 0 ? Number(state.customRatio) : null;
       return goldRatesByDate.get(date)?.[state.priceMode] || null;
+    }
+
+    function latestMaterialDate() {
+      return (history.rows || []).slice(-1)[0]?.date || "";
+    }
+
+    function ratioNoteText() {
+      const date = latestMaterialDate();
+      if (state.priceMode === "gold") return "当前按金币显示材料价格";
+      if (state.priceMode === "custom") {
+        const ratio = Number(state.customRatio);
+        return ratio > 0 ? `自定义比例 ${fmt(ratio)} 金/元` : "自定义比例：请输入金币/元";
+      }
+      const ratio = ratioForDate(date);
+      const label = state.priceMode === "mail" ? "邮寄最高" : "拍卖最高";
+      return ratio ? `${date} · ${label} ${fmt(ratio)} 金/元` : `${date} · 无当日${label}比例`;
     }
 
     function displayValue(point) {
@@ -454,6 +475,7 @@
       const input = document.getElementById("customRatio");
       input.value = state.customRatio || "";
       input.classList.toggle("open", state.priceMode === "custom");
+      document.getElementById("ratioNote").textContent = ratioNoteText();
     }
 
     function showTooltip(event, text) {
@@ -510,7 +532,10 @@
       state.customRatio = Number.isFinite(value) && value > 0 ? value : "";
       if (state.customRatio) localStorage.setItem("lostarkMaterialTrendCustomRatio", String(state.customRatio));
       else localStorage.removeItem("lostarkMaterialTrendCustomRatio");
-      if (state.priceMode === "custom") renderCharts();
+      if (state.priceMode === "custom") {
+        applyPriceModeSetting();
+        renderCharts();
+      }
     });
     document.getElementById("mainFilters").addEventListener("click", (event) => {
       const button = event.target.closest("[data-main-filter]");
