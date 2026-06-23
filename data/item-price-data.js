@@ -1,7 +1,7 @@
 window.LOSTARK_PUBLIC_ITEM_PRICE_DATA = {
   "app": "lostark-item-price-data",
   "version": 1,
-  "exportedAt": "2026-06-23T01:47:28.015Z",
+  "exportedAt": "2026-06-23T04:51:14.788Z",
   "storage": {
     "giftPackManualValues": "{\"命运破坏石\":{\"raw\":\"335\",\"value\":335,\"min\":335,\"max\":335,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"熔岩之息\":{\"raw\":\"249\",\"value\":249,\"min\":249,\"max\":249,\"isRange\":false,\"stackSize\":null,\"unit\":\"gold\"},\"命运碎片袋子（大）\":{\"raw\":\"189\",\"value\":189,\"min\":189,\"max\":189,\"isRange\":false,\"stackSize\":null,\"unit\":\"gold\"},\"冰川之息\":{\"raw\":\"146\",\"value\":146,\"min\":146,\"max\":146,\"isRange\":false,\"stackSize\":null,\"unit\":\"gold\"},\"命运碎片袋子（小）\":{\"raw\":\"52\",\"value\":52,\"min\":52,\"max\":52,\"isRange\":false,\"stackSize\":null,\"unit\":\"gold\"},\"阿比多斯融合材料\":{\"raw\":\"88\",\"value\":88,\"min\":88,\"max\":88,\"isRange\":false,\"stackSize\":null,\"unit\":\"gold\"},\"命运突破石\":{\"raw\":\"7\",\"value\":7,\"min\":7,\"max\":7,\"isRange\":false,\"stackSize\":null,\"unit\":\"gold\"},\"命运守护石\":{\"raw\":\"6\",\"value\":6,\"min\":6,\"max\":6,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"命运碎片袋子（中）\":{\"raw\":\"151\",\"value\":151,\"min\":151,\"max\":151,\"isRange\":false,\"stackSize\":null,\"unit\":\"gold\"}}",
     "giftPackItemSources": "{}",
