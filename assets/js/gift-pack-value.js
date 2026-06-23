@@ -3484,15 +3484,13 @@ function bindControls() {
     const matched = [...preset.options].find(option => option.value !== "custom" && Number(option.value) === rounded);
     preset.value = matched ? matched.value : "custom";
     custom.value = String(state.royalDiscount);
-    custom.hidden = preset.value !== "custom";
   };
   syncDiscountControls();
   preset.addEventListener("change", event => {
     if (event.target.value === "custom") {
-      custom.hidden = false;
+      custom.focus();
     } else {
       state.royalDiscount = Number(event.target.value);
-      custom.hidden = true;
       custom.value = String(state.royalDiscount);
       saveSettings();
       renderManualValues();
