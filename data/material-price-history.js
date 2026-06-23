@@ -1,8 +1,8 @@
 window.LOSTARK_PUBLIC_MATERIAL_PRICE_HISTORY = {
   "app": "lostark-material-price-history",
   "version": 1,
-  "generatedAt": "2026-06-23T02:37:33.623Z",
-  "source": "Git history of data/item-price-data.json",
+  "generatedAt": "2026-06-23T03:40:45.982Z",
+  "source": "Daily item-price-data exports",
   "items": [
     "命运破坏石",
     "熔岩之息",
@@ -201,7 +201,7 @@ window.LOSTARK_PUBLIC_MATERIAL_PRICE_HISTORY = {
     {
       "date": "2026-06-23",
       "exportedAt": "2026-06-23T01:47:28.015Z",
-      "commit": "570cc6c",
+      "commit": "",
       "values": {
         "命运破坏石": {
           "value": 335.0,
