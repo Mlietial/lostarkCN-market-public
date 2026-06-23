@@ -2364,7 +2364,7 @@ function applyManualSearchFilter() {
   document.querySelectorAll(".manual-list-item").forEach(button => {
     const name = button.dataset.manualSelect || "";
     const label = displayItemName(name);
-    button.hidden = !!query && !name.toLowerCase().includes(query) && !label.toLowerCase().includes(query);
+    button.hidden = !!query && !window.LostarkPinyinSearch?.any([name, label], query) && !name.toLowerCase().includes(query) && !label.toLowerCase().includes(query);
   });
 }
 

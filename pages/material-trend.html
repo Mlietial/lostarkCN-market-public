@@ -111,7 +111,6 @@
           <option value="30">近30天</option>
           <option value="14">近14天</option>
           <option value="7">近7天</option>
-          <option value="4">近4天</option>
         </select>
       </div>
     </section>
@@ -128,6 +127,8 @@
   </main>
   <div id="tooltip" class="tooltip"></div>
 
+  <script src="https://unpkg.com/pinyin-pro"></script>
+  <script src="../assets/js/pinyin-search.js"></script>
   <script src="../data/material-price-history.js"></script>
   <script>
     const history = window.LOSTARK_PUBLIC_MATERIAL_PRICE_HISTORY;
@@ -158,7 +159,7 @@
       if (!history || !Array.isArray(history.rows)) return [];
       const rows = history.rows.slice().sort((a, b) => String(a.date).localeCompare(String(b.date)));
       if (state.range === "all") return rows;
-      const autoLimit = state.cols === 1 ? 30 : state.cols === 2 ? 14 : state.cols === 3 ? 7 : 4;
+      const autoLimit = state.cols === 1 ? 30 : state.cols === 2 ? 14 : 7;
       const limit = state.range === "auto" ? autoLimit : Number(state.range);
       return rows.slice(-limit);
     }
@@ -172,7 +173,7 @@
 
     function visibleItems() {
       const q = state.search.trim();
-      const items = (history.items || []).filter((name) => !q || name.includes(q));
+      const items = (history.items || []).filter((name) => !q || window.LostarkPinyinSearch?.match(name, q) || name.includes(q));
       if (state.sort === "name") {
         return items.sort((a, b) => a.localeCompare(b, "zh-Hans-CN"));
       }

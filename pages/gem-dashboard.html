@@ -567,7 +567,7 @@ function getEngravingStatus(rate){if(rate<=-.08)return{text:"明显低于昨均"
 function formatEngravingNumber(n){return Number.isFinite(Number(n))?Number(n).toLocaleString("zh-CN",{maximumFractionDigits:2}):"—";}
 function formatEngravingPercent(rate){if(!Number.isFinite(rate))return"—";const pct=Number((rate*100).toFixed(2));if(pct>0)return"↑ +"+pct.toFixed(2)+"%";if(pct<0)return"↓ "+pct.toFixed(2)+"%";return"0.00%";}
 function engravingPctClass(rate){if(!Number.isFinite(rate))return"flat";const pct=Number((rate*100).toFixed(2));return pct>0?"up":pct<0?"down":"flat";}
-function getVisibleEngravingRows(){let rows=enrichEngravingRows();const selectedDate=getSelectedEngravingDate();if(selectedDate){rows=rows.filter(row=>engravingDateKey(row)===selectedDate);}const q=engravingSearch.trim().toLowerCase();if(q){rows=rows.filter(row=>(row.name+" "+row.grade).toLowerCase().includes(q));}if(engravingFilter==="highCore")rows=rows.filter(row=>row.lowest>=100000);if(engravingFilter==="deepDiscount")rows=rows.filter(row=>row.lowVsPrevAvg<=-.08);if(engravingFilter==="pump")rows=rows.filter(row=>row.lowVsPrevAvg>=.08);const key=engravingSortKey;rows.sort((a,b)=>{let av=a[key],bv=b[key];if(key==="name"){return engravingSortDir*a.name.localeCompare(b.name,"zh-CN");}if(av==null)av=0;if(bv==null)bv=0;return engravingSortDir*(av-bv)||a.pageOrder-b.pageOrder;});return rows;}
+function getVisibleEngravingRows(){let rows=enrichEngravingRows();const selectedDate=getSelectedEngravingDate();if(selectedDate){rows=rows.filter(row=>engravingDateKey(row)===selectedDate);}const q=engravingSearch.trim().toLowerCase();if(q){rows=rows.filter(row=>window.LostarkPinyinSearch?.match(row.name+" "+row.grade,q)||(row.name+" "+row.grade).toLowerCase().includes(q));}if(engravingFilter==="highCore")rows=rows.filter(row=>row.lowest>=100000);if(engravingFilter==="deepDiscount")rows=rows.filter(row=>row.lowVsPrevAvg<=-.08);if(engravingFilter==="pump")rows=rows.filter(row=>row.lowVsPrevAvg>=.08);const key=engravingSortKey;rows.sort((a,b)=>{let av=a[key],bv=b[key];if(key==="name"){return engravingSortDir*a.name.localeCompare(b.name,"zh-CN");}if(av==null)av=0;if(bv==null)bv=0;return engravingSortDir*(av-bv)||a.pageOrder-b.pageOrder;});return rows;}
 function resetEngravingPage(){engravingPage=0;}
 function splitEngravingImportLine(line,delimiter){if(delimiter===TAB)return line.split(TAB);if(delimiter===",")return line.split(",");return splitSpaces(line);}
 function normalizeEngravingImportText(text){return String(text||"").replace(/\u00a0/g," ").replace(/[，]/g,",").replace(/[：]/g,":").trim();}
@@ -976,8 +976,8 @@ function enhanceGcalcSelect(select,settings={}){
   function renderList(){
     const q=search.value.trim().toLowerCase();
     const options=Array.from(select.options).filter(opt=>{
-      const hay=(opt.textContent+" "+(opt.dataset.keywords||"")).toLowerCase();
-      return !q||hay.includes(q);
+      const hay=opt.textContent+" "+(opt.dataset.keywords||"");
+      return !q||window.LostarkPinyinSearch?.match(hay,q)||hay.toLowerCase().includes(q);
     });
     list.innerHTML="";
     if(!options.length){
@@ -1748,6 +1748,8 @@ document.getElementById("importBackupInput")?.addEventListener("change",async fu
 </script>
 <script id="EMBEDDED_DATA" type="application/json">{}</script>
 <script src="../data/dashboard-state.js"></script>
+<script src="https://unpkg.com/pinyin-pro"></script>
+<script src="../assets/js/pinyin-search.js"></script>
 <script type="module">
 try{
   const readEmbeddedDashboardState=()=>{
