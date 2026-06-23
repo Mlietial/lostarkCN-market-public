@@ -16,14 +16,23 @@
     .actions{position:relative}
     .btn{display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:999px;background:#fff;color:#111827;padding:9px 14px;font-size:13px;font-weight:850;text-decoration:none;cursor:pointer;box-shadow:none}
     .grid{display:grid;gap:16px}
-    .kpis{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:16px}
     .card{background:rgba(255,255,255,.94);border:1px solid rgba(229,231,235,.95);border-radius:12px;box-shadow:var(--shadow)}
-    .kpi{padding:15px 15px 14px;min-height:118px}
+    .content-layout{display:grid;grid-template-columns:260px minmax(0,1fr);gap:16px;align-items:start}
+    .content-layout.summary-collapsed{grid-template-columns:54px minmax(0,1fr)}
+    .summary-sidebar{position:sticky;top:14px;padding:12px;overflow:hidden}
+    .summary-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+    .summary-head h2{margin:0;font-size:16px;line-height:1.2;font-weight:950}
+    .summary-toggle{width:30px;height:30px;border:1px solid var(--line);border-radius:9px;background:#fff;color:#111827;font-size:16px;font-weight:950;line-height:1;cursor:pointer}
+    .summary-list{display:grid;gap:10px}
+    .content-layout.summary-collapsed .summary-sidebar{padding:10px}
+    .content-layout.summary-collapsed .summary-head h2,.content-layout.summary-collapsed .summary-list{display:none}
+    .content-layout.summary-collapsed .summary-head{justify-content:center;margin:0}
+    .kpi{padding:13px 13px 12px;min-height:104px}
     .kpi span{display:block;color:var(--muted);font-size:12px;font-weight:850;margin-bottom:8px}
-    .kpi b{display:block;font-size:27px;line-height:1.1;font-weight:950}
+    .kpi b{display:block;font-size:23px;line-height:1.14;font-weight:950;word-break:break-word}
     .kpi em{display:block;margin-top:8px;color:var(--muted);font-size:12px;line-height:1.35;font-style:normal}
-    .toolbar{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:18px 20px;margin-bottom:16px}
-    .toolbar h2{margin:0 0 8px;font-size:20px;line-height:1.2;font-weight:900}
+    .toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:13px 20px;margin-bottom:16px}
+    .toolbar h2{margin:0;font-size:20px;line-height:1.2;font-weight:900}
     .select,.search{border:1px solid var(--line);border-radius:999px;background:#fff;color:#111827;padding:8px 12px;font-size:13px;font-weight:750;outline:0}
     .search{width:220px}
     .charts{grid-template-columns:repeat(var(--chart-cols,3),minmax(0,1fr));align-items:start}
@@ -36,7 +45,7 @@
     .price-box{text-align:right;white-space:nowrap}
     .price-box b{display:block;font-size:23px;line-height:1.1;font-weight:950}
     .price-box span{display:block;margin-top:5px;font-size:12px;font-weight:850}
-    .chart-wrap{height:230px;width:100%;position:relative;overflow:hidden}
+    .chart-wrap{height:var(--chart-height,260px);width:100%;position:relative;overflow:hidden}
     .chart-wrap svg{display:block;width:100%;height:100%}
     .gridline{stroke:#edf1f6;stroke-width:1}
     .axis,.tick{fill:#64748b;font-size:11px}
@@ -56,8 +65,8 @@
     .segmented{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
     .segmented button{border:1px solid var(--line);border-radius:9px;background:#fff;color:#111827;padding:8px 0;font-size:13px;font-weight:900;cursor:pointer}
     .segmented button.active{border-color:#111827;background:#111827;color:#fff}
-    @media(max-width:1180px){.charts{grid-template-columns:repeat(min(var(--chart-cols,3),2),minmax(0,1fr))}}
-    @media(max-width:960px){.topbar,.toolbar{display:block}.actions,.tools{justify-content:flex-start;margin-top:12px}.settings-panel{left:0;right:auto}.kpis,.charts{grid-template-columns:1fr}h1{font-size:26px}.material-title h3{white-space:normal}}
+    @media(max-width:1180px){.content-layout{grid-template-columns:220px minmax(0,1fr)}}
+    @media(max-width:960px){.topbar,.toolbar{display:block}.actions,.tools{justify-content:flex-start;margin-top:12px}.settings-panel{left:0;right:auto}.content-layout,.content-layout.summary-collapsed{grid-template-columns:1fr}.summary-sidebar{position:static}.content-layout.summary-collapsed .summary-sidebar{padding:12px}.content-layout.summary-collapsed .summary-head h2,.content-layout.summary-collapsed .summary-list{display:grid}.content-layout.summary-collapsed .summary-head{justify-content:space-between;margin-bottom:10px}.charts{grid-template-columns:1fr}h1{font-size:26px}.material-title h3{white-space:normal}}
   </style>
 </head>
 <body>
@@ -83,12 +92,9 @@
       </div>
     </section>
 
-    <section id="kpis" class="grid kpis"></section>
-
     <section class="card toolbar">
       <div>
         <h2>单材料折线图</h2>
-        <div class="subtitle">每个材料独立纵轴，避免价格差异把低价材料压扁。</div>
       </div>
       <div class="tools">
         <input id="search" class="search" type="search" placeholder="筛选材料">
@@ -101,7 +107,16 @@
       </div>
     </section>
 
-    <section id="charts" class="grid charts"></section>
+    <section id="contentLayout" class="content-layout">
+      <aside class="card summary-sidebar">
+        <div class="summary-head">
+          <h2>市场概览</h2>
+          <button id="summaryToggle" class="summary-toggle" type="button" aria-label="收起市场概览" aria-expanded="true">‹</button>
+        </div>
+        <section id="kpis" class="summary-list"></section>
+      </aside>
+      <section id="charts" class="grid charts"></section>
+    </section>
   </main>
   <div id="tooltip" class="tooltip"></div>
 
@@ -110,7 +125,8 @@
     const history = window.LOSTARK_PUBLIC_MATERIAL_PRICE_HISTORY;
     const colors = ["#2563eb","#d97706","#059669","#dc2626","#7c3aed","#0891b2","#ca8a04","#db2777","#475569","#16a34a"];
     const savedCols = Number(localStorage.getItem("lostarkMaterialTrendColumns") || 3);
-    const state = { range: "all", search: "", cols: [1, 2, 3, 4].includes(savedCols) ? savedCols : 3 };
+    const savedSummary = localStorage.getItem("lostarkMaterialTrendSummaryCollapsed") === "1";
+    const state = { range: "all", search: "", cols: [1, 2, 3, 4].includes(savedCols) ? savedCols : 3, summaryCollapsed: savedSummary };
 
     const fmt = (n) => n == null ? "—" : Math.round(n).toLocaleString("zh-CN");
     const pct = (n) => {
@@ -118,6 +134,7 @@
       const sign = n > 0 ? "+" : "";
       return `${sign}${n.toFixed(2)}%`;
     };
+    const esc = (value) => String(value).replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
     const shortDate = (s) => String(s || "").replace(/^[0-9]{4}-/, "");
     const iconUrl = (name) => `../assets/${encodeURIComponent(name)}.jpg`;
 
@@ -156,14 +173,14 @@
       const biggest = infos.filter((info) => info.change != null).sort((a, b) => Math.abs(b.change) - Math.abs(a.change))[0];
       const lastDate = (history.rows || []).slice(-1)[0]?.date || "—";
       document.getElementById("kpis").innerHTML = [
+        ["最大波动", biggest ? biggest.item : "—", biggest ? pct(biggest.change) : "—"],
         ["最新日期", lastDate, `${items.length} 个材料`],
         ["上涨材料", rising, "较前一次记录"],
-        ["下跌材料", falling, "较前一次记录"],
-        ["最大波动", biggest ? biggest.item : "—", biggest ? pct(biggest.change) : "—"]
+        ["下跌材料", falling, "较前一次记录"]
       ].map(([label, value, note]) => `<article class="card kpi"><span>${label}</span><b>${value}</b><em>${note}</em></article>`).join("");
     }
 
-    function renderMiniChart(item, itemIndex) {
+    function renderMiniChart(item, itemIndex, width, height) {
       const rows = rowsInRange();
       const pts = allPoints(item, rows);
       const c = colors[itemIndex % colors.length];
@@ -175,13 +192,15 @@
       const pad = Math.max(1, (max - min) * 0.18);
       const yMin = min - pad;
       const yMax = max + pad;
-      const w = 620, h = 230, m = { l: 56, r: 18, t: 18, b: 32 };
+      const w = Math.max(320, Math.round(width || 620));
+      const h = Math.max(220, Math.round(height || 260));
+      const m = { l: 56, r: 18, t: 18, b: 32 };
       const x = (i) => m.l + i * (w - m.l - m.r) / Math.max(1, rows.length - 1);
       const y = (v) => h - m.b - (v - yMin) / Math.max(1, yMax - yMin) * (h - m.t - m.b);
       const ticks = rows.map((_, i) => i).filter((i) => i === 0 || i === rows.length - 1 || i % Math.max(1, Math.ceil(rows.length / 5)) === 0);
       const path = pts.map((p, i) => `${i ? "L" : "M"}${x(p.index).toFixed(1)},${y(p.value).toFixed(1)}`).join(" ");
       const area = `${path} L${x(pts[pts.length - 1].index).toFixed(1)},${h - m.b} L${x(pts[0].index).toFixed(1)},${h - m.b} Z`;
-      let svg = `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">`;
+      let svg = `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">`;
       for (let i = 0; i < 4; i++) {
         const gy = m.t + i * (h - m.t - m.b) / 3;
         const value = yMax - i * (yMax - yMin) / 3;
@@ -196,6 +215,18 @@
       });
       svg += `<text class="axis" x="${m.l}" y="13">金币价格</text></svg>`;
       return svg;
+    }
+
+    function renderChartSvgs() {
+      document.querySelectorAll("[data-chart-item]").forEach((wrap) => {
+        const item = wrap.dataset.chartItem;
+        const index = Number(wrap.dataset.chartIndex);
+        wrap.innerHTML = renderMiniChart(item, index, wrap.clientWidth, wrap.clientHeight);
+      });
+      document.querySelectorAll("[data-tip]").forEach((node) => {
+        node.addEventListener("mousemove", (event) => showTooltip(event, node.dataset.tip));
+        node.addEventListener("mouseleave", hideTooltip);
+      });
     }
 
     function renderCharts() {
@@ -219,21 +250,29 @@
               <span class="${cls}">${pct(info.change)}</span>
             </div>
           </div>
-          <div class="chart-wrap">${renderMiniChart(item, index)}</div>
+          <div class="chart-wrap" data-chart-item="${esc(item)}" data-chart-index="${index}"></div>
         </article>`;
       }).join("");
       document.getElementById("charts").innerHTML = cards || '<div class="empty">没有匹配的材料。</div>';
-      document.querySelectorAll("[data-tip]").forEach((node) => {
-        node.addEventListener("mousemove", (event) => showTooltip(event, node.dataset.tip));
-        node.addEventListener("mouseleave", hideTooltip);
-      });
+      renderChartSvgs();
     }
 
     function applyColumnSetting() {
       document.documentElement.style.setProperty("--chart-cols", state.cols);
+      const height = state.cols === 1 ? 260 : state.cols === 2 ? 260 : state.cols === 3 ? 250 : 235;
+      document.documentElement.style.setProperty("--chart-height", `${height}px`);
       document.querySelectorAll("[data-cols]").forEach((button) => {
         button.classList.toggle("active", Number(button.dataset.cols) === state.cols);
       });
+    }
+
+    function applySummarySetting() {
+      const layout = document.getElementById("contentLayout");
+      const button = document.getElementById("summaryToggle");
+      layout.classList.toggle("summary-collapsed", state.summaryCollapsed);
+      button.textContent = state.summaryCollapsed ? "›" : "‹";
+      button.setAttribute("aria-expanded", String(!state.summaryCollapsed));
+      button.setAttribute("aria-label", state.summaryCollapsed ? "展开市场概览" : "收起市场概览");
     }
 
     function showTooltip(event, text) {
@@ -257,6 +296,7 @@
       document.getElementById("subtitle").textContent = `已收录 ${rows.length} 个日期，最新 ${rows[rows.length - 1]?.date || "—"}`;
       renderKpis();
       applyColumnSetting();
+      applySummarySetting();
       renderCharts();
     }
 
@@ -279,6 +319,13 @@
       state.cols = Number(button.dataset.cols);
       localStorage.setItem("lostarkMaterialTrendColumns", String(state.cols));
       applyColumnSetting();
+      requestAnimationFrame(renderChartSvgs);
+    });
+    document.getElementById("summaryToggle").addEventListener("click", () => {
+      state.summaryCollapsed = !state.summaryCollapsed;
+      localStorage.setItem("lostarkMaterialTrendSummaryCollapsed", state.summaryCollapsed ? "1" : "0");
+      applySummarySetting();
+      requestAnimationFrame(renderChartSvgs);
     });
     document.addEventListener("click", (event) => {
       const panel = document.getElementById("settingsPanel");
@@ -287,6 +334,10 @@
       if (panel.contains(event.target) || button.contains(event.target)) return;
       panel.classList.remove("open");
       button.setAttribute("aria-expanded", "false");
+    });
+    window.addEventListener("resize", () => {
+      window.clearTimeout(window.__materialTrendResizeTimer);
+      window.__materialTrendResizeTimer = window.setTimeout(renderChartSvgs, 120);
     });
 
     renderAll();
