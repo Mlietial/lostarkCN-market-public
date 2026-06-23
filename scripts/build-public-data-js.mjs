@@ -10,3 +10,5 @@ async function writeGlobalJson(sourcePath, targetPath, globalName) {
 
 await writeGlobalJson("data/dashboard-state.json", "data/dashboard-state.js", "LOSTARK_PUBLIC_DASHBOARD_STATE");
 await writeGlobalJson("data/gift-pack-data.json", "data/gift-pack-data.js", "LOSTARK_PUBLIC_GIFT_PACK_DATA");
+await writeGlobalJson("data/item-price-data.json", "data/item-price-data.js", "LOSTARK_PUBLIC_ITEM_PRICE_DATA");
+await writeGlobalJson("data/material-price-history.json", "data/material-price-history.js", "LOSTARK_PUBLIC_MATERIAL_PRICE_HISTORY");
