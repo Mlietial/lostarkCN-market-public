@@ -241,10 +241,18 @@
         return { min: min - pad, max: max + pad };
       }
       const base = Math.max(max, min, 0.01);
-      const pad = span > 0 ? Math.max(span * 0.22, base * 0.035) : base * 0.04;
-      const yMin = Math.max(0, min - pad);
-      const yMax = max + pad;
-      return { min: yMin, max: Math.max(yMax, yMin + Math.max(0.01, base * 0.08)) };
+      const center = (min + max) / 2;
+      const minWindow = Math.max(0.002, base * 0.16);
+      const targetWindow = span > 0 ? Math.max(span * 1.45, minWindow) : minWindow;
+      const maxWindow = Math.max(minWindow, base * 0.45);
+      const windowSize = Math.min(targetWindow, maxWindow);
+      let yMin = center - windowSize / 2;
+      let yMax = center + windowSize / 2;
+      if (yMin < 0) {
+        yMax -= yMin;
+        yMin = 0;
+      }
+      return { min: yMin, max: yMax };
     };
     const goldRatesByDate = (() => {
       const map = new Map();
