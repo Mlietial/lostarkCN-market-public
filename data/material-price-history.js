@@ -1,0 +1,263 @@
+window.LOSTARK_PUBLIC_MATERIAL_PRICE_HISTORY = {
+  "app": "lostark-material-price-history",
+  "version": 1,
+  "generatedAt": "2026-06-23T02:37:33.623Z",
+  "source": "Git history of data/item-price-data.json",
+  "items": [
+    "命运破坏石",
+    "熔岩之息",
+    "命运碎片袋子（大）",
+    "冰川之息",
+    "命运碎片袋子（小）",
+    "阿比多斯融合材料",
+    "命运突破石",
+    "命运守护石",
+    "命运碎片袋子（中）"
+  ],
+  "rows": [
+    {
+      "date": "2026-06-20",
+      "exportedAt": "2026-06-20T07:15:03.399Z",
+      "commit": "f2fba12",
+      "values": {
+        "命运破坏石": {
+          "value": 331.0,
+          "raw": "331",
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "熔岩之息": {
+          "value": 240.0,
+          "raw": "240",
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "命运碎片袋子（大）": {
+          "value": 210.0,
+          "raw": "210",
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "冰川之息": {
+          "value": 140.0,
+          "raw": "140",
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "命运碎片袋子（小）": {
+          "value": 64.0,
+          "raw": "64",
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "阿比多斯融合材料": {
+          "value": 87.0,
+          "raw": "87",
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "命运突破石": {
+          "value": 7.0,
+          "raw": "7",
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "命运守护石": {
+          "value": 6.0,
+          "raw": "6",
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "命运碎片袋子（中）": {
+          "value": 142.0,
+          "raw": "142",
+          "stackSize": null,
+          "unit": "gold"
+        }
+      }
+    },
+    {
+      "date": "2026-06-21",
+      "exportedAt": "2026-06-21T01:26:21.446Z",
+      "commit": "c9d356b",
+      "values": {
+        "命运破坏石": {
+          "value": 340.0,
+          "raw": "340",
+          "stackSize": 100,
+          "unit": "gold"
+        },
+        "熔岩之息": {
+          "value": 257.0,
+          "raw": "257",
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "命运碎片袋子（大）": {
+          "value": 185.0,
+          "raw": "185",
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "冰川之息": {
+          "value": 162.0,
+          "raw": "162",
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "命运碎片袋子（小）": {
+          "value": 63.0,
+          "raw": "63",
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "阿比多斯融合材料": {
+          "value": 87.0,
+          "raw": "87",
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "命运突破石": {
+          "value": 7.0,
+          "raw": "7",
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "命运守护石": {
+          "value": 6.0,
+          "raw": "6",
+          "stackSize": 100,
+          "unit": "gold"
+        },
+        "命运碎片袋子（中）": {
+          "value": 144.0,
+          "raw": "144",
+          "stackSize": null,
+          "unit": "gold"
+        }
+      }
+    },
+    {
+      "date": "2026-06-22",
+      "exportedAt": "2026-06-22T02:27:49.752Z",
+      "commit": "811d14f",
+      "values": {
+        "命运破坏石": {
+          "value": 328.0,
+          "raw": "328",
+          "stackSize": 100,
+          "unit": "gold"
+        },
+        "熔岩之息": {
+          "value": 241.0,
+          "raw": "241",
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "命运碎片袋子（大）": {
+          "value": 182.0,
+          "raw": "182",
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "冰川之息": {
+          "value": 152.0,
+          "raw": "152",
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "命运碎片袋子（小）": {
+          "value": 68.0,
+          "raw": "68",
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "阿比多斯融合材料": {
+          "value": 85.0,
+          "raw": "85",
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "命运突破石": {
+          "value": 7.0,
+          "raw": "7",
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "命运守护石": {
+          "value": 6.0,
+          "raw": "6",
+          "stackSize": 100,
+          "unit": "gold"
+        },
+        "命运碎片袋子（中）": {
+          "value": 140.0,
+          "raw": "140",
+          "stackSize": null,
+          "unit": "gold"
+        }
+      }
+    },
+    {
+      "date": "2026-06-23",
+      "exportedAt": "2026-06-23T01:47:28.015Z",
+      "commit": "570cc6c",
+      "values": {
+        "命运破坏石": {
+          "value": 335.0,
+          "raw": "335",
+          "stackSize": 100,
+          "unit": "gold"
+        },
+        "熔岩之息": {
+          "value": 249.0,
+          "raw": "249",
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "命运碎片袋子（大）": {
+          "value": 189.0,
+          "raw": "189",
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "冰川之息": {
+          "value": 146.0,
+          "raw": "146",
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "命运碎片袋子（小）": {
+          "value": 52.0,
+          "raw": "52",
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "阿比多斯融合材料": {
+          "value": 88.0,
+          "raw": "88",
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "命运突破石": {
+          "value": 7.0,
+          "raw": "7",
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "命运守护石": {
+          "value": 6.0,
+          "raw": "6",
+          "stackSize": 100,
+          "unit": "gold"
+        },
+        "命运碎片袋子（中）": {
+          "value": 151.0,
+          "raw": "151",
+          "stackSize": null,
+          "unit": "gold"
+        }
+      }
+    }
+  ]
+};
