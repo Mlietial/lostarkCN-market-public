@@ -31,6 +31,12 @@
     .kpi em{display:block;margin-top:8px;color:var(--muted);font-size:12px;line-height:1.35;font-style:normal}
     .toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:13px 20px;margin-bottom:16px}
     .toolbar h2{margin:0;font-size:20px;line-height:1.2;font-weight:900}
+    .filter-panel{margin-top:12px;display:grid;gap:8px}
+    .filter-row{display:flex;gap:8px;flex-wrap:wrap}
+    .filter-btn{border:1px solid var(--line);border-radius:999px;background:#fff;color:#111827;padding:7px 12px;font-size:13px;font-weight:900;cursor:pointer}
+    .filter-btn.active{border-color:#111827;background:#111827;color:#fff}
+    .life-subfilters{display:none}
+    .life-subfilters.open{display:flex}
     .select,.search{border:1px solid var(--line);border-radius:999px;background:#fff;color:#111827;padding:8px 12px;font-size:13px;font-weight:750;outline:0}
     .search{width:220px}
     .charts{grid-template-columns:repeat(var(--chart-cols,3),minmax(0,1fr));align-items:start}
@@ -94,6 +100,21 @@
     <section class="card toolbar">
       <div>
         <h2>单材料折线图</h2>
+        <div class="filter-panel" aria-label="材料分类筛选">
+          <div id="mainFilters" class="filter-row" role="group" aria-label="材料大类">
+            <button class="filter-btn" type="button" data-main-filter="enhance">强化材料</button>
+            <button class="filter-btn" type="button" data-main-filter="life">生活材料</button>
+          </div>
+          <div id="lifeFilters" class="filter-row life-subfilters" role="group" aria-label="生活材料分类">
+            <button class="filter-btn" type="button" data-life-filter="all">全部</button>
+            <button class="filter-btn" type="button" data-life-filter="plant">植物</button>
+            <button class="filter-btn" type="button" data-life-filter="logging">伐木</button>
+            <button class="filter-btn" type="button" data-life-filter="mining">采矿</button>
+            <button class="filter-btn" type="button" data-life-filter="hunting">狩猎</button>
+            <button class="filter-btn" type="button" data-life-filter="fishing">钓鱼</button>
+            <button class="filter-btn" type="button" data-life-filter="archaeology">考古</button>
+          </div>
+        </div>
       </div>
       <div class="tools">
         <input id="search" class="search" type="search" placeholder="筛选材料">
@@ -135,11 +156,23 @@
     const savedCols = Number(localStorage.getItem("lostarkMaterialTrendColumns") || 3);
     const savedSummaryRaw = localStorage.getItem("lostarkMaterialTrendSummaryCollapsed");
     const savedSort = localStorage.getItem("lostarkMaterialTrendSort") || "default";
+    const savedMainFilter = localStorage.getItem("lostarkMaterialTrendMainFilter") || "enhance";
+    const savedLifeFilter = localStorage.getItem("lostarkMaterialTrendLifeFilter") || "all";
     const isNarrowScreen = () => window.matchMedia("(max-width: 1460px)").matches;
+    const LIFE_CATEGORY_KEYWORDS = {
+      plant: ["野花"],
+      logging: ["木材"],
+      mining: ["矿石"],
+      hunting: ["生肉", "皮革", "狩猎结晶"],
+      fishing: ["太阳鲤", "太阳鲤鱼", "鲜鱼", "海鲜", "钓鱼结晶"],
+      archaeology: ["遗物", "考古结晶"]
+    };
     const state = {
       range: localStorage.getItem("lostarkMaterialTrendRange") || "auto",
       search: "",
       sort: ["default", "name", "priceDesc", "priceAsc", "changeDesc", "changeAsc"].includes(savedSort) ? savedSort : "default",
+      mainFilter: ["enhance", "life"].includes(savedMainFilter) ? savedMainFilter : "enhance",
+      lifeFilter: ["all", ...Object.keys(LIFE_CATEGORY_KEYWORDS)].includes(savedLifeFilter) ? savedLifeFilter : "all",
       cols: [1, 2, 3, 4].includes(savedCols) ? savedCols : 3,
       summaryCollapsed: savedSummaryRaw == null ? isNarrowScreen() : savedSummaryRaw === "1"
     };
@@ -176,9 +209,20 @@
       }).filter((point) => point.value != null && Number.isFinite(point.value));
     }
 
+    function lifeCategoryOf(name) {
+      return Object.entries(LIFE_CATEGORY_KEYWORDS).find(([, keywords]) => keywords.some((keyword) => name.includes(keyword)))?.[0] || null;
+    }
+
+    function itemMatchesCategory(name) {
+      const category = lifeCategoryOf(name);
+      if (state.mainFilter === "enhance") return !category;
+      if (!category) return false;
+      return state.lifeFilter === "all" || category === state.lifeFilter;
+    }
+
     function visibleItems() {
       const q = state.search.trim();
-      const items = (history.items || []).filter((name) => !q || window.LostarkPinyinSearch?.match(name, q) || name.includes(q));
+      const items = (history.items || []).filter((name) => itemMatchesCategory(name) && (!q || window.LostarkPinyinSearch?.match(name, q) || name.includes(q)));
       if (state.sort === "name") {
         return items.sort((a, b) => a.localeCompare(b, "zh-Hans-CN"));
       }
@@ -324,6 +368,16 @@
       button.setAttribute("aria-label", state.summaryCollapsed ? "展开市场概览" : "收起市场概览");
     }
 
+    function applyFilterSetting() {
+      document.querySelectorAll("[data-main-filter]").forEach((button) => {
+        button.classList.toggle("active", button.dataset.mainFilter === state.mainFilter);
+      });
+      document.getElementById("lifeFilters").classList.toggle("open", state.mainFilter === "life");
+      document.querySelectorAll("[data-life-filter]").forEach((button) => {
+        button.classList.toggle("active", button.dataset.lifeFilter === state.lifeFilter);
+      });
+    }
+
     function showTooltip(event, text) {
       const tip = document.getElementById("tooltip");
       tip.textContent = text;
@@ -344,6 +398,7 @@
       const rows = history.rows || [];
       document.getElementById("subtitle").textContent = `已收录 ${rows.length} 个日期，最新 ${rows[rows.length - 1]?.date || "—"}`;
       renderKpis();
+      applyFilterSetting();
       applyColumnSetting();
       applySummarySetting();
       document.getElementById("sort").value = state.sort;
@@ -363,6 +418,22 @@
     document.getElementById("sort").addEventListener("change", (event) => {
       state.sort = event.target.value;
       localStorage.setItem("lostarkMaterialTrendSort", state.sort);
+      renderCharts();
+    });
+    document.getElementById("mainFilters").addEventListener("click", (event) => {
+      const button = event.target.closest("[data-main-filter]");
+      if (!button) return;
+      state.mainFilter = button.dataset.mainFilter;
+      localStorage.setItem("lostarkMaterialTrendMainFilter", state.mainFilter);
+      applyFilterSetting();
+      renderCharts();
+    });
+    document.getElementById("lifeFilters").addEventListener("click", (event) => {
+      const button = event.target.closest("[data-life-filter]");
+      if (!button) return;
+      state.lifeFilter = button.dataset.lifeFilter;
+      localStorage.setItem("lostarkMaterialTrendLifeFilter", state.lifeFilter);
+      applyFilterSetting();
       renderCharts();
     });
     document.getElementById("settingsBtn").addEventListener("click", () => {
