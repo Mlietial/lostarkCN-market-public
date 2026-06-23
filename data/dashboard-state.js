@@ -1,6 +1,6 @@
 window.LOSTARK_PUBLIC_DASHBOARD_STATE = {
   "version": 2,
-  "publishedAt": "2026-06-22 10:00",
+  "publishedAt": "2026-06-23 09:00",
   "gemRows": [
     {
       "日期": "2026-05-02",
@@ -415,6 +415,15 @@ window.LOSTARK_PUBLIC_DASHBOARD_STATE = {
       "8级": 330000,
       "9级": 923666,
       "10级": 2711111
+    },
+    {
+      "日期": "2026-06-23",
+      "5级": 11600,
+      "6级": 34999,
+      "7级": 106666,
+      "8级": 331333,
+      "9级": 922222,
+      "10级": 2688888
     }
   ],
   "baselines": {},
@@ -1202,6 +1211,34 @@ window.LOSTARK_PUBLIC_DASHBOARD_STATE = {
       "gold": 222222,
       "price": 51.08,
       "date": "2026-06-22"
+    },
+    {
+      "id": "txn-2026-06-23-邮寄交易-99999-24.32-0",
+      "type": "邮寄交易",
+      "gold": 99999,
+      "price": 24.32,
+      "date": "2026-06-23"
+    },
+    {
+      "id": "txn-2026-06-23-邮寄交易-4999999-1300-1",
+      "type": "邮寄交易",
+      "gold": 4999999,
+      "price": 1300,
+      "date": "2026-06-23"
+    },
+    {
+      "id": "txn-2026-06-23-拍卖交易-379000-80-2",
+      "type": "拍卖交易",
+      "gold": 379000,
+      "price": 80,
+      "date": "2026-06-23"
+    },
+    {
+      "id": "txn-2026-06-23-拍卖交易-500000-113-3",
+      "type": "拍卖交易",
+      "gold": 500000,
+      "price": 113,
+      "date": "2026-06-23"
     }
   ],
   "engravingBookPrices": [
@@ -5704,20 +5741,200 @@ window.LOSTARK_PUBLIC_DASHBOARD_STATE = {
       "recentDeal": 1688,
       "lowest": 1696,
       "pageOrder": 20
+    },
+    {
+      "date": "2026-06-23",
+      "name": "迅捷利刃",
+      "grade": "遗物",
+      "prevAvg": 122978,
+      "recentDeal": 124935,
+      "lowest": 124949,
+      "pageOrder": 1
+    },
+    {
+      "date": "2026-06-23",
+      "name": "怨恨",
+      "grade": "遗物",
+      "prevAvg": 121112,
+      "recentDeal": 123455,
+      "lowest": 123456,
+      "pageOrder": 2
+    },
+    {
+      "date": "2026-06-23",
+      "name": "肾上腺素",
+      "grade": "遗物",
+      "prevAvg": 122737,
+      "recentDeal": 123800,
+      "lowest": 123123,
+      "pageOrder": 3
+    },
+    {
+      "date": "2026-06-23",
+      "name": "尖刺重锤",
+      "grade": "遗物",
+      "prevAvg": 108659,
+      "recentDeal": 108798,
+      "lowest": 108799,
+      "pageOrder": 4
+    },
+    {
+      "date": "2026-06-23",
+      "name": "重量强化",
+      "grade": "遗物",
+      "prevAvg": 80811,
+      "recentDeal": 79999,
+      "lowest": 79999,
+      "pageOrder": 5
+    },
+    {
+      "date": "2026-06-23",
+      "name": "奇袭大师",
+      "grade": "遗物",
+      "prevAvg": 45245,
+      "recentDeal": 42498,
+      "lowest": 42499,
+      "pageOrder": 6
+    },
+    {
+      "date": "2026-06-23",
+      "name": "强力侧击",
+      "grade": "遗物",
+      "prevAvg": 38283,
+      "recentDeal": 39111,
+      "lowest": 37989,
+      "pageOrder": 7
+    },
+    {
+      "date": "2026-06-23",
+      "name": "决斗大师",
+      "grade": "遗物",
+      "prevAvg": 35252,
+      "recentDeal": 35500,
+      "lowest": 34999,
+      "pageOrder": 8
+    },
+    {
+      "date": "2026-06-23",
+      "name": "蓄力强化",
+      "grade": "遗物",
+      "prevAvg": 34042,
+      "recentDeal": 34000,
+      "lowest": 34551,
+      "pageOrder": 9
+    },
+    {
+      "date": "2026-06-23",
+      "name": "觉醒",
+      "grade": "遗物",
+      "prevAvg": 35767,
+      "recentDeal": 34776,
+      "lowest": 33990,
+      "pageOrder": 10
+    },
+    {
+      "date": "2026-06-23",
+      "name": "咒术人偶",
+      "grade": "遗物",
+      "prevAvg": 33792,
+      "recentDeal": 33333,
+      "lowest": 33595,
+      "pageOrder": 11
+    },
+    {
+      "date": "2026-06-23",
+      "name": "妙手回春",
+      "grade": "遗物",
+      "prevAvg": 29710,
+      "recentDeal": 30885,
+      "lowest": 29996,
+      "pageOrder": 12
+    },
+    {
+      "date": "2026-06-23",
+      "name": "法力环绕",
+      "grade": "遗物",
+      "prevAvg": 5990,
+      "recentDeal": 5900,
+      "lowest": 5195,
+      "pageOrder": 13
+    },
+    {
+      "date": "2026-06-23",
+      "name": "以太生成",
+      "grade": "遗物",
+      "prevAvg": 5236,
+      "recentDeal": 5555,
+      "lowest": 4777,
+      "pageOrder": 14
+    },
+    {
+      "date": "2026-06-23",
+      "name": "速战速决",
+      "grade": "遗物",
+      "prevAvg": 4404,
+      "recentDeal": 4668,
+      "lowest": 4299,
+      "pageOrder": 15
+    },
+    {
+      "date": "2026-06-23",
+      "name": "身披重甲",
+      "grade": "遗物",
+      "prevAvg": 3861,
+      "recentDeal": 3889,
+      "lowest": 3880,
+      "pageOrder": 16
+    },
+    {
+      "date": "2026-06-23",
+      "name": "精力充沛",
+      "grade": "遗物",
+      "prevAvg": 2325,
+      "recentDeal": 2555,
+      "lowest": 2688,
+      "pageOrder": 17
+    },
+    {
+      "date": "2026-06-23",
+      "name": "破釜沉舟",
+      "grade": "遗物",
+      "prevAvg": 2549,
+      "recentDeal": 2789,
+      "lowest": 2599,
+      "pageOrder": 18
+    },
+    {
+      "date": "2026-06-23",
+      "name": "护盾猛攻",
+      "grade": "遗物",
+      "prevAvg": 2559,
+      "recentDeal": 2488,
+      "lowest": 2499,
+      "pageOrder": 19
+    },
+    {
+      "date": "2026-06-23",
+      "name": "法力爆发",
+      "grade": "遗物",
+      "prevAvg": 1810,
+      "recentDeal": 1800,
+      "lowest": 1798,
+      "pageOrder": 20
     }
   ],
   "reportMode": "weekly",
   "settings": {
     "reportMode": "weekly",
     "withdrawChannel": "ccb",
-    "buyRateSourceIndex": 101,
-    "buyRateSourceKey": "mid:mail:2026-06-22",
-    "quoteDate": "2026-06-22",
-    "publishedAt": "2026-06-22 10:00",
+    "buyRateSourceIndex": 109,
+    "buyRateSourceKey": "mid:mail:2026-06-23",
+    "quoteDate": "2026-06-23",
+    "publishedAt": "2026-06-23 09:00",
     "importTimestamps": {
-      "gem": "2026-06-22 10:00",
-      "gold": "2026-06-22 10:00",
-      "engraving": "2026-06-22 10:00"
+      "gem": "2026-06-23 09:00",
+      "gold": "2026-06-23 09:00",
+      "engraving": "2026-06-23 09:00"
     },
     "heatMode": "price",
     "notesMode": 0,
@@ -5725,7 +5942,7 @@ window.LOSTARK_PUBLIC_DASHBOARD_STATE = {
       "gemLevel": "10级",
       "gemQuoteDate": "latest",
       "gemQty": "1",
-      "gemPrice": "2711111",
+      "gemPrice": "2688888",
       "buyGold": "2999999"
     },
     "watermarkEnabled": true,
