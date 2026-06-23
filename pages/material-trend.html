@@ -242,13 +242,13 @@
       }
       const base = Math.max(max, min, 0.01);
       const center = (min + max) / 2;
-      const minWindow = Math.max(0.002, base * 0.16);
+      const minWindow = Math.max(0.004, base * 0.5);
       const targetWindow = span > 0 ? Math.max(span * 1.45, minWindow) : minWindow;
-      const maxWindow = Math.max(minWindow, base * 0.45);
+      const maxWindow = Math.max(minWindow, base * 0.7);
       const windowSize = Math.min(targetWindow, maxWindow);
       let yMin = center - windowSize / 2;
       let yMax = center + windowSize / 2;
-      if (yMin < 0) {
+      if (yMin < 0 && center < windowSize * 0.55) {
         yMax -= yMin;
         yMin = 0;
       }
@@ -403,7 +403,8 @@
       for (let i = 0; i < 4; i++) {
         const gy = m.t + i * (h - m.t - m.b) / 3;
         const value = tickValues[i];
-        svg += `<line class="gridline" x1="${m.l}" y1="${gy}" x2="${w - m.r}" y2="${gy}"/><text class="tick" x="${m.l - 8}" y="${gy + 4}" text-anchor="end">${activeFmt(value)}</text>`;
+        const tickLabel = state.priceMode !== "gold" && value < 0 ? "" : activeFmt(value);
+        svg += `<line class="gridline" x1="${m.l}" y1="${gy}" x2="${w - m.r}" y2="${gy}"/><text class="tick" x="${m.l - 8}" y="${gy + 4}" text-anchor="end">${tickLabel}</text>`;
       }
       ticks.forEach((i) => {
         svg += `<line class="gridline" x1="${x(i)}" y1="${m.t}" x2="${x(i)}" y2="${h - m.b}" opacity=".45"/><text class="tick" x="${x(i)}" y="${h - 10}" text-anchor="middle">${shortDate(rows[i].date)}</text>`;
