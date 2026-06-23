@@ -1781,7 +1781,7 @@ function royalToValuationGold(royal) {
 
 function parseBlueRateText(text) {
   const nums = String(text || "").match(/\d+(?:\.\d+)?/g)?.map(Number).filter(value => Number.isFinite(value) && value > 0) || [];
-  if (nums.length >= 2) return { blue: nums[0], royal: nums[1], label: "自定义" };
+  if (nums.length >= 1) return { blue: nums[0], royal: state.royalPerRmb, label: "自定义" };
   return null;
 }
 
@@ -1798,7 +1798,7 @@ function blueToRoyal(blue) {
 
 function blueSourceText() {
   const custom = parseBlueRateText(state.customBlueRateText);
-  if (custom) return `自定义：${fmtNum(custom.blue, 0)}蓝钻=${fmtNum(custom.royal, 0)}彩钻`;
+  if (custom) return `自定义：${fmtNum(custom.blue, 2)}蓝钻=1元`;
   const source = currentBlueSource();
   return `${source.label}：${fmtNum(source.blue, 0)}蓝钻=${fmtNum(source.royal, 0)}彩钻`;
 }
