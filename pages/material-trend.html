@@ -154,6 +154,12 @@
     const esc = (value) => String(value).replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
     const shortDate = (s) => String(s || "").replace(/^[0-9]{4}-/, "");
     const iconUrl = (name) => `../assets/${encodeURIComponent(name)}.jpg`;
+    const entryValue = (entry) => {
+      if (!entry) return null;
+      const value = entry.lowest ?? entry.value;
+      const num = Number(value);
+      return Number.isFinite(num) ? num : null;
+    };
 
     function rowsInRange() {
       if (!history || !Array.isArray(history.rows)) return [];
@@ -167,7 +173,7 @@
     function allPoints(item, rows = history.rows || []) {
       return rows.map((row, index) => {
         const entry = row.values && row.values[item];
-        return { index, date: row.date, value: entry ? Number(entry.value) : null };
+        return { index, date: row.date, value: entryValue(entry), entry: entry || null };
       }).filter((point) => point.value != null && Number.isFinite(point.value));
     }
 
@@ -199,7 +205,9 @@
       const latest = pts[pts.length - 1] || null;
       const prev = pts[pts.length - 2] || null;
       const change = latest && prev && prev.value ? (latest.value - prev.value) / prev.value * 100 : null;
-      return { latest, prev, change, count: pts.length };
+      const prevAvg = latest?.entry?.prevAvg != null ? Number(latest.entry.prevAvg) : null;
+      const vsPrevAvg = latest && prevAvg ? (latest.value - prevAvg) / prevAvg * 100 : null;
+      return { latest, prev, change, prevAvg, vsPrevAvg, count: pts.length };
     }
 
     function renderKpis() {
@@ -248,7 +256,10 @@
       });
       svg += `<path class="area" d="${area}" fill="${c}"/><path class="series" d="${path}" stroke="${c}"/>`;
       pts.forEach((p) => {
-        svg += `<circle class="marker" cx="${x(p.index)}" cy="${y(p.value)}" r="4.4" fill="${c}" data-tip="${p.date}　${item}：${fmt(p.value)}"/>`;
+        const parts = [`${p.date}　${item}：${fmt(p.value)}`];
+        if (p.entry?.prevAvg != null) parts.push(`昨均：${fmt(Number(p.entry.prevAvg))}`);
+        if (p.entry?.recentDeal != null) parts.push(`成交：${fmt(Number(p.entry.recentDeal))}`);
+        svg += `<circle class="marker" cx="${x(p.index)}" cy="${y(p.value)}" r="4.4" fill="${c}" data-tip="${parts.join("　")}"/>`;
       });
       svg += `<text class="axis" x="${m.l}" y="13">金币价格</text></svg>`;
       return svg;
@@ -272,6 +283,7 @@
       const cards = items.map((item, index) => {
         const info = latestInfo(item);
         const cls = info.change > 0 ? "up" : info.change < 0 ? "down" : "muted";
+        const avgCls = info.vsPrevAvg > 0 ? "up" : info.vsPrevAvg < 0 ? "down" : "muted";
         const meta = rows.length ? `${shortDate(rows[0].date)} - ${shortDate(rows[rows.length - 1].date)} · ${info.count} 条记录` : `${info.count} 条记录`;
         return `<article class="card material-card">
           <div class="material-head">
@@ -284,7 +296,8 @@
             </div>
             <div class="price-box">
               <b>${fmt(info.latest && info.latest.value)}</b>
-              <span class="${cls}">${pct(info.change)}</span>
+              <span class="${cls}">较前次 ${pct(info.change)}</span>
+              <span class="${avgCls}">较昨均 ${pct(info.vsPrevAvg)}</span>
             </div>
           </div>
           <div class="chart-wrap" data-chart-item="${esc(item)}" data-chart-index="${index}"></div>
