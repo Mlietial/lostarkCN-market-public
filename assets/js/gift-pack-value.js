@@ -5,6 +5,7 @@ const DEFAULTS = {
   royalPerRmb: 100,
   blueSource: "normal",
   customBlueRateText: "",
+  blueExchangePricePerThousand: null,
   royalDiscount: 1,
   valuationGoldPerRmb: null
 };
@@ -508,10 +509,18 @@ function applyGoldRate(value, options = {}) {
 function renderRateControls() {
   const goldRateInput = document.getElementById("goldRateInput");
   const valuationGoldRateInput = document.getElementById("valuationGoldRateInput");
+  const blueSourceInput = document.getElementById("blueSourceInput");
   const customBlueRateInput = document.getElementById("customBlueRateInput");
+  const blueExchangePriceInput = document.getElementById("blueExchangePriceInput");
+  const hasCustomBlueRate = !!parseBlueRateText(state.customBlueRateText);
+  const hasBlueExchange = Number(state.blueExchangePricePerThousand) > 0;
   if (goldRateInput) goldRateInput.value = state.goldPerRmb;
   if (valuationGoldRateInput) valuationGoldRateInput.value = state.valuationGoldPerRmb;
   if (customBlueRateInput && document.activeElement !== customBlueRateInput) customBlueRateInput.value = state.customBlueRateText || "";
+  if (blueExchangePriceInput && document.activeElement !== blueExchangePriceInput) blueExchangePriceInput.value = state.blueExchangePricePerThousand || "";
+  if (blueSourceInput) blueSourceInput.disabled = hasCustomBlueRate || hasBlueExchange;
+  if (customBlueRateInput) customBlueRateInput.disabled = hasBlueExchange;
+  if (blueExchangePriceInput) blueExchangePriceInput.disabled = hasCustomBlueRate;
 }
 
 function loadJson(key, fallback) {
@@ -1785,6 +1794,33 @@ function parseBlueRateText(text) {
   return null;
 }
 
+function blueExchangeServiceFee(totalBlue) {
+  const blue = Number(totalBlue);
+  if (!Number.isFinite(blue) || blue < 1000) return 0;
+  return Math.round(blue * 0.05);
+}
+
+function blueExchangeLots(neededBlue) {
+  const needed = Number(neededBlue);
+  if (!Number.isFinite(needed) || needed <= 0) return { grossBlue: 0, feeBlue: 0, netBlue: 0 };
+  let grossBlue = Math.max(1000, Math.ceil(needed / 1000) * 1000);
+  for (let i = 0; i < 100; i++) {
+    const feeBlue = blueExchangeServiceFee(grossBlue);
+    const netBlue = grossBlue - feeBlue;
+    if (netBlue >= needed) return { grossBlue, feeBlue, netBlue };
+    grossBlue += grossBlue < 20000 ? 1000 : grossBlue < 50000 ? 3000 : 5000;
+  }
+  const feeBlue = blueExchangeServiceFee(grossBlue);
+  return { grossBlue, feeBlue, netBlue: grossBlue - feeBlue };
+}
+
+function blueExchangeGold(blue) {
+  const price = Number(state.blueExchangePricePerThousand);
+  if (!Number.isFinite(price) || price <= 0) return null;
+  const lot = blueExchangeLots(blue);
+  return lot.grossBlue / 1000 * price;
+}
+
 function currentBlueSource() {
   return parseBlueRateText(state.customBlueRateText)
     || BLUE_SOURCES[state.blueSource]
@@ -1797,6 +1833,7 @@ function blueToRoyal(blue) {
 }
 
 function blueSourceText() {
+  if (Number(state.blueExchangePricePerThousand) > 0) return `交易所：${fmtNum(state.blueExchangePricePerThousand, 0)}金/千蓝，含服务费`;
   const custom = parseBlueRateText(state.customBlueRateText);
   if (custom) return `自定义：${fmtNum(custom.blue, 2)}蓝钻=1元`;
   const source = currentBlueSource();
@@ -1804,10 +1841,14 @@ function blueSourceText() {
 }
 
 function blueToGold(blue) {
+  const exchangeGold = blueExchangeGold(blue);
+  if (exchangeGold !== null) return exchangeGold;
   return royalToGold(blueToRoyal(blue));
 }
 
 function blueToValuationGold(blue) {
+  const exchangeGold = blueExchangeGold(blue);
+  if (exchangeGold !== null) return exchangeGold;
   return royalToValuationGold(blueToRoyal(blue));
 }
 
@@ -3419,11 +3460,21 @@ function bindControls() {
   });
   document.getElementById("blueSourceInput").addEventListener("change", event => {
     state.blueSource = event.target.value;
+    state.customBlueRateText = "";
+    state.blueExchangePricePerThousand = null;
     saveSettings();
     refreshValuationViews();
   });
   document.getElementById("customBlueRateInput")?.addEventListener("input", event => {
     state.customBlueRateText = event.target.value.trim();
+    if (parseBlueRateText(state.customBlueRateText)) state.blueExchangePricePerThousand = null;
+    refreshValuationViews();
+  });
+  document.getElementById("blueExchangePriceInput")?.addEventListener("input", event => {
+    const raw = event.target.value.trim();
+    const value = Number(raw);
+    state.blueExchangePricePerThousand = raw && Number.isFinite(value) && value > 0 ? value : null;
+    if (state.blueExchangePricePerThousand) state.customBlueRateText = "";
     refreshValuationViews();
   });
   const preset = document.getElementById("royalDiscountPreset");
