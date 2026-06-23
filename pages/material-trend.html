@@ -129,9 +129,8 @@
 
   <script src="https://unpkg.com/pinyin-pro"></script>
   <script src="../assets/js/pinyin-search.js"></script>
-  <script src="../data/material-price-history.js"></script>
   <script>
-    const history = window.LOSTARK_PUBLIC_MATERIAL_PRICE_HISTORY;
+    let history = window.LOSTARK_PUBLIC_MATERIAL_PRICE_HISTORY;
     const colors = ["#2563eb","#d97706","#059669","#dc2626","#7c3aed","#0891b2","#ca8a04","#db2777","#475569","#16a34a"];
     const savedCols = Number(localStorage.getItem("lostarkMaterialTrendColumns") || 3);
     const savedSummaryRaw = localStorage.getItem("lostarkMaterialTrendSummaryCollapsed");
@@ -220,8 +219,8 @@
       document.getElementById("kpis").innerHTML = [
         ["最大波动", biggest ? biggest.item : "—", biggest ? pct(biggest.change) : "—"],
         ["最新日期", lastDate, `${items.length} 个材料`],
-        ["上涨材料", rising, "较前一次记录"],
-        ["下跌材料", falling, "较前一次记录"]
+        ["上涨材料", rising, "较上一条记录"],
+        ["下跌材料", falling, "较上一条记录"]
       ].map(([label, value, note]) => `<article class="card kpi"><span>${label}</span><b>${value}</b><em>${note}</em></article>`).join("");
     }
 
@@ -296,7 +295,7 @@
             </div>
             <div class="price-box">
               <b>${fmt(info.latest && info.latest.value)}</b>
-              <span class="${cls}">较前次 ${pct(info.change)}</span>
+              <span class="${cls}">较上条 ${pct(info.change)}</span>
               <span class="${avgCls}">较昨均 ${pct(info.vsPrevAvg)}</span>
             </div>
           </div>
@@ -405,7 +404,21 @@
       }, 120);
     });
 
-    renderAll();
+    function loadLatestHistory() {
+      return new Promise((resolve) => {
+        const script = document.createElement("script");
+        const cacheKey = Math.floor(Date.now() / 60000);
+        script.src = `../data/material-price-history.js?v=${cacheKey}`;
+        script.onload = () => {
+          history = window.LOSTARK_PUBLIC_MATERIAL_PRICE_HISTORY;
+          resolve();
+        };
+        script.onerror = () => resolve();
+        document.head.append(script);
+      });
+    }
+
+    loadLatestHistory().then(renderAll);
   </script>
 </body>
 </html>
