@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>命运方舟礼包性价比分析</title>
   <link rel="icon" type="image/jpeg" href="../assets/英雄星石箱子.jpg">
-  <link rel="stylesheet" href="../assets/css/gift-pack-value.css?v=20260623-blue-rate">
+  <link rel="stylesheet" href="../assets/css/gift-pack-value.css?v=20260623-blue-rate-layout">
 </head>
 <body class="gift-loading">
   <div id="giftPageLoader" class="gift-page-loader" role="status" aria-live="polite">
@@ -45,13 +45,13 @@
           <option value="normal">普通：1蓝钻=1彩钻</option>
           <option value="weekly">周优惠：30000蓝钻=28000彩钻</option>
           <option value="monthly">月优惠：60000蓝钻=52000彩钻</option>
-          <option value="custom">自定义比例</option>
         </select>
-        <span class="discount-wrap custom-blue-rate-wrap" id="customBlueRateWrap">
-          <input id="customBlueInput" type="number" step="1" min="1" value="30000" aria-label="自定义蓝钻数量">
-          <em>蓝钻=</em>
-          <input id="customBlueRoyalInput" type="number" step="1" min="1" value="28000" aria-label="自定义折合彩钻数量">
-          <em>彩钻</em>
+      </label>
+      <label>
+        自定义蓝钻比例
+        <span class="input-wrap">
+          <input id="customBlueRateInput" type="text" value="" placeholder="留空按来源，如 30000=28000">
+          <em>蓝钻=彩钻</em>
         </span>
       </label>
       <label>
@@ -161,6 +161,6 @@
   <script src="../data/dashboard-state.js"></script>
   <script src="https://unpkg.com/pinyin-pro"></script>
   <script src="../assets/js/pinyin-search.js"></script>
-  <script src="../assets/js/gift-pack-value.js?v=20260623-stock-filter"></script>
+  <script src="../assets/js/gift-pack-value.js?v=20260623-blue-rate-layout"></script>
 </body>
 </html>
