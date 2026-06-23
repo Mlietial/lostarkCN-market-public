@@ -281,7 +281,6 @@
       const rows = rowsInRange();
       const cards = items.map((item, index) => {
         const info = latestInfo(item);
-        const cls = info.change > 0 ? "up" : info.change < 0 ? "down" : "muted";
         const avgCls = info.vsPrevAvg > 0 ? "up" : info.vsPrevAvg < 0 ? "down" : "muted";
         const meta = rows.length ? `${shortDate(rows[0].date)} - ${shortDate(rows[rows.length - 1].date)}` : "";
         return `<article class="card material-card">
@@ -295,7 +294,6 @@
             </div>
             <div class="price-box">
               <b>${fmt(info.latest && info.latest.value)}</b>
-              <span class="${cls}">较上条 ${pct(info.change)}</span>
               <span class="${avgCls}">较昨均 ${pct(info.vsPrevAvg)}</span>
             </div>
           </div>
