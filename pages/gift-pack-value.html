@@ -50,8 +50,8 @@
       <label>
         自定义蓝钻比例
         <span class="input-wrap">
-          <input id="customBlueRateInput" type="number" step="0.01" min="0" value="" placeholder="留空按来源">
-          <em>蓝钻=1元</em>
+          <input id="customBlueRateInput" type="text" value="" placeholder="留空按来源，如 30000=28000">
+          <em>蓝钻=彩钻</em>
         </span>
       </label>
       <label>
@@ -93,7 +93,6 @@
           <button id="sortBtn" type="button" class="ghost-btn">性价比降序</button>
           <select id="filterInput" aria-label="筛选礼包">
             <option value="inStock" selected>在售</option>
-            <option value="all">全部</option>
             <option value="royal">彩钻</option>
             <option value="blue">蓝钻</option>
             <option value="threeForOne">3赠1</option>
@@ -161,6 +160,6 @@
   <script src="../data/dashboard-state.js"></script>
   <script src="https://unpkg.com/pinyin-pro"></script>
   <script src="../assets/js/pinyin-search.js"></script>
-  <script src="../assets/js/gift-pack-value.js?v=20260623-blue-rate-number"></script>
+  <script src="../assets/js/gift-pack-value.js?v=20260623-temp-blue-rate"></script>
 </body>
 </html>
