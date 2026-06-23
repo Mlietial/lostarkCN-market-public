@@ -191,7 +191,6 @@
     const savedMainFilter = localStorage.getItem("lostarkMaterialTrendMainFilter") || "enhance";
     const savedLifeFilter = localStorage.getItem("lostarkMaterialTrendLifeFilter") || "all";
     const savedPriceMode = localStorage.getItem("lostarkMaterialTrendPriceMode") || "gold";
-    const savedCustomRatio = Number(localStorage.getItem("lostarkMaterialTrendCustomRatio") || "");
     const isNarrowScreen = () => window.matchMedia("(max-width: 1460px)").matches;
     const LIFE_CATEGORY_KEYWORDS = {
       plant: ["野花"],
@@ -208,7 +207,7 @@
       mainFilter: ["enhance", "life"].includes(savedMainFilter) ? savedMainFilter : "enhance",
       lifeFilter: ["all", ...Object.keys(LIFE_CATEGORY_KEYWORDS)].includes(savedLifeFilter) ? savedLifeFilter : "all",
       priceMode: ["gold", "mail", "auction", "custom"].includes(savedPriceMode) ? savedPriceMode : "gold",
-      customRatio: Number.isFinite(savedCustomRatio) && savedCustomRatio > 0 ? savedCustomRatio : "",
+      customRatio: "",
       cols: [1, 2, 3, 4].includes(savedCols) ? savedCols : 3,
       summaryCollapsed: savedSummaryRaw == null ? isNarrowScreen() : savedSummaryRaw === "1"
     };
@@ -234,6 +233,18 @@
     const maxFinite = (values) => {
       const arr = values.filter(Number.isFinite);
       return arr.length ? Math.max(...arr) : null;
+    };
+    const chartBounds = (min, max) => {
+      const span = max - min;
+      if (state.priceMode === "gold") {
+        const pad = Math.max(1, span * 0.18);
+        return { min: min - pad, max: max + pad };
+      }
+      const base = Math.max(max, min, 0.01);
+      const pad = span > 0 ? Math.max(span * 0.22, base * 0.035) : base * 0.04;
+      const yMin = Math.max(0, min - pad);
+      const yMax = max + pad;
+      return { min: yMin, max: Math.max(yMax, yMin + Math.max(0.01, base * 0.08)) };
     };
     const goldRatesByDate = (() => {
       const map = new Map();
@@ -367,9 +378,9 @@
       const values = pts.map((p) => p.displayValue);
       const min = Math.min(...values);
       const max = Math.max(...values);
-      const pad = Math.max(1, (max - min) * 0.18);
-      const yMin = min - pad;
-      const yMax = max + pad;
+      const bounds = chartBounds(min, max);
+      const yMin = bounds.min;
+      const yMax = bounds.max;
       const w = Math.max(320, Math.round(width || 620));
       const h = Math.max(220, Math.round(height || 260));
       const tickValues = Array.from({ length: 4 }, (_, i) => yMax - i * (yMax - yMin) / 3);
@@ -530,8 +541,6 @@
     document.getElementById("customRatio").addEventListener("input", (event) => {
       const value = Number(event.target.value);
       state.customRatio = Number.isFinite(value) && value > 0 ? value : "";
-      if (state.customRatio) localStorage.setItem("lostarkMaterialTrendCustomRatio", String(state.customRatio));
-      else localStorage.removeItem("lostarkMaterialTrendCustomRatio");
       if (state.priceMode === "custom") {
         applyPriceModeSetting();
         renderCharts();
