@@ -1166,7 +1166,7 @@ function initializePackSelections(pack) {
   (pack.choiceGroups || []).forEach(group => {
     const key = choiceGroupStateKey(pack.id, group.id);
     if (!state.selectedChoiceGroups[key]) {
-      state.selectedChoiceGroups[key] = group.defaultSelected || group.options?.[0]?.name || "";
+      state.selectedChoiceGroups[key] = bestChoiceGroupOption(pack, group)?.name || "";
     }
   });
 }
@@ -1188,6 +1188,25 @@ function choiceOptionQty(pack, group, option) {
   const edited = Number(editableChoiceOptionQuantities[key]);
   if (Number.isFinite(edited) && edited > 0) return edited;
   return Number(option.qty) || 0;
+}
+
+function choiceOptionTotalGold(pack, group, option) {
+  if (!option) return null;
+  const unit = itemUnitGold(option);
+  if (unit.value === null) return null;
+  const groupQty = splitTrailingQtyLabel(group.name, group.qty).qty;
+  return unit.value * choiceOptionQty(pack, group, option) * groupQty;
+}
+
+function bestChoiceGroupOption(pack, group) {
+  const options = group.options || [];
+  if (!options.length) return null;
+  const valued = options
+    .map((option, index) => ({ option, index, total: choiceOptionTotalGold(pack, group, option) }))
+    .filter(item => item.total !== null && Number.isFinite(item.total));
+  if (!valued.length) return group.options.find(option => option.name === group.defaultSelected) || options[0] || null;
+  valued.sort((a, b) => b.total - a.total || a.index - b.index);
+  return valued[0].option;
 }
 
 function saveChoiceOptionQtyEdit(boxName, optionName, value, defaultValue) {
@@ -1299,8 +1318,8 @@ function packNeedSelectionSummary(pack) {
 }
 
 function selectedChoiceGroupOption(pack, group) {
-  const selectedName = state.selectedChoiceGroups[choiceGroupStateKey(pack.id, group.id)] || group.defaultSelected;
-  return group.options.find(option => option.name === selectedName) || group.options[0] || null;
+  const selectedName = state.selectedChoiceGroups[choiceGroupStateKey(pack.id, group.id)];
+  return group.options.find(option => option.name === selectedName) || bestChoiceGroupOption(pack, group) || group.options[0] || null;
 }
 
 function selectedChoiceGroupContents(pack) {
