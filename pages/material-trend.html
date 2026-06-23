@@ -106,10 +106,12 @@
           <option value="changeAsc">跌幅高到低</option>
         </select>
         <select id="range" class="select">
+          <option value="auto">自适应列宽</option>
           <option value="all">全部</option>
           <option value="30">近30天</option>
           <option value="14">近14天</option>
           <option value="7">近7天</option>
+          <option value="4">近4天</option>
         </select>
       </div>
     </section>
@@ -135,7 +137,7 @@
     const savedSort = localStorage.getItem("lostarkMaterialTrendSort") || "default";
     const isNarrowScreen = () => window.matchMedia("(max-width: 1460px)").matches;
     const state = {
-      range: "all",
+      range: localStorage.getItem("lostarkMaterialTrendRange") || "auto",
       search: "",
       sort: ["default", "name", "priceDesc", "priceAsc", "changeDesc", "changeAsc"].includes(savedSort) ? savedSort : "default",
       cols: [1, 2, 3, 4].includes(savedCols) ? savedCols : 3,
@@ -156,7 +158,9 @@
       if (!history || !Array.isArray(history.rows)) return [];
       const rows = history.rows.slice().sort((a, b) => String(a.date).localeCompare(String(b.date)));
       if (state.range === "all") return rows;
-      return rows.slice(-Number(state.range));
+      const autoLimit = state.cols === 1 ? 30 : state.cols === 2 ? 14 : state.cols === 3 ? 7 : 4;
+      const limit = state.range === "auto" ? autoLimit : Number(state.range);
+      return rows.slice(-limit);
     }
 
     function allPoints(item, rows = history.rows || []) {
@@ -330,11 +334,13 @@
       applyColumnSetting();
       applySummarySetting();
       document.getElementById("sort").value = state.sort;
+      document.getElementById("range").value = state.range;
       renderCharts();
     }
 
     document.getElementById("range").addEventListener("change", (event) => {
       state.range = event.target.value;
+      localStorage.setItem("lostarkMaterialTrendRange", state.range);
       renderCharts();
     });
     document.getElementById("search").addEventListener("input", (event) => {
@@ -357,7 +363,8 @@
       state.cols = Number(button.dataset.cols);
       localStorage.setItem("lostarkMaterialTrendColumns", String(state.cols));
       applyColumnSetting();
-      requestAnimationFrame(renderChartSvgs);
+      if (state.range === "auto") renderCharts();
+      else requestAnimationFrame(renderChartSvgs);
     });
     document.getElementById("summaryToggle").addEventListener("click", () => {
       state.summaryCollapsed = !state.summaryCollapsed;
