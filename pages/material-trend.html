@@ -284,7 +284,7 @@
         const info = latestInfo(item);
         const cls = info.change > 0 ? "up" : info.change < 0 ? "down" : "muted";
         const avgCls = info.vsPrevAvg > 0 ? "up" : info.vsPrevAvg < 0 ? "down" : "muted";
-        const meta = rows.length ? `${shortDate(rows[0].date)} - ${shortDate(rows[rows.length - 1].date)} · ${info.count} 条记录` : `${info.count} 条记录`;
+        const meta = rows.length ? `${shortDate(rows[0].date)} - ${shortDate(rows[rows.length - 1].date)}` : "";
         return `<article class="card material-card">
           <div class="material-head">
             <div class="material-title">
