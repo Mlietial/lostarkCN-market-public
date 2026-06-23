@@ -238,7 +238,9 @@
       const yMax = max + pad;
       const w = Math.max(320, Math.round(width || 620));
       const h = Math.max(220, Math.round(height || 260));
-      const m = { l: 56, r: 18, t: 18, b: 32 };
+      const tickValues = Array.from({ length: 4 }, (_, i) => yMax - i * (yMax - yMin) / 3);
+      const yAxisWidth = Math.min(112, Math.max(56, Math.max(...tickValues.map((value) => fmt(value).length)) * 7 + 18));
+      const m = { l: yAxisWidth, r: 18, t: 18, b: 32 };
       const x = (i) => m.l + i * (w - m.l - m.r) / Math.max(1, rows.length - 1);
       const y = (v) => h - m.b - (v - yMin) / Math.max(1, yMax - yMin) * (h - m.t - m.b);
       const ticks = rows.map((_, i) => i).filter((i) => i === 0 || i === rows.length - 1 || i % Math.max(1, Math.ceil(rows.length / 5)) === 0);
@@ -247,7 +249,7 @@
       let svg = `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">`;
       for (let i = 0; i < 4; i++) {
         const gy = m.t + i * (h - m.t - m.b) / 3;
-        const value = yMax - i * (yMax - yMin) / 3;
+        const value = tickValues[i];
         svg += `<line class="gridline" x1="${m.l}" y1="${gy}" x2="${w - m.r}" y2="${gy}"/><text class="tick" x="${m.l - 8}" y="${gy + 4}" text-anchor="end">${fmt(value)}</text>`;
       }
       ticks.forEach((i) => {
