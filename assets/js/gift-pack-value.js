@@ -1986,10 +1986,18 @@ function requiresRangeEstimate(name) {
 function valueContents(contents) {
   const lines = contents.map(content => {
     const unit = itemUnitGold(content);
-    const total = unit.value === null ? null : unit.value * content.qty;
-    const minTotal = unit.minValue === undefined || unit.minValue === null ? total : unit.minValue * content.qty;
-    const maxTotal = unit.maxValue === undefined || unit.maxValue === null ? total : unit.maxValue * content.qty;
-    return { ...content, unitGold: unit.value, minUnitGold: unit.minValue, maxUnitGold: unit.maxValue, totalGold: total, minTotalGold: minTotal, maxTotalGold: maxTotal, source: content.choiceGroupSource || unit.source, isRange: unit.isRange };
+    const manualEntry = normalizeManualEntry(state.manualValues[content.name]);
+    const def = itemPrices[content.name];
+    const exchangeBlue = !manualEntry && def && typeof def.blue === "number" ? def.blue * content.qty : 0;
+    const exchangeTotal = exchangeBlue > 0 ? blueExchangeGold(exchangeBlue) : null;
+    const total = exchangeTotal !== null ? exchangeTotal : unit.value === null ? null : unit.value * content.qty;
+    const minTotal = exchangeTotal !== null ? exchangeTotal : unit.minValue === undefined || unit.minValue === null ? total : unit.minValue * content.qty;
+    const maxTotal = exchangeTotal !== null ? exchangeTotal : unit.maxValue === undefined || unit.maxValue === null ? total : unit.maxValue * content.qty;
+    const unitGold = exchangeTotal !== null ? exchangeTotal / content.qty : unit.value;
+    const source = exchangeTotal !== null
+      ? `${fmtNum(exchangeBlue, 0)}蓝钻合并折算（交易所：${fmtNum(state.blueExchangePricePerThousand, 0)}金/千蓝，含服务费）`
+      : content.choiceGroupSource || unit.source;
+    return { ...content, unitGold, minUnitGold: exchangeTotal !== null ? unitGold : unit.minValue, maxUnitGold: exchangeTotal !== null ? unitGold : unit.maxValue, totalGold: total, minTotalGold: minTotal, maxTotalGold: maxTotal, source, isRange: exchangeTotal !== null ? false : unit.isRange };
   });
   const knownGold = lines.reduce((sum, line) => sum + (line.totalGold || 0), 0);
   const minKnownGold = lines.reduce((sum, line) => sum + (line.minTotalGold ?? line.totalGold ?? 0), 0);
