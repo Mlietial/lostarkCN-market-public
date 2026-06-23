@@ -607,48 +607,6 @@ textarea {
   font-size: 12px;
 }
 
-.manual-market-info {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 6px;
-  margin: 0 0 10px;
-}
-
-.manual-market-info span {
-  min-width: 0;
-  border: 1px solid rgba(68, 137, 205, .14);
-  border-radius: 7px;
-  background: rgba(239, 248, 255, .68);
-  padding: 6px 7px;
-}
-
-.manual-market-info em,
-.manual-market-info b {
-  display: block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.manual-market-info em {
-  color: var(--muted);
-  font-size: 10px;
-  font-style: normal;
-  font-weight: 800;
-}
-
-.manual-market-info b {
-  margin-top: 2px;
-  color: #183153;
-  font-size: 13px;
-}
-
-.manual-market-info small {
-  grid-column: 1 / -1;
-  color: var(--muted);
-  font-size: 10px;
-}
-
 .manual-detail-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 110px;

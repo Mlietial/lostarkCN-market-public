@@ -28,7 +28,6 @@ const EDITABLE_STORAGE_KEYS = {
 const GIFT_PACK_BACKUP_VERSION = 1;
 const PUBLIC_GIFT_PACK_DATA_URL = "../data/gift-pack-data.json";
 const PUBLIC_ITEM_PRICE_DATA_URL = "../data/item-price-data.json";
-const PUBLIC_MATERIAL_PRICE_HISTORY_URL = "../data/material-price-history.json";
 const PUBLIC_DASHBOARD_DATA_URL = "../data/dashboard-state.json";
 const MIN_GIFT_LOADER_MS = 900;
 const PUBLIC_DATA_EXPORTED_AT_KEY = "giftPackPublicDataExportedAt";
@@ -463,7 +462,6 @@ const state = {
   knownIncludedItemKeys: {},
   editingPackId: null,
   showEditColumn: false,
-  materialPriceHistory: null,
   publicDataExportedAt: localStorage.getItem(PUBLIC_DATA_EXPORTED_AT_KEY) || null
 };
 
@@ -793,27 +791,6 @@ async function fetchPublicItemPriceData() {
   return data;
 }
 
-async function fetchPublicMaterialPriceHistory() {
-  const readEmbeddedData = () => {
-    try {
-      const text = document.getElementById("EMBEDDED_MATERIAL_PRICE_HISTORY")?.textContent || "";
-      return text ? JSON.parse(text) : null;
-    } catch (error) {
-      return null;
-    }
-  };
-  let data = null;
-  if (location.protocol === "file:") {
-    data = readEmbeddedData() || window.LOSTARK_PUBLIC_MATERIAL_PRICE_HISTORY || null;
-  } else {
-    const response = await fetch(`${PUBLIC_MATERIAL_PRICE_HISTORY_URL}?v=${Date.now()}`, { cache: "no-store" });
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    data = await response.json();
-  }
-  if (!data || typeof data !== "object") throw new Error("没有可用的材料价格历史数据");
-  return data;
-}
-
 function parseItemPriceStorage(data, key) {
   try {
     if (data.storage && Object.prototype.hasOwnProperty.call(data.storage, key)) {
@@ -823,22 +800,6 @@ function parseItemPriceStorage(data, key) {
     return undefined;
   }
   return undefined;
-}
-
-function cleanMarketNumber(value) {
-  if (value === undefined || value === null || value === "") return null;
-  const num = Number(String(value).replace(/,/g, ""));
-  return Number.isFinite(num) && num > 0 ? num : null;
-}
-
-function mergeMarketFields(target, source) {
-  const prevAvg = cleanMarketNumber(source?.prevAvg);
-  const recentDeal = cleanMarketNumber(source?.recentDeal);
-  const lowest = cleanMarketNumber(source?.lowest ?? source?.value);
-  if (prevAvg !== null) target.prevAvg = prevAvg;
-  if (recentDeal !== null) target.recentDeal = recentDeal;
-  if (lowest !== null) target.lowest = lowest;
-  return target;
 }
 
 function applyItemPriceData(data, persist = false) {
@@ -864,44 +825,6 @@ function applyItemPriceData(data, persist = false) {
     saveJson(EDITABLE_STORAGE_KEYS.itemIcons, editableItemIcons);
     saveJson(EDITABLE_STORAGE_KEYS.itemLabels, editableItemLabels);
   }
-}
-
-function latestMaterialHistoryRow(data = state.materialPriceHistory) {
-  const rows = Array.isArray(data?.rows) ? data.rows : [];
-  return rows
-    .filter(row => row && row.values && typeof row.values === "object")
-    .slice()
-    .sort((a, b) => String(a.date || "").localeCompare(String(b.date || "")))
-    .pop() || null;
-}
-
-function materialMarketSnapshot(name) {
-  const row = latestMaterialHistoryRow();
-  const entry = row?.values?.[name];
-  if (!entry || typeof entry !== "object") return null;
-  const snapshot = mergeMarketFields({ date: row.date || "" }, entry);
-  return snapshot.prevAvg != null || snapshot.recentDeal != null || snapshot.lowest != null ? snapshot : null;
-}
-
-function applyMaterialPriceHistory(data, persist = false) {
-  state.materialPriceHistory = data;
-  const latest = latestMaterialHistoryRow(data);
-  if (!latest) return;
-  Object.entries(latest.values || {}).forEach(([name, entry]) => {
-    if (!entry || typeof entry !== "object") return;
-    const current = state.manualValues[name];
-    const currentEntry = normalizeManualEntry(current);
-    const base = current && typeof current === "object" && !Array.isArray(current)
-      ? { ...current }
-      : currentEntry || { raw: entry.raw ?? entry.value, value: cleanMarketNumber(entry.value), unit: entry.unit || "gold" };
-    const next = mergeMarketFields(base, entry);
-    if (next.value == null && cleanMarketNumber(entry.value) !== null) next.value = cleanMarketNumber(entry.value);
-    if (!next.raw && entry.raw != null) next.raw = String(entry.raw);
-    if (!next.unit) next.unit = entry.unit || "gold";
-    if (entry.stackSize !== undefined && next.stackSize == null) next.stackSize = entry.stackSize;
-    state.manualValues[name] = next;
-  });
-  if (persist) saveManualValues();
 }
 
 function applyPublicGiftPackSnapshot(backup, storage, options = {}) {
@@ -1065,15 +988,6 @@ async function loadPublicItemPriceData() {
   } catch (error) {
     console.warn("物品估值公开数据加载失败：", error);
     throw new Error(`item-price-data.json 加载失败：${error.message || error}`);
-  }
-}
-
-async function loadPublicMaterialPriceHistory() {
-  try {
-    const data = await fetchPublicMaterialPriceHistory();
-    applyMaterialPriceHistory(data, true);
-  } catch (error) {
-    console.warn("材料价格历史公开数据加载失败：", error);
   }
 }
 
@@ -2432,8 +2346,7 @@ function manualItemMeta(name) {
   const placeholder = defaultGold === null ? "请输入单价，如 60000" : fmtUnitGold(defaultValue);
   const note = itemPrices[name] ? defaultItemSource(name) : "自定义估值项";
   const meta = manualDefaultSummary(defaultValue, defaultUnit, defaultGold);
-  const market = manualMarketSnapshot(name);
-  return { defaultGold, defaultUnit, defaultValue, manual, placeholder, meta, note, market };
+  return { defaultGold, defaultUnit, defaultValue, manual, placeholder, meta, note };
 }
 
 function manualDefaultSummary(defaultValue, defaultUnit, defaultGold) {
@@ -2467,38 +2380,11 @@ function manualDefaultBrief(defaultValue, defaultUnit, defaultGold) {
   return `${fmtUnitGold(defaultValue)} ${MANUAL_VALUE_UNITS[defaultUnit]}`;
 }
 
-function manualMarketSnapshot(name) {
-  const entry = state.manualValues[name];
-  const fromManual = entry && typeof entry === "object" && !Array.isArray(entry)
-    ? mergeMarketFields({}, entry)
-    : {};
-  const fromHistory = materialMarketSnapshot(name) || {};
-  const market = { ...fromHistory, ...fromManual };
-  return market.prevAvg != null || market.recentDeal != null || market.lowest != null ? market : null;
-}
-
-function manualMarketInfoHtml(market) {
-  if (!market) return "";
-  const cells = [
-    ["昨日均价", market.prevAvg],
-    ["最近成交", market.recentDeal],
-    ["当前最低", market.lowest]
-  ];
-  return `
-    <div class="manual-market-info" aria-label="公开站材料行情">
-      ${cells.map(([label, value]) => `
-        <span><em>${label}</em><b>${value == null ? "—" : fmtUnitGold(value)}</b></span>
-      `).join("")}
-      ${market.date ? `<small>公开站数据：${escapeHtml(market.date)}</small>` : ""}
-    </div>
-  `;
-}
-
 function manualDetailHtml(name) {
   if (!name) {
     return `<div class="manual-empty">暂无可编辑估值项。</div>`;
   }
-  const { manual, placeholder, meta, note, market } = manualItemMeta(name);
+  const { manual, placeholder, meta, note } = manualItemMeta(name);
   const choiceQtyEditor = choiceOptionQtyEditorHtml(name);
   const valuePlaceholder = `${placeholder}，也可填 100~200`;
   return `
@@ -2510,7 +2396,6 @@ function manualDetailHtml(name) {
         <div>
           <h3>${escapeHtml(displayItemName(name))}</h3>
           <p>${escapeHtml(note)}</p>
-          ${manualMarketInfoHtml(market)}
         </div>
         <div class="manual-detail-grid">
           <label class="wide-field">
@@ -3668,8 +3553,6 @@ async function initGiftPackPage() {
     await loadPublicGiftPackData();
     setGiftPageLoadState("loading", "正在加载 item-price-data.json...");
     await loadPublicItemPriceData();
-    setGiftPageLoadState("loading", "正在加载 material-price-history.json...");
-    await loadPublicMaterialPriceHistory();
     setGiftPageLoadState("loading", "正在加载公开数据...");
     await syncGoldRateFromDashboard();
     setGiftPageLoadState("loading", "正在加载礼包缩略图...");
