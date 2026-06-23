@@ -17,16 +17,14 @@
     .btn{display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:999px;background:#fff;color:#111827;padding:9px 14px;font-size:13px;font-weight:850;text-decoration:none;cursor:pointer;box-shadow:none}
     .grid{display:grid;gap:16px}
     .card{background:rgba(255,255,255,.94);border:1px solid rgba(229,231,235,.95);border-radius:12px;box-shadow:var(--shadow)}
-    .content-layout{display:grid;grid-template-columns:260px minmax(0,1fr);gap:16px;align-items:start}
-    .content-layout.summary-collapsed{grid-template-columns:54px minmax(0,1fr)}
-    .summary-sidebar{position:sticky;top:14px;padding:12px;overflow:hidden}
+    .summary-sidebar{position:fixed;left:18px;top:96px;z-index:25;width:260px;max-height:calc(100vh - 120px);padding:12px;overflow:auto}
     .summary-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
     .summary-head h2{margin:0;font-size:16px;line-height:1.2;font-weight:950}
     .summary-toggle{width:30px;height:30px;border:1px solid var(--line);border-radius:9px;background:#fff;color:#111827;font-size:16px;font-weight:950;line-height:1;cursor:pointer}
     .summary-list{display:grid;gap:10px}
-    .content-layout.summary-collapsed .summary-sidebar{padding:10px}
-    .content-layout.summary-collapsed .summary-head h2,.content-layout.summary-collapsed .summary-list{display:none}
-    .content-layout.summary-collapsed .summary-head{justify-content:center;margin:0}
+    .summary-sidebar.collapsed{width:46px;padding:8px;overflow:hidden}
+    .summary-sidebar.collapsed .summary-head h2,.summary-sidebar.collapsed .summary-list{display:none}
+    .summary-sidebar.collapsed .summary-head{justify-content:center;margin:0}
     .kpi{padding:13px 13px 12px;min-height:104px}
     .kpi span{display:block;color:var(--muted);font-size:12px;font-weight:850;margin-bottom:8px}
     .kpi b{display:block;font-size:23px;line-height:1.14;font-weight:950;word-break:break-word}
@@ -65,8 +63,9 @@
     .segmented{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
     .segmented button{border:1px solid var(--line);border-radius:9px;background:#fff;color:#111827;padding:8px 0;font-size:13px;font-weight:900;cursor:pointer}
     .segmented button.active{border-color:#111827;background:#111827;color:#fff}
-    @media(max-width:1180px){.content-layout{grid-template-columns:220px minmax(0,1fr)}}
-    @media(max-width:960px){.topbar,.toolbar{display:block}.actions,.tools{justify-content:flex-start;margin-top:12px}.settings-panel{left:0;right:auto}.content-layout,.content-layout.summary-collapsed{grid-template-columns:1fr}.summary-sidebar{position:static}.content-layout.summary-collapsed .summary-sidebar{padding:12px}.content-layout.summary-collapsed .summary-head h2,.content-layout.summary-collapsed .summary-list{display:grid}.content-layout.summary-collapsed .summary-head{justify-content:space-between;margin-bottom:10px}.charts{grid-template-columns:1fr}h1{font-size:26px}.material-title h3{white-space:normal}}
+    @media(max-width:1680px){.summary-sidebar{left:12px;width:230px}.app{max-width:1360px}}
+    @media(max-width:1460px){.summary-sidebar{position:static;width:auto;max-height:none;margin-bottom:16px}.summary-sidebar.collapsed{width:auto;padding:12px}.summary-sidebar.collapsed .summary-head h2,.summary-sidebar.collapsed .summary-list{display:grid}.summary-sidebar.collapsed .summary-head{justify-content:space-between;margin-bottom:10px}}
+    @media(max-width:960px){.topbar,.toolbar{display:block}.actions,.tools{justify-content:flex-start;margin-top:12px}.settings-panel{left:0;right:auto}.charts{grid-template-columns:1fr}h1{font-size:26px}.material-title h3{white-space:normal}}
   </style>
 </head>
 <body>
@@ -107,16 +106,15 @@
       </div>
     </section>
 
-    <section id="contentLayout" class="content-layout">
-      <aside class="card summary-sidebar">
-        <div class="summary-head">
-          <h2>市场概览</h2>
-          <button id="summaryToggle" class="summary-toggle" type="button" aria-label="收起市场概览" aria-expanded="true">‹</button>
-        </div>
-        <section id="kpis" class="summary-list"></section>
-      </aside>
-      <section id="charts" class="grid charts"></section>
-    </section>
+    <aside id="summarySidebar" class="card summary-sidebar">
+      <div class="summary-head">
+        <h2>市场概览</h2>
+        <button id="summaryToggle" class="summary-toggle" type="button" aria-label="收起市场概览" aria-expanded="true">‹</button>
+      </div>
+      <section id="kpis" class="summary-list"></section>
+    </aside>
+
+    <section id="charts" class="grid charts"></section>
   </main>
   <div id="tooltip" class="tooltip"></div>
 
@@ -267,9 +265,9 @@
     }
 
     function applySummarySetting() {
-      const layout = document.getElementById("contentLayout");
+      const sidebar = document.getElementById("summarySidebar");
       const button = document.getElementById("summaryToggle");
-      layout.classList.toggle("summary-collapsed", state.summaryCollapsed);
+      sidebar.classList.toggle("collapsed", state.summaryCollapsed);
       button.textContent = state.summaryCollapsed ? "›" : "‹";
       button.setAttribute("aria-expanded", String(!state.summaryCollapsed));
       button.setAttribute("aria-label", state.summaryCollapsed ? "展开市场概览" : "收起市场概览");
