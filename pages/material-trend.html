@@ -64,8 +64,8 @@
     .segmented button{border:1px solid var(--line);border-radius:9px;background:#fff;color:#111827;padding:8px 0;font-size:13px;font-weight:900;cursor:pointer}
     .segmented button.active{border-color:#111827;background:#111827;color:#fff}
     @media(max-width:1680px){.summary-sidebar{left:12px;width:230px}.app{max-width:1360px}}
-    @media(max-width:1460px){.summary-sidebar{position:static;width:auto;max-height:none;margin-bottom:16px}.summary-sidebar.collapsed{width:auto;padding:12px}.summary-sidebar.collapsed .summary-head h2,.summary-sidebar.collapsed .summary-list{display:grid}.summary-sidebar.collapsed .summary-head{justify-content:space-between;margin-bottom:10px}}
-    @media(max-width:960px){.topbar,.toolbar{display:block}.actions,.tools{justify-content:flex-start;margin-top:12px}.settings-panel{left:0;right:auto}.charts{grid-template-columns:1fr}h1{font-size:26px}.material-title h3{white-space:normal}}
+    @media(max-width:1460px){.summary-sidebar{left:10px;top:88px;width:min(260px,calc(100vw - 20px));max-height:calc(100vh - 110px)}.summary-sidebar.collapsed{width:46px}}
+    @media(max-width:960px){.topbar,.toolbar{display:block}.actions,.tools{justify-content:flex-start;margin-top:12px}.settings-panel{left:0;right:auto}.charts{grid-template-columns:1fr}.summary-sidebar{top:84px}h1{font-size:26px}.material-title h3{white-space:normal}}
   </style>
 </head>
 <body>
@@ -97,6 +97,14 @@
       </div>
       <div class="tools">
         <input id="search" class="search" type="search" placeholder="筛选材料">
+        <select id="sort" class="select">
+          <option value="default">默认排序</option>
+          <option value="name">按名称</option>
+          <option value="priceDesc">价格高到低</option>
+          <option value="priceAsc">价格低到高</option>
+          <option value="changeDesc">涨幅高到低</option>
+          <option value="changeAsc">跌幅高到低</option>
+        </select>
         <select id="range" class="select">
           <option value="all">全部</option>
           <option value="30">近30天</option>
@@ -123,8 +131,16 @@
     const history = window.LOSTARK_PUBLIC_MATERIAL_PRICE_HISTORY;
     const colors = ["#2563eb","#d97706","#059669","#dc2626","#7c3aed","#0891b2","#ca8a04","#db2777","#475569","#16a34a"];
     const savedCols = Number(localStorage.getItem("lostarkMaterialTrendColumns") || 3);
-    const savedSummary = localStorage.getItem("lostarkMaterialTrendSummaryCollapsed") === "1";
-    const state = { range: "all", search: "", cols: [1, 2, 3, 4].includes(savedCols) ? savedCols : 3, summaryCollapsed: savedSummary };
+    const savedSummaryRaw = localStorage.getItem("lostarkMaterialTrendSummaryCollapsed");
+    const savedSort = localStorage.getItem("lostarkMaterialTrendSort") || "default";
+    const isNarrowScreen = () => window.matchMedia("(max-width: 1460px)").matches;
+    const state = {
+      range: "all",
+      search: "",
+      sort: ["default", "name", "priceDesc", "priceAsc", "changeDesc", "changeAsc"].includes(savedSort) ? savedSort : "default",
+      cols: [1, 2, 3, 4].includes(savedCols) ? savedCols : 3,
+      summaryCollapsed: savedSummaryRaw == null ? isNarrowScreen() : savedSummaryRaw === "1"
+    };
 
     const fmt = (n) => n == null ? "—" : Math.round(n).toLocaleString("zh-CN");
     const pct = (n) => {
@@ -152,7 +168,25 @@
 
     function visibleItems() {
       const q = state.search.trim();
-      return (history.items || []).filter((name) => !q || name.includes(q));
+      const items = (history.items || []).filter((name) => !q || name.includes(q));
+      if (state.sort === "name") {
+        return items.sort((a, b) => a.localeCompare(b, "zh-Hans-CN"));
+      }
+      if (state.sort === "priceDesc" || state.sort === "priceAsc") {
+        return items.sort((a, b) => {
+          const av = latestInfo(a).latest?.value ?? -Infinity;
+          const bv = latestInfo(b).latest?.value ?? -Infinity;
+          return state.sort === "priceDesc" ? bv - av : av - bv;
+        });
+      }
+      if (state.sort === "changeDesc" || state.sort === "changeAsc") {
+        return items.sort((a, b) => {
+          const av = latestInfo(a).change ?? 0;
+          const bv = latestInfo(b).change ?? 0;
+          return state.sort === "changeDesc" ? bv - av : av - bv;
+        });
+      }
+      return items;
     }
 
     function latestInfo(item) {
@@ -295,6 +329,7 @@
       renderKpis();
       applyColumnSetting();
       applySummarySetting();
+      document.getElementById("sort").value = state.sort;
       renderCharts();
     }
 
@@ -304,6 +339,11 @@
     });
     document.getElementById("search").addEventListener("input", (event) => {
       state.search = event.target.value;
+      renderCharts();
+    });
+    document.getElementById("sort").addEventListener("change", (event) => {
+      state.sort = event.target.value;
+      localStorage.setItem("lostarkMaterialTrendSort", state.sort);
       renderCharts();
     });
     document.getElementById("settingsBtn").addEventListener("click", () => {
@@ -335,7 +375,13 @@
     });
     window.addEventListener("resize", () => {
       window.clearTimeout(window.__materialTrendResizeTimer);
-      window.__materialTrendResizeTimer = window.setTimeout(renderChartSvgs, 120);
+      window.__materialTrendResizeTimer = window.setTimeout(() => {
+        if (localStorage.getItem("lostarkMaterialTrendSummaryCollapsed") == null) {
+          state.summaryCollapsed = isNarrowScreen();
+          applySummarySetting();
+        }
+        renderChartSvgs();
+      }, 120);
     });
 
     renderAll();
