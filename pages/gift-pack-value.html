@@ -6,7 +6,12 @@
   <title>命运方舟礼包性价比分析</title>
   <link rel="icon" type="image/jpeg" href="../assets/英雄星石箱子.jpg">
   <script>
-    document.write(`<link rel="stylesheet" href="../assets/css/gift-pack-value.css?v=${Date.now()}">`);
+    (() => {
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = `../assets/css/gift-pack-value.css?v=${Date.now()}`;
+      document.head.append(link);
+    })();
   </script>
 </head>
 <body class="gift-loading">
@@ -166,7 +171,15 @@
   <script src="https://unpkg.com/pinyin-pro"></script>
   <script src="../assets/js/pinyin-search.js"></script>
   <script>
-    document.write(`<script src="../assets/js/gift-pack-value.js?v=${Date.now()}"><\\/script>`);
+    (() => {
+      const script = document.createElement("script");
+      script.src = `../assets/js/gift-pack-value.js?v=${Date.now()}`;
+      script.onerror = () => {
+        const text = document.getElementById("giftPageLoaderText");
+        if (text) text.textContent = "礼包分析脚本加载失败，请刷新页面。";
+      };
+      document.body.append(script);
+    })();
   </script>
 </body>
 </html>
