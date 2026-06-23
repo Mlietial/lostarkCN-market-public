@@ -265,6 +265,14 @@ textarea {
   display: none;
 }
 
+.custom-blue-rate-wrap {
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto;
+}
+
+.custom-blue-rate-wrap[hidden] {
+  display: none;
+}
+
 .input-wrap em {
   color: var(--muted);
   font-style: normal;

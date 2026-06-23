@@ -4,6 +4,8 @@ const DEFAULTS = {
   goldPerRmb: 4189.67,
   royalPerRmb: 100,
   blueSource: "normal",
+  customBlue: 30000,
+  customBlueRoyal: 28000,
   royalDiscount: 1,
   valuationGoldPerRmb: null
 };
@@ -60,7 +62,8 @@ let pageContentDefaults = null;
 const BLUE_SOURCES = {
   normal: { label: "普通", blue: 1, royal: 1 },
   weekly: { label: "周优惠", blue: 30000, royal: 28000 },
-  monthly: { label: "月优惠", blue: 60000, royal: 52000 }
+  monthly: { label: "月优惠", blue: 60000, royal: 52000 },
+  custom: { label: "自定义", blue: DEFAULTS.customBlue, royal: DEFAULTS.customBlueRoyal }
 };
 
 const MANUAL_VALUE_UNITS = {
@@ -507,8 +510,14 @@ function applyGoldRate(value, options = {}) {
 function renderRateControls() {
   const goldRateInput = document.getElementById("goldRateInput");
   const valuationGoldRateInput = document.getElementById("valuationGoldRateInput");
+  const customBlueInput = document.getElementById("customBlueInput");
+  const customBlueRoyalInput = document.getElementById("customBlueRoyalInput");
+  const customBlueRateWrap = document.getElementById("customBlueRateWrap");
   if (goldRateInput) goldRateInput.value = state.goldPerRmb;
   if (valuationGoldRateInput) valuationGoldRateInput.value = state.valuationGoldPerRmb;
+  if (customBlueInput) customBlueInput.value = state.customBlue;
+  if (customBlueRoyalInput) customBlueRoyalInput.value = state.customBlueRoyal;
+  if (customBlueRateWrap) customBlueRateWrap.hidden = state.blueSource !== "custom";
 }
 
 function loadJson(key, fallback) {
@@ -566,6 +575,8 @@ function buildGiftPackBackup() {
         goldPerRmb: state.goldPerRmb,
         royalPerRmb: state.royalPerRmb,
         blueSource: state.blueSource,
+        customBlue: state.customBlue,
+        customBlueRoyal: state.customBlueRoyal,
         royalDiscount: state.royalDiscount,
         valuationGoldPerRmb: state.valuationGoldPerRmb,
         valuationGoldBaseLocked: !!state.valuationGoldBaseLocked,
@@ -920,11 +931,15 @@ function applyGiftPackBackupStorage(storage, persist = false) {
   if (settings && typeof settings === "object") {
     const goldPerRmb = Number(settings.goldPerRmb);
     const royalPerRmb = Number(settings.royalPerRmb);
+    const customBlue = Number(settings.customBlue);
+    const customBlueRoyal = Number(settings.customBlueRoyal);
     const royalDiscount = Number(settings.royalDiscount);
     const valuationGoldPerRmb = Number(settings.valuationGoldPerRmb);
     if (Number.isFinite(goldPerRmb) && goldPerRmb > 0) state.goldPerRmb = goldPerRmb;
     if (Number.isFinite(royalPerRmb) && royalPerRmb > 0) state.royalPerRmb = royalPerRmb;
     if (BLUE_SOURCES[settings.blueSource]) state.blueSource = settings.blueSource;
+    if (Number.isFinite(customBlue) && customBlue > 0) state.customBlue = customBlue;
+    if (Number.isFinite(customBlueRoyal) && customBlueRoyal > 0) state.customBlueRoyal = customBlueRoyal;
     if (Number.isFinite(royalDiscount) && royalDiscount > 0) state.royalDiscount = royalDiscount;
     state.valuationGoldBaseLocked = !!settings.valuationGoldBaseLocked;
     state.valuationGoldPerRmb = Number.isFinite(valuationGoldPerRmb) && valuationGoldPerRmb > 0
@@ -1639,6 +1654,8 @@ function loadSettings() {
       goldPerRmb,
       royalPerRmb: Number(saved.royalPerRmb) > 0 ? Number(saved.royalPerRmb) : DEFAULTS.royalPerRmb,
       blueSource: BLUE_SOURCES[saved.blueSource] ? saved.blueSource : DEFAULTS.blueSource,
+      customBlue: Number(saved.customBlue) > 0 ? Number(saved.customBlue) : DEFAULTS.customBlue,
+      customBlueRoyal: Number(saved.customBlueRoyal) > 0 ? Number(saved.customBlueRoyal) : DEFAULTS.customBlueRoyal,
       royalDiscount: Number(saved.royalDiscount) > 0 ? Number(saved.royalDiscount) : DEFAULTS.royalDiscount,
       valuationGoldPerRmb: hasValuationBase ? Number(saved.valuationGoldPerRmb) : goldPerRmb,
       valuationGoldBaseLocked: !!saved.valuationGoldBaseLocked,
@@ -1655,6 +1672,8 @@ function saveSettings(options = {}) {
     goldPerRmb: state.goldPerRmb,
     royalPerRmb: state.royalPerRmb,
     blueSource: state.blueSource,
+    customBlue: state.customBlue,
+    customBlueRoyal: state.customBlueRoyal,
     royalDiscount: state.royalDiscount,
     valuationGoldPerRmb: state.valuationGoldPerRmb,
     valuationGoldBaseLocked: !!state.valuationGoldBaseLocked,
@@ -1669,6 +1688,8 @@ function rememberRateSnapshot() {
     goldPerRmb: state.goldPerRmb,
     royalPerRmb: state.royalPerRmb,
     blueSource: state.blueSource,
+    customBlue: state.customBlue,
+    customBlueRoyal: state.customBlueRoyal,
     royalDiscount: state.royalDiscount,
     valuationGoldPerRmb: state.valuationGoldPerRmb,
     valuationGoldBaseLocked: !!state.valuationGoldBaseLocked,
@@ -1679,6 +1700,8 @@ function rememberRateSnapshot() {
     && previous.goldPerRmb === record.goldPerRmb
     && previous.royalPerRmb === record.royalPerRmb
     && previous.blueSource === record.blueSource
+    && previous.customBlue === record.customBlue
+    && previous.customBlueRoyal === record.customBlueRoyal
     && previous.royalDiscount === record.royalDiscount
     && previous.valuationGoldPerRmb === record.valuationGoldPerRmb
     && previous.valuationGoldBaseLocked === record.valuationGoldBaseLocked) return;
@@ -1775,8 +1798,16 @@ function royalToValuationGold(royal) {
 }
 
 function blueToRoyal(blue) {
-  const source = BLUE_SOURCES[state.blueSource] || BLUE_SOURCES.normal;
+  const source = state.blueSource === "custom"
+    ? { blue: state.customBlue || DEFAULTS.customBlue, royal: state.customBlueRoyal || DEFAULTS.customBlueRoyal }
+    : BLUE_SOURCES[state.blueSource] || BLUE_SOURCES.normal;
   return Number(blue) * source.royal / source.blue;
+}
+
+function blueSourceText() {
+  if (state.blueSource === "custom") return `${fmtNum(state.customBlue, 0)}蓝钻=${fmtNum(state.customBlueRoyal, 0)}彩钻`;
+  const source = BLUE_SOURCES[state.blueSource] || BLUE_SOURCES.normal;
+  return `${source.label}：${fmtNum(source.blue, 0)}蓝钻=${fmtNum(source.royal, 0)}彩钻`;
 }
 
 function blueToGold(blue) {
@@ -1895,7 +1926,7 @@ function itemUnitGold(content) {
   if (!def) return { value: null, source: "未计入估值" };
   if (typeof def.gold === "number") return { value: def.gold, source: itemSources[content.name] || def.note || "金币单价" };
   if (typeof def.royal === "number") return { value: royalToValuationGold(def.royal), source: `${itemSources[content.name] || def.note || "彩钻折金币"}（估值基准 ${fmtGold(state.valuationGoldPerRmb)} 金/元）` };
-  if (typeof def.blue === "number") return { value: blueToValuationGold(def.blue), source: `${itemSources[content.name] || def.note || "蓝钻折金币"}（估值基准 ${fmtGold(state.valuationGoldPerRmb)} 金/元）` };
+  if (typeof def.blue === "number") return { value: blueToValuationGold(def.blue), source: `${itemSources[content.name] || def.note || "蓝钻折金币"}（${blueSourceText()}，估值基准 ${fmtGold(state.valuationGoldPerRmb)} 金/元）` };
   if (Array.isArray(def.components) && def.components.length) {
     let missing = false;
     let minValue = 0;
@@ -3371,30 +3402,45 @@ function bindControls() {
   renderRateControls();
   document.getElementById("crystalRateInput").value = state.royalPerRmb;
   document.getElementById("blueSourceInput").value = state.blueSource;
+  const refreshValuationViews = () => {
+    renderRateControls();
+    renderManualValues();
+    renderTable();
+    if (state.selectedPackId) renderModal(findPack(state.selectedPackId));
+  };
   document.getElementById("goldRateInput").addEventListener("input", event => {
     if (applyGoldRate(event.target.value)) {
       localStorage.setItem(GOLD_RATE_MANUAL_OVERRIDE_KEY, "true");
       saveSettings();
-      renderRateControls();
-      renderManualValues();
-      renderTable();
-      if (state.selectedPackId) renderModal(findPack(state.selectedPackId));
+      refreshValuationViews();
     }
   });
   document.getElementById("crystalRateInput").addEventListener("input", event => {
     const value = Number(event.target.value);
     if (Number.isFinite(value) && value > 0) state.royalPerRmb = value;
     saveSettings();
-    renderManualValues();
-    renderTable();
-    if (state.selectedPackId) renderModal(findPack(state.selectedPackId));
+    refreshValuationViews();
   });
   document.getElementById("blueSourceInput").addEventListener("change", event => {
     state.blueSource = event.target.value;
     saveSettings();
-    renderManualValues();
-    renderTable();
-    if (state.selectedPackId) renderModal(findPack(state.selectedPackId));
+    refreshValuationViews();
+  });
+  document.getElementById("customBlueInput")?.addEventListener("input", event => {
+    const value = Number(event.target.value);
+    if (Number.isFinite(value) && value > 0) state.customBlue = value;
+    state.blueSource = "custom";
+    document.getElementById("blueSourceInput").value = state.blueSource;
+    saveSettings();
+    refreshValuationViews();
+  });
+  document.getElementById("customBlueRoyalInput")?.addEventListener("input", event => {
+    const value = Number(event.target.value);
+    if (Number.isFinite(value) && value > 0) state.customBlueRoyal = value;
+    state.blueSource = "custom";
+    document.getElementById("blueSourceInput").value = state.blueSource;
+    saveSettings();
+    refreshValuationViews();
   });
   const preset = document.getElementById("royalDiscountPreset");
   const custom = document.getElementById("royalDiscountCustomInput");
