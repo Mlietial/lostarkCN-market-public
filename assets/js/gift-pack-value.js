@@ -449,7 +449,7 @@ const giftPacks = [
 
 const state = {
   ...loadSettings(),
-  filter: "all",
+  filter: "inStock",
   sortDesc: true,
   manualValues: loadManualValues(),
   selectedManualItem: null,
@@ -2083,15 +2083,17 @@ function currencyLabel(currency) {
 
 function filterPacks(packs) {
   return packs.filter(pack => {
-    if (state.filter === "all") return !pack.expired;
+    if (state.filter === "all") return true;
+    if (state.filter === "expired") return pack.expired;
+    if (pack.expired) return false;
+    if (state.filter === "inStock") return true;
     if (state.filter === "royal") return pack.currency === "royal";
     if (state.filter === "blue") return pack.currency === "blue";
     if (state.filter === "threeForOne") return pack.threeForOne;
     if (state.filter === "selfSelect") return pack.isSelfSelect;
     if (state.filter === "random") return pack.isRandom;
     if (state.filter === "combo") return pack.isCombo;
-    if (state.filter === "expired") return pack.expired;
-    return true;
+    return !pack.expired;
   });
 }
 
@@ -3402,6 +3404,7 @@ function bindControls() {
   renderRateControls();
   document.getElementById("crystalRateInput").value = state.royalPerRmb;
   document.getElementById("blueSourceInput").value = state.blueSource;
+  document.getElementById("filterInput").value = state.filter;
   const refreshValuationViews = () => {
     renderRateControls();
     renderManualValues();
