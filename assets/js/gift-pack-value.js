@@ -4,7 +4,7 @@ const DEFAULTS = {
   goldPerRmb: 4189.67,
   royalPerRmb: 100,
   blueSource: "normal",
-  customBlueRateText: "",
+  customBluePerRmb: null,
   customBlue: 30000,
   customBlueRoyal: 28000,
   royalDiscount: 1,
@@ -513,7 +513,7 @@ function renderRateControls() {
   const customBlueRateInput = document.getElementById("customBlueRateInput");
   if (goldRateInput) goldRateInput.value = state.goldPerRmb;
   if (valuationGoldRateInput) valuationGoldRateInput.value = state.valuationGoldPerRmb;
-  if (customBlueRateInput && document.activeElement !== customBlueRateInput) customBlueRateInput.value = state.customBlueRateText || "";
+  if (customBlueRateInput && document.activeElement !== customBlueRateInput) customBlueRateInput.value = state.customBluePerRmb || "";
 }
 
 function loadJson(key, fallback) {
@@ -571,7 +571,7 @@ function buildGiftPackBackup() {
         goldPerRmb: state.goldPerRmb,
         royalPerRmb: state.royalPerRmb,
         blueSource: state.blueSource,
-        customBlueRateText: state.customBlueRateText,
+        customBluePerRmb: state.customBluePerRmb,
         customBlue: state.customBlue,
         customBlueRoyal: state.customBlueRoyal,
         royalDiscount: state.royalDiscount,
@@ -928,7 +928,7 @@ function applyGiftPackBackupStorage(storage, persist = false) {
   if (settings && typeof settings === "object") {
     const goldPerRmb = Number(settings.goldPerRmb);
     const royalPerRmb = Number(settings.royalPerRmb);
-    const customBlueRateText = typeof settings.customBlueRateText === "string" ? settings.customBlueRateText : "";
+    const customBluePerRmb = Number(settings.customBluePerRmb);
     const customBlue = Number(settings.customBlue);
     const customBlueRoyal = Number(settings.customBlueRoyal);
     const royalDiscount = Number(settings.royalDiscount);
@@ -937,7 +937,9 @@ function applyGiftPackBackupStorage(storage, persist = false) {
     if (Number.isFinite(royalPerRmb) && royalPerRmb > 0) state.royalPerRmb = royalPerRmb;
     if (BLUE_SOURCES[settings.blueSource]) state.blueSource = settings.blueSource;
     else if (settings.blueSource === "custom") state.blueSource = DEFAULTS.blueSource;
-    state.customBlueRateText = customBlueRateText || (settings.blueSource === "custom" ? `${customBlue || DEFAULTS.customBlue}=${customBlueRoyal || DEFAULTS.customBlueRoyal}` : "");
+    if (Number.isFinite(customBluePerRmb) && customBluePerRmb > 0) state.customBluePerRmb = customBluePerRmb;
+    else if (typeof settings.customBlueRateText === "string") state.customBluePerRmb = legacyBlueRateTextToPerRmb(settings.customBlueRateText, state.royalPerRmb);
+    else if (settings.blueSource === "custom") state.customBluePerRmb = legacyBlueRateToPerRmb(customBlue || DEFAULTS.customBlue, customBlueRoyal || DEFAULTS.customBlueRoyal, state.royalPerRmb);
     if (Number.isFinite(customBlue) && customBlue > 0) state.customBlue = customBlue;
     if (Number.isFinite(customBlueRoyal) && customBlueRoyal > 0) state.customBlueRoyal = customBlueRoyal;
     if (Number.isFinite(royalDiscount) && royalDiscount > 0) state.royalDiscount = royalDiscount;
@@ -1654,7 +1656,7 @@ function loadSettings() {
       goldPerRmb,
       royalPerRmb: Number(saved.royalPerRmb) > 0 ? Number(saved.royalPerRmb) : DEFAULTS.royalPerRmb,
       blueSource: BLUE_SOURCES[saved.blueSource] ? saved.blueSource : DEFAULTS.blueSource,
-      customBlueRateText: typeof saved.customBlueRateText === "string" ? saved.customBlueRateText : (saved.blueSource === "custom" ? `${Number(saved.customBlue) || DEFAULTS.customBlue}=${Number(saved.customBlueRoyal) || DEFAULTS.customBlueRoyal}` : DEFAULTS.customBlueRateText),
+      customBluePerRmb: loadCustomBluePerRmb(saved),
       customBlue: Number(saved.customBlue) > 0 ? Number(saved.customBlue) : DEFAULTS.customBlue,
       customBlueRoyal: Number(saved.customBlueRoyal) > 0 ? Number(saved.customBlueRoyal) : DEFAULTS.customBlueRoyal,
       royalDiscount: Number(saved.royalDiscount) > 0 ? Number(saved.royalDiscount) : DEFAULTS.royalDiscount,
@@ -1673,7 +1675,7 @@ function saveSettings(options = {}) {
     goldPerRmb: state.goldPerRmb,
     royalPerRmb: state.royalPerRmb,
     blueSource: state.blueSource,
-    customBlueRateText: state.customBlueRateText,
+    customBluePerRmb: state.customBluePerRmb,
     customBlue: state.customBlue,
     customBlueRoyal: state.customBlueRoyal,
     royalDiscount: state.royalDiscount,
@@ -1690,7 +1692,7 @@ function rememberRateSnapshot() {
     goldPerRmb: state.goldPerRmb,
     royalPerRmb: state.royalPerRmb,
     blueSource: state.blueSource,
-    customBlueRateText: state.customBlueRateText,
+    customBluePerRmb: state.customBluePerRmb,
     customBlue: state.customBlue,
     customBlueRoyal: state.customBlueRoyal,
     royalDiscount: state.royalDiscount,
@@ -1703,7 +1705,7 @@ function rememberRateSnapshot() {
     && previous.goldPerRmb === record.goldPerRmb
     && previous.royalPerRmb === record.royalPerRmb
     && previous.blueSource === record.blueSource
-    && previous.customBlueRateText === record.customBlueRateText
+    && previous.customBluePerRmb === record.customBluePerRmb
     && previous.customBlue === record.customBlue
     && previous.customBlueRoyal === record.customBlueRoyal
     && previous.royalDiscount === record.royalDiscount
@@ -1801,13 +1803,32 @@ function royalToValuationGold(royal) {
   return (Number(royal) / state.royalPerRmb) * state.valuationGoldPerRmb * state.royalDiscount;
 }
 
-function parseBlueRateText(text) {
+function legacyBlueRateToPerRmb(blue, royal, royalPerRmb) {
+  const blueValue = Number(blue);
+  const royalValue = Number(royal);
+  const royalRate = Number(royalPerRmb);
+  if (!Number.isFinite(blueValue) || !Number.isFinite(royalValue) || !Number.isFinite(royalRate) || blueValue <= 0 || royalValue <= 0 || royalRate <= 0) return null;
+  return Math.round((blueValue / (royalValue / royalRate)) * 100) / 100;
+}
+
+function legacyBlueRateTextToPerRmb(text, royalPerRmb) {
   const nums = String(text || "").match(/\d+(?:\.\d+)?/g)?.map(Number).filter(value => Number.isFinite(value) && value > 0) || [];
-  return nums.length >= 2 ? { blue: nums[0], royal: nums[1] } : null;
+  if (nums.length === 1) return nums[0];
+  if (nums.length >= 2) return legacyBlueRateToPerRmb(nums[0], nums[1], royalPerRmb);
+  return null;
+}
+
+function loadCustomBluePerRmb(saved) {
+  const direct = Number(saved.customBluePerRmb);
+  if (Number.isFinite(direct) && direct > 0) return direct;
+  const royalRate = Number(saved.royalPerRmb) > 0 ? Number(saved.royalPerRmb) : DEFAULTS.royalPerRmb;
+  if (typeof saved.customBlueRateText === "string") return legacyBlueRateTextToPerRmb(saved.customBlueRateText, royalRate);
+  if (saved.blueSource === "custom") return legacyBlueRateToPerRmb(Number(saved.customBlue) || DEFAULTS.customBlue, Number(saved.customBlueRoyal) || DEFAULTS.customBlueRoyal, royalRate);
+  return DEFAULTS.customBluePerRmb;
 }
 
 function currentBlueSource() {
-  return parseBlueRateText(state.customBlueRateText)
+  return (Number(state.customBluePerRmb) > 0 ? { label: "自定义", blue: state.customBluePerRmb, royal: state.royalPerRmb } : null)
     || BLUE_SOURCES[state.blueSource]
     || BLUE_SOURCES.normal;
 }
@@ -1818,8 +1839,7 @@ function blueToRoyal(blue) {
 }
 
 function blueSourceText() {
-  const custom = parseBlueRateText(state.customBlueRateText);
-  if (custom) return `自定义：${fmtNum(custom.blue, 0)}蓝钻=${fmtNum(custom.royal, 0)}彩钻`;
+  if (Number(state.customBluePerRmb) > 0) return `自定义：${fmtNum(state.customBluePerRmb, 2)}蓝钻=1元`;
   const source = currentBlueSource();
   return `${source.label}：${fmtNum(source.blue, 0)}蓝钻=${fmtNum(source.royal, 0)}彩钻`;
 }
@@ -3444,11 +3464,12 @@ function bindControls() {
     refreshValuationViews();
   });
   document.getElementById("customBlueRateInput")?.addEventListener("input", event => {
-    state.customBlueRateText = event.target.value.trim();
-    const parsed = parseBlueRateText(state.customBlueRateText);
-    if (parsed) {
-      state.customBlue = parsed.blue;
-      state.customBlueRoyal = parsed.royal;
+    const raw = event.target.value.trim();
+    const value = Number(raw);
+    state.customBluePerRmb = raw && Number.isFinite(value) && value > 0 ? value : null;
+    if (state.customBluePerRmb) {
+      state.customBlue = state.customBluePerRmb;
+      state.customBlueRoyal = state.royalPerRmb;
     }
     saveSettings();
     refreshValuationViews();
