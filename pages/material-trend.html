@@ -29,9 +29,9 @@
     .kpi span{display:block;color:var(--muted);font-size:12px;font-weight:850;margin-bottom:8px}
     .kpi b{display:block;font-size:23px;line-height:1.14;font-weight:950;word-break:break-word}
     .kpi em{display:block;margin-top:8px;color:var(--muted);font-size:12px;line-height:1.35;font-style:normal}
-    .toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:13px 20px;margin-bottom:16px}
+    .toolbar{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;padding:13px 20px;margin-bottom:16px}
     .toolbar h2{margin:0;font-size:20px;line-height:1.2;font-weight:900}
-    .filter-panel{margin-top:12px;display:grid;gap:8px}
+    .filter-panel{display:grid;gap:8px}
     .filter-row{display:flex;gap:8px;flex-wrap:wrap}
     .filter-btn{border:1px solid var(--line);border-radius:999px;background:#fff;color:#111827;padding:7px 12px;font-size:13px;font-weight:900;cursor:pointer}
     .filter-btn.active{border-color:#111827;background:#111827;color:#fff}
@@ -99,7 +99,6 @@
 
     <section class="card toolbar">
       <div>
-        <h2>单材料折线图</h2>
         <div class="filter-panel" aria-label="材料分类筛选">
           <div id="mainFilters" class="filter-row" role="group" aria-label="材料大类">
             <button class="filter-btn" type="button" data-main-filter="enhance">强化材料</button>
