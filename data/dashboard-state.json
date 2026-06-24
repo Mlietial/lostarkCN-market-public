@@ -6145,13 +6145,13 @@
     "reportMode": "weekly",
     "withdrawChannel": "ccb",
     "buyRateSourceIndex": 109,
-    "buyRateSourceKey": "mid:mail:2026-06-23",
-    "quoteDate": "2026-06-23",
-    "publishedAt": "2026-06-23 09:00",
+    "buyRateSourceKey": "mid:mail:2026-06-24",
+    "quoteDate": "2026-06-24",
+    "publishedAt": "2026-06-24 09:00",
     "importTimestamps": {
-      "gem": "2026-06-23 09:00",
-      "gold": "2026-06-23 09:00",
-      "engraving": "2026-06-23 09:00"
+      "gem": "2026-06-24 09:00",
+      "gold": "2026-06-24 09:00",
+      "engraving": "2026-06-24 09:00"
     },
     "heatMode": "price",
     "notesMode": 0,
