@@ -805,7 +805,7 @@ function saveCalculatorSettings(){
 function loadCalculatorSettings(){
   try{
     const values=JSON.parse(localStorage.getItem(GC_CALCULATOR_KEY)||"null");
-    return values&&typeof values==="object"?{calculator:values}:null;
+    return values&&typeof values==="object"?{calculator:Object.assign({},values,{gemQuoteDate:GC_GEM_QUOTE_LATEST})}:null;
   }catch(e){return null;}
 }
 function buildDashboardState(){
@@ -869,7 +869,7 @@ function applyCalculatorSettings(settings){
     const input=document.getElementById(id);
     if(input&&values[key]!=null&&values[key]!=="")input.value=values[key];
   });
-  gcGemQuoteSelection=values.gemQuoteDate||GC_GEM_QUOTE_LATEST;
+  gcGemQuoteSelection=GC_GEM_QUOTE_LATEST;
 }
 
 function normalizeGcBuyRateSourceKey(value){
