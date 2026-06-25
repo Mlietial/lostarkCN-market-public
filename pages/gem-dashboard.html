@@ -455,7 +455,8 @@ function dailyReportGoldChangeItem(label,key,quoteDate){const rows=goldHistory.f
 function dailyReportGoldChangeSummary(quoteDate){return'<div class="dr-gold-change" style="display:grid;grid-template-columns:86px 1fr 1fr;gap:5px;align-items:stretch;padding:7px;border-bottom:1px solid #eef2f7"><b style="display:flex;align-items:center;color:#334155;font-size:10.5px">近3日报价变化</b>'+dailyReportGoldChangeItem("邮寄", "mailMid", quoteDate)+dailyReportGoldChangeItem("拍卖", "aucMid", quoteDate)+'</div>';}
 function dailyReportGoldAvgMetric(key,quoteDate){const rows=goldHistory.filter(row=>(!quoteDate||row.date<=quoteDate)&&row[key]!=null);if(rows.length<2)return{pct:null,fromDate:rows.length?rows[rows.length-1].date:null,toDate:rows.length?rows[rows.length-1].date:null};const last=rows[rows.length-1],prev=rows[rows.length-2],pct=goldPriceChangePercent(prev[key],last[key]);return{pct,fromDate:prev.date,toDate:last.date};}
 function dailyReportEngravingRows(report){const dates=getEngravingDates(),date=report.engravingDate||(dates.length?dates[dates.length-1]:"");if(!date)return[];return latestEngravingRowsByBook(enrichEngravingRows().filter(row=>engravingDateKey(row)===date&&row.lowest>=50000)).sort((a,b)=>b.lowest-a.lowest||a.name.localeCompare(b.name,"zh-CN"));}
-function dailyReportEngravingHistoricLowCell(row){const low=row&&row.historicLow;if(!low)return'<span class="muted">—</span>';return'<b>'+formatEngravingNumber(low.lowest)+'</b><small>'+escapeHtml(low.date||"—")+'</small>';}
+function dailyReportEngravingHistoricLow(row){if(row&&row.historicLow)return row.historicLow;if(!row)return null;const key=engravingBookKey(row);let best=null;engravingBookPrices.forEach(item=>{if(!item||engravingBookKey(item)!==key||!Number.isFinite(Number(item.lowest)))return;const date=engravingDateKey(item);if(!best||Number(item.lowest)<Number(best.lowest)||(Number(item.lowest)===Number(best.lowest)&&date>best.date)){best={lowest:Number(item.lowest),date,row:item};}});return best;}
+function dailyReportEngravingHistoricLowCell(row){const low=dailyReportEngravingHistoricLow(row);if(!low)return'<span class="muted">—</span>';return'<b>'+formatEngravingNumber(low.lowest)+'</b><small>'+escapeHtml(low.date||"—")+'</small>';}
 function dailyReportEngravingTable(report){const rows=dailyReportEngravingRows(report);if(!rows.length)return'<tr><td colspan="8" class="muted">暂无当前最低超过5万的刻印书</td></tr>';return rows.map(row=>'<tr><td><b>'+escapeHtml(row.name)+'</b><small>'+escapeHtml(row.grade)+' · '+escapeHtml(row.date)+'</small></td><td>'+dailyReportEngravingHistoricLowCell(row)+'</td><td>'+formatEngravingNumber(row.prevAvg)+'</td><td>'+formatEngravingNumber(row.recentDeal)+'</td><td><b>'+formatEngravingNumber(row.lowest)+'</b></td><td class="'+engravingPctClass(row.lowVsPrevAvg)+'">'+formatEngravingPercent(row.lowVsPrevAvg)+'</td><td class="'+engravingPctClass(row.lowVsRecentDeal)+'">'+formatEngravingPercent(row.lowVsRecentDeal)+'</td><td>'+escapeHtml(row.status.text)+'</td></tr>').join("");}
 function renderDailyReportImageHtml(report){
   const gold=buildDailyGoldReportData(),avg=report.summary.avgDay,avgCls=reportChangeClass(avg),marketText=!Number.isFinite(avg)?"暂无昨日对比":Math.abs(avg)<.05?"整体横盘":avg>0?"整体回升":"整体回落";
@@ -1532,7 +1533,8 @@ document.getElementById("gcTxnImportApply")?.addEventListener("click",()=>{
     gcTxns=mergeGcTxns(gcTxns,rows);
     markDataImported("gold");
     saveGcTxns();
-    gcQuoteDate=goldHistory.length?goldHistory[goldHistory.length-1].date:null;
+    const latestImportedDate=[...importedDates].sort((a,b)=>a.localeCompare(b)).pop();
+    gcQuoteDate=latestImportedDate||(goldHistory.length?goldHistory[goldHistory.length-1].date:null);
     saveDashboardPreferences();
     document.getElementById("gcTxnImportText").value="";
     document.getElementById("gcTxnImportBox").style.display="none";
