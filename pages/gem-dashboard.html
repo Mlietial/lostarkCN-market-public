@@ -783,7 +783,7 @@ function goldPriceChangePercent(firstRate,lastRate){
 }
 let gcTxns;
 gcTxns=migrateGcTxns((embeddedDashboardState&&embeddedDashboardState.goldTxns)||[]);
-let gcQuoteDate=embeddedDashboardState&&embeddedDashboardState.settings?normalizeDateToken(embeddedDashboardState.settings.quoteDate):null;
+let gcQuoteDate=null;
 let gcWithdrawChannel=normalizeWithdrawChannel(embeddedDashboardState&&embeddedDashboardState.settings?embeddedDashboardState.settings.withdrawChannel:localStorage.getItem("gemGcWithdrawChannel"));
 function saveGcTxns(){localStorage.setItem("gemGcTxns",JSON.stringify(gcTxns));localStorage.setItem("gemGcWithdrawChannel",gcWithdrawChannel);buildGoldHistory();}
 const savedGcBuyRateSource=embeddedDashboardState&&embeddedDashboardState.settings?embeddedDashboardState.settings.buyRateSourceIndex:localStorage.getItem("gemGcBuyRateSource");
@@ -819,7 +819,7 @@ function buildDashboardState(){
     baselines:Object.assign({},customBaselines),
     goldTxns:gcTxns.map(t=>Object.assign({},t)),
     engravingBookPrices:engravingBookPrices.map(row=>Object.assign({},row)),
-    settings:{withdrawChannel:gcWithdrawChannel,buyRateSourceIndex:gcBuyRateSourceIndex,buyRateSourceKey:gcBuyRateSourceKey,quoteDate:gcQuoteDate,publishedAt:latestImportedAt,importTimestamps:Object.assign({},importTimestamps),heatMode,notesMode,calculator:readCalculatorValues(),watermarkEnabled:dailyReportV2WatermarkEnabled,watermark:Object.assign({},dailyReportV2WatermarkOptions)},
+    settings:{withdrawChannel:gcWithdrawChannel,buyRateSourceIndex:gcBuyRateSourceIndex,buyRateSourceKey:gcBuyRateSourceKey,quoteDate:goldHistory.length?goldHistory[goldHistory.length-1].date:null,publishedAt:latestImportedAt,importTimestamps:Object.assign({},importTimestamps),heatMode,notesMode,calculator:readCalculatorValues(),watermarkEnabled:dailyReportV2WatermarkEnabled,watermark:Object.assign({},dailyReportV2WatermarkOptions)},
     noteTemplates:Object.assign({},notesTplOverride)
   };
 }
@@ -846,7 +846,7 @@ function applyDashboardState(state){
   gcWithdrawChannel=normalizeWithdrawChannel(settings.withdrawChannel);
   gcBuyRateSourceIndex=Number.isInteger(Number(settings.buyRateSourceIndex))?Number(settings.buyRateSourceIndex):3;
   gcBuyRateSourceKey=normalizeGcBuyRateSourceKey(settings.buyRateSourceKey||settings.buyRateSourceIndex);
-  gcQuoteDate=normalizeDateToken(settings.quoteDate);
+  gcQuoteDate=null;
   importTimestamps=normalizeImportTimestamps(settings.importTimestamps);
   if(settings.watermarkEnabled!=null)dailyReportV2WatermarkEnabled=!!settings.watermarkEnabled;
   if(settings.watermark)dailyReportV2WatermarkOptions=normalizeDailyReportWatermarkOptions(settings.watermark);
