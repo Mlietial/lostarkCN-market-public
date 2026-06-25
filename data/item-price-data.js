@@ -1,64 +1,64 @@
 window.LOSTARK_PUBLIC_ITEM_PRICE_DATA = {
   "app": "lostark-item-price-data",
   "version": 1,
-  "exportedAt": "2026-06-24T02:12:09.196Z",
+  "exportedAt": "2026-06-25T01:23:48.416Z",
   "storage": {
-    "giftPackManualValues": "{\"命运破坏石\":{\"raw\":\"345\",\"value\":345,\"min\":345,\"max\":345,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"熔岩之息\":{\"raw\":\"271\",\"value\":271,\"min\":271,\"max\":271,\"isRange\":false,\"stackSize\":null,\"unit\":\"gold\"},\"命运碎片袋子（大）\":{\"raw\":\"185\",\"value\":185,\"min\":185,\"max\":185,\"isRange\":false,\"stackSize\":null,\"unit\":\"gold\"},\"冰川之息\":{\"raw\":\"155\",\"value\":155,\"min\":155,\"max\":155,\"isRange\":false,\"stackSize\":null,\"unit\":\"gold\"},\"命运碎片袋子（小）\":{\"raw\":\"92\",\"value\":92,\"min\":92,\"max\":92,\"isRange\":false,\"stackSize\":null,\"unit\":\"gold\"},\"阿比多斯融合材料\":{\"raw\":\"87\",\"value\":87,\"min\":87,\"max\":87,\"isRange\":false,\"stackSize\":null,\"unit\":\"gold\"},\"命运突破石\":{\"raw\":\"7\",\"value\":7,\"min\":7,\"max\":7,\"isRange\":false,\"stackSize\":null,\"unit\":\"gold\"},\"命运守护石\":{\"raw\":\"7\",\"value\":7,\"min\":7,\"max\":7,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"命运碎片袋子（中）\":{\"raw\":\"141\",\"value\":141,\"min\":141,\"max\":141,\"isRange\":false,\"stackSize\":null,\"unit\":\"gold\"},\"神选英雄气息\":{\"raw\":\"4444333\",\"value\":4444333,\"min\":4444333,\"max\":4444333,\"isRange\":false,\"stackSize\":null,\"unit\":\"gold\"},\"冶金术：业火[19-20]\":{\"raw\":\"2987\",\"value\":2987,\"min\":2987,\"max\":2987,\"isRange\":false,\"stackSize\":null,\"unit\":\"gold\"},\"裁缝术：业火[19-20]\":{\"raw\":\"2755\",\"value\":2755,\"min\":2755,\"max\":2755,\"isRange\":false,\"stackSize\":null,\"unit\":\"gold\"},\"绚丽的野花\":{\"raw\":\"1136\",\"value\":1136,\"min\":1136,\"max\":1136,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"阿比多斯野花\":{\"raw\":\"1069\",\"value\":1069,\"min\":1069,\"max\":1069,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"害羞的野花\":{\"raw\":\"172\",\"value\":172,\"min\":172,\"max\":172,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"野花\":{\"raw\":\"83\",\"value\":83,\"min\":83,\"max\":83,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"阿比多斯木材\":{\"raw\":\"1079\",\"value\":1079,\"min\":1079,\"max\":1079,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"结实的木材\":{\"raw\":\"842\",\"value\":842,\"min\":842,\"max\":842,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"松软木材\":{\"raw\":\"170\",\"value\":170,\"min\":170,\"max\":170,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"木材\":{\"raw\":\"85\",\"value\":85,\"min\":85,\"max\":85,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"阿比多斯矿石\":{\"raw\":\"1088\",\"value\":1088,\"min\":1088,\"max\":1088,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"坚固的矿石\":{\"raw\":\"1022\",\"value\":1022,\"min\":1022,\"max\":1022,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"沉重的矿石\":{\"raw\":\"167\",\"value\":167,\"min\":167,\"max\":167,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"矿石\":{\"raw\":\"86\",\"value\":86,\"min\":86,\"max\":86,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"奥莱赫厚实的生肉\":{\"raw\":\"1554\",\"value\":1554,\"min\":1554,\"max\":1554,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"阿比多斯厚实的生肉\":{\"raw\":\"1592\",\"value\":1592,\"min\":1592,\"max\":1592,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"瘦实的生肉\":{\"raw\":\"222\",\"value\":222,\"min\":222,\"max\":222,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"狩猎结晶\":{\"raw\":\"188\",\"value\":188,\"min\":188,\"max\":188,\"isRange\":false,\"stackSize\":10,\"unit\":\"gold\"},\"厚实的生肉\":{\"raw\":\"116\",\"value\":116,\"min\":116,\"max\":116,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"珍贵的皮革\":{\"raw\":\"9\",\"value\":9,\"min\":9,\"max\":9,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"奥莱赫太阳鲤\":{\"raw\":\"1197\",\"value\":1197,\"min\":1197,\"max\":1197,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"阿比多斯太阳鲤鱼\":{\"raw\":\"1043\",\"value\":1043,\"min\":1043,\"max\":1043,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"钓鱼结晶\":{\"raw\":\"188\",\"value\":188,\"min\":188,\"max\":188,\"isRange\":false,\"stackSize\":10,\"unit\":\"gold\"},\"红肉海鲜\":{\"raw\":\"171\",\"value\":171,\"min\":171,\"max\":171,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"鲜鱼\":{\"raw\":\"86\",\"value\":86,\"min\":86,\"max\":86,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"阿比多斯遗物\":{\"raw\":\"1049\",\"value\":1049,\"min\":1049,\"max\":1049,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"奥莱赫遗物\":{\"raw\":\"1089\",\"value\":1089,\"min\":1089,\"max\":1089,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"稀有遗物\":{\"raw\":\"170\",\"value\":170,\"min\":170,\"max\":170,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"考古结晶\":{\"raw\":\"99\",\"value\":99,\"min\":99,\"max\":99,\"isRange\":false,\"stackSize\":10,\"unit\":\"gold\"},\"古代遗物\":{\"raw\":\"84\",\"value\":84,\"min\":84,\"max\":84,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"珍贵的遗物\":{\"raw\":\"5\",\"value\":5,\"min\":5,\"max\":5,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"}}",
+    "giftPackManualValues": "{\"命运破坏石\":{\"raw\":\"348\",\"value\":348,\"min\":348,\"max\":348,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"熔岩之息\":{\"raw\":\"243\",\"value\":243,\"min\":243,\"max\":243,\"isRange\":false,\"stackSize\":null,\"unit\":\"gold\"},\"命运碎片袋子（大）\":{\"raw\":\"178\",\"value\":178,\"min\":178,\"max\":178,\"isRange\":false,\"stackSize\":null,\"unit\":\"gold\"},\"冰川之息\":{\"raw\":\"142\",\"value\":142,\"min\":142,\"max\":142,\"isRange\":false,\"stackSize\":null,\"unit\":\"gold\"},\"命运碎片袋子（小）\":{\"raw\":\"65\",\"value\":65,\"min\":65,\"max\":65,\"isRange\":false,\"stackSize\":null,\"unit\":\"gold\"},\"阿比多斯融合材料\":{\"raw\":\"89\",\"value\":89,\"min\":89,\"max\":89,\"isRange\":false,\"stackSize\":null,\"unit\":\"gold\"},\"命运突破石\":{\"raw\":\"7\",\"value\":7,\"min\":7,\"max\":7,\"isRange\":false,\"stackSize\":null,\"unit\":\"gold\"},\"命运守护石\":{\"raw\":\"7\",\"value\":7,\"min\":7,\"max\":7,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"命运碎片袋子（中）\":{\"raw\":\"145\",\"value\":145,\"min\":145,\"max\":145,\"isRange\":false,\"stackSize\":null,\"unit\":\"gold\"},\"神选英雄气息\":{\"raw\":\"4333333\",\"value\":4333333,\"min\":4333333,\"max\":4333333,\"isRange\":false,\"stackSize\":null,\"unit\":\"gold\"},\"冶金术：业火[19-20]\":{\"raw\":\"2766\",\"value\":2766,\"min\":2766,\"max\":2766,\"isRange\":false,\"stackSize\":null,\"unit\":\"gold\"},\"裁缝术：业火[19-20]\":{\"raw\":\"2633\",\"value\":2633,\"min\":2633,\"max\":2633,\"isRange\":false,\"stackSize\":null,\"unit\":\"gold\"},\"绚丽的野花\":{\"raw\":\"1240\",\"value\":1240,\"min\":1240,\"max\":1240,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"阿比多斯野花\":{\"raw\":\"1199\",\"value\":1199,\"min\":1199,\"max\":1199,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"害羞的野花\":{\"raw\":\"174\",\"value\":174,\"min\":174,\"max\":174,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"野花\":{\"raw\":\"86\",\"value\":86,\"min\":86,\"max\":86,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"阿比多斯木材\":{\"raw\":\"1058\",\"value\":1058,\"min\":1058,\"max\":1058,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"结实的木材\":{\"raw\":\"820\",\"value\":820,\"min\":820,\"max\":820,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"松软木材\":{\"raw\":\"163\",\"value\":163,\"min\":163,\"max\":163,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"木材\":{\"raw\":\"83\",\"value\":83,\"min\":83,\"max\":83,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"阿比多斯矿石\":{\"raw\":\"1198\",\"value\":1198,\"min\":1198,\"max\":1198,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"坚固的矿石\":{\"raw\":\"1028\",\"value\":1028,\"min\":1028,\"max\":1028,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"沉重的矿石\":{\"raw\":\"194\",\"value\":194,\"min\":194,\"max\":194,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"矿石\":{\"raw\":\"89\",\"value\":89,\"min\":89,\"max\":89,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"奥莱赫厚实的生肉\":{\"raw\":\"1597\",\"value\":1597,\"min\":1597,\"max\":1597,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"阿比多斯厚实的生肉\":{\"raw\":\"1549\",\"value\":1549,\"min\":1549,\"max\":1549,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"瘦实的生肉\":{\"raw\":\"232\",\"value\":232,\"min\":232,\"max\":232,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"狩猎结晶\":{\"raw\":\"166\",\"value\":166,\"min\":166,\"max\":166,\"isRange\":false,\"stackSize\":10,\"unit\":\"gold\"},\"厚实的生肉\":{\"raw\":\"116\",\"value\":116,\"min\":116,\"max\":116,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"珍贵的皮革\":{\"raw\":\"10\",\"value\":10,\"min\":10,\"max\":10,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"奥莱赫太阳鲤\":{\"raw\":\"1195\",\"value\":1195,\"min\":1195,\"max\":1195,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"阿比多斯太阳鲤鱼\":{\"raw\":\"1168\",\"value\":1168,\"min\":1168,\"max\":1168,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"钓鱼结晶\":{\"raw\":\"166\",\"value\":166,\"min\":166,\"max\":166,\"isRange\":false,\"stackSize\":10,\"unit\":\"gold\"},\"红肉海鲜\":{\"raw\":\"167\",\"value\":167,\"min\":167,\"max\":167,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"鲜鱼\":{\"raw\":\"81\",\"value\":81,\"min\":81,\"max\":81,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"阿比多斯遗物\":{\"raw\":\"1043\",\"value\":1043,\"min\":1043,\"max\":1043,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"奥莱赫遗物\":{\"raw\":\"1070\",\"value\":1070,\"min\":1070,\"max\":1070,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"稀有遗物\":{\"raw\":\"165\",\"value\":165,\"min\":165,\"max\":165,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"考古结晶\":{\"raw\":\"99\",\"value\":99,\"min\":99,\"max\":99,\"isRange\":false,\"stackSize\":10,\"unit\":\"gold\"},\"古代遗物\":{\"raw\":\"82\",\"value\":82,\"min\":82,\"max\":82,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"},\"珍贵的遗物\":{\"raw\":\"10\",\"value\":10,\"min\":10,\"max\":10,\"isRange\":false,\"stackSize\":100,\"unit\":\"gold\"}}",
     "giftPackItemSources": "{}",
     "giftPackCustomManualItems": "[]",
     "giftPackHiddenManualItems": "[\"星石加工初始化/重置券\",\"星石加工重置券\",\"内容物\",\"稀有-英雄星石箱子\"]"
   },
   "manualValues": {
     "命运破坏石": {
-      "raw": "345",
-      "value": 345,
-      "min": 345,
-      "max": 345,
+      "raw": "348",
+      "value": 348,
+      "min": 348,
+      "max": 348,
       "isRange": false,
       "stackSize": 100,
       "unit": "gold"
     },
     "熔岩之息": {
-      "raw": "271",
-      "value": 271,
-      "min": 271,
-      "max": 271,
+      "raw": "243",
+      "value": 243,
+      "min": 243,
+      "max": 243,
       "isRange": false,
       "stackSize": null,
       "unit": "gold"
     },
     "命运碎片袋子（大）": {
-      "raw": "185",
-      "value": 185,
-      "min": 185,
-      "max": 185,
+      "raw": "178",
+      "value": 178,
+      "min": 178,
+      "max": 178,
       "isRange": false,
       "stackSize": null,
       "unit": "gold"
     },
     "冰川之息": {
-      "raw": "155",
-      "value": 155,
-      "min": 155,
-      "max": 155,
+      "raw": "142",
+      "value": 142,
+      "min": 142,
+      "max": 142,
       "isRange": false,
       "stackSize": null,
       "unit": "gold"
     },
     "命运碎片袋子（小）": {
-      "raw": "92",
-      "value": 92,
-      "min": 92,
-      "max": 92,
+      "raw": "65",
+      "value": 65,
+      "min": 65,
+      "max": 65,
       "isRange": false,
       "stackSize": null,
       "unit": "gold"
     },
     "阿比多斯融合材料": {
-      "raw": "87",
-      "value": 87,
-      "min": 87,
-      "max": 87,
+      "raw": "89",
+      "value": 89,
+      "min": 89,
+      "max": 89,
       "isRange": false,
       "stackSize": null,
       "unit": "gold"
@@ -82,141 +82,69 @@ window.LOSTARK_PUBLIC_ITEM_PRICE_DATA = {
       "unit": "gold"
     },
     "命运碎片袋子（中）": {
-      "raw": "141",
-      "value": 141,
-      "min": 141,
-      "max": 141,
+      "raw": "145",
+      "value": 145,
+      "min": 145,
+      "max": 145,
       "isRange": false,
       "stackSize": null,
       "unit": "gold"
     },
     "神选英雄气息": {
-      "raw": "4444333",
-      "value": 4444333,
-      "min": 4444333,
-      "max": 4444333,
+      "raw": "4333333",
+      "value": 4333333,
+      "min": 4333333,
+      "max": 4333333,
       "isRange": false,
       "stackSize": null,
       "unit": "gold"
     },
     "冶金术：业火[19-20]": {
-      "raw": "2987",
-      "value": 2987,
-      "min": 2987,
-      "max": 2987,
+      "raw": "2766",
+      "value": 2766,
+      "min": 2766,
+      "max": 2766,
       "isRange": false,
       "stackSize": null,
       "unit": "gold"
     },
     "裁缝术：业火[19-20]": {
-      "raw": "2755",
-      "value": 2755,
-      "min": 2755,
-      "max": 2755,
+      "raw": "2633",
+      "value": 2633,
+      "min": 2633,
+      "max": 2633,
       "isRange": false,
       "stackSize": null,
       "unit": "gold"
     },
     "绚丽的野花": {
-      "raw": "1136",
-      "value": 1136,
-      "min": 1136,
-      "max": 1136,
+      "raw": "1240",
+      "value": 1240,
+      "min": 1240,
+      "max": 1240,
       "isRange": false,
       "stackSize": 100,
       "unit": "gold"
     },
     "阿比多斯野花": {
-      "raw": "1069",
-      "value": 1069,
-      "min": 1069,
-      "max": 1069,
+      "raw": "1199",
+      "value": 1199,
+      "min": 1199,
+      "max": 1199,
       "isRange": false,
       "stackSize": 100,
       "unit": "gold"
     },
     "害羞的野花": {
-      "raw": "172",
-      "value": 172,
-      "min": 172,
-      "max": 172,
+      "raw": "174",
+      "value": 174,
+      "min": 174,
+      "max": 174,
       "isRange": false,
       "stackSize": 100,
       "unit": "gold"
     },
     "野花": {
-      "raw": "83",
-      "value": 83,
-      "min": 83,
-      "max": 83,
-      "isRange": false,
-      "stackSize": 100,
-      "unit": "gold"
-    },
-    "阿比多斯木材": {
-      "raw": "1079",
-      "value": 1079,
-      "min": 1079,
-      "max": 1079,
-      "isRange": false,
-      "stackSize": 100,
-      "unit": "gold"
-    },
-    "结实的木材": {
-      "raw": "842",
-      "value": 842,
-      "min": 842,
-      "max": 842,
-      "isRange": false,
-      "stackSize": 100,
-      "unit": "gold"
-    },
-    "松软木材": {
-      "raw": "170",
-      "value": 170,
-      "min": 170,
-      "max": 170,
-      "isRange": false,
-      "stackSize": 100,
-      "unit": "gold"
-    },
-    "木材": {
-      "raw": "85",
-      "value": 85,
-      "min": 85,
-      "max": 85,
-      "isRange": false,
-      "stackSize": 100,
-      "unit": "gold"
-    },
-    "阿比多斯矿石": {
-      "raw": "1088",
-      "value": 1088,
-      "min": 1088,
-      "max": 1088,
-      "isRange": false,
-      "stackSize": 100,
-      "unit": "gold"
-    },
-    "坚固的矿石": {
-      "raw": "1022",
-      "value": 1022,
-      "min": 1022,
-      "max": 1022,
-      "isRange": false,
-      "stackSize": 100,
-      "unit": "gold"
-    },
-    "沉重的矿石": {
-      "raw": "167",
-      "value": 167,
-      "min": 167,
-      "max": 167,
-      "isRange": false,
-      "stackSize": 100,
-      "unit": "gold"
-    },
-    "矿石": {
       "raw": "86",
       "value": 86,
       "min": 86,
@@ -225,38 +153,110 @@ window.LOSTARK_PUBLIC_ITEM_PRICE_DATA = {
       "stackSize": 100,
       "unit": "gold"
     },
+    "阿比多斯木材": {
+      "raw": "1058",
+      "value": 1058,
+      "min": 1058,
+      "max": 1058,
+      "isRange": false,
+      "stackSize": 100,
+      "unit": "gold"
+    },
+    "结实的木材": {
+      "raw": "820",
+      "value": 820,
+      "min": 820,
+      "max": 820,
+      "isRange": false,
+      "stackSize": 100,
+      "unit": "gold"
+    },
+    "松软木材": {
+      "raw": "163",
+      "value": 163,
+      "min": 163,
+      "max": 163,
+      "isRange": false,
+      "stackSize": 100,
+      "unit": "gold"
+    },
+    "木材": {
+      "raw": "83",
+      "value": 83,
+      "min": 83,
+      "max": 83,
+      "isRange": false,
+      "stackSize": 100,
+      "unit": "gold"
+    },
+    "阿比多斯矿石": {
+      "raw": "1198",
+      "value": 1198,
+      "min": 1198,
+      "max": 1198,
+      "isRange": false,
+      "stackSize": 100,
+      "unit": "gold"
+    },
+    "坚固的矿石": {
+      "raw": "1028",
+      "value": 1028,
+      "min": 1028,
+      "max": 1028,
+      "isRange": false,
+      "stackSize": 100,
+      "unit": "gold"
+    },
+    "沉重的矿石": {
+      "raw": "194",
+      "value": 194,
+      "min": 194,
+      "max": 194,
+      "isRange": false,
+      "stackSize": 100,
+      "unit": "gold"
+    },
+    "矿石": {
+      "raw": "89",
+      "value": 89,
+      "min": 89,
+      "max": 89,
+      "isRange": false,
+      "stackSize": 100,
+      "unit": "gold"
+    },
     "奥莱赫厚实的生肉": {
-      "raw": "1554",
-      "value": 1554,
-      "min": 1554,
-      "max": 1554,
+      "raw": "1597",
+      "value": 1597,
+      "min": 1597,
+      "max": 1597,
       "isRange": false,
       "stackSize": 100,
       "unit": "gold"
     },
     "阿比多斯厚实的生肉": {
-      "raw": "1592",
-      "value": 1592,
-      "min": 1592,
-      "max": 1592,
+      "raw": "1549",
+      "value": 1549,
+      "min": 1549,
+      "max": 1549,
       "isRange": false,
       "stackSize": 100,
       "unit": "gold"
     },
     "瘦实的生肉": {
-      "raw": "222",
-      "value": 222,
-      "min": 222,
-      "max": 222,
+      "raw": "232",
+      "value": 232,
+      "min": 232,
+      "max": 232,
       "isRange": false,
       "stackSize": 100,
       "unit": "gold"
     },
     "狩猎结晶": {
-      "raw": "188",
-      "value": 188,
-      "min": 188,
-      "max": 188,
+      "raw": "166",
+      "value": 166,
+      "min": 166,
+      "max": 166,
       "isRange": false,
       "stackSize": 10,
       "unit": "gold"
@@ -271,24 +271,60 @@ window.LOSTARK_PUBLIC_ITEM_PRICE_DATA = {
       "unit": "gold"
     },
     "珍贵的皮革": {
-      "raw": "9",
-      "value": 9,
-      "min": 9,
-      "max": 9,
+      "raw": "10",
+      "value": 10,
+      "min": 10,
+      "max": 10,
       "isRange": false,
       "stackSize": 100,
       "unit": "gold"
     },
     "奥莱赫太阳鲤": {
-      "raw": "1197",
-      "value": 1197,
-      "min": 1197,
-      "max": 1197,
+      "raw": "1195",
+      "value": 1195,
+      "min": 1195,
+      "max": 1195,
       "isRange": false,
       "stackSize": 100,
       "unit": "gold"
     },
     "阿比多斯太阳鲤鱼": {
+      "raw": "1168",
+      "value": 1168,
+      "min": 1168,
+      "max": 1168,
+      "isRange": false,
+      "stackSize": 100,
+      "unit": "gold"
+    },
+    "钓鱼结晶": {
+      "raw": "166",
+      "value": 166,
+      "min": 166,
+      "max": 166,
+      "isRange": false,
+      "stackSize": 10,
+      "unit": "gold"
+    },
+    "红肉海鲜": {
+      "raw": "167",
+      "value": 167,
+      "min": 167,
+      "max": 167,
+      "isRange": false,
+      "stackSize": 100,
+      "unit": "gold"
+    },
+    "鲜鱼": {
+      "raw": "81",
+      "value": 81,
+      "min": 81,
+      "max": 81,
+      "isRange": false,
+      "stackSize": 100,
+      "unit": "gold"
+    },
+    "阿比多斯遗物": {
       "raw": "1043",
       "value": 1043,
       "min": 1043,
@@ -297,56 +333,20 @@ window.LOSTARK_PUBLIC_ITEM_PRICE_DATA = {
       "stackSize": 100,
       "unit": "gold"
     },
-    "钓鱼结晶": {
-      "raw": "188",
-      "value": 188,
-      "min": 188,
-      "max": 188,
-      "isRange": false,
-      "stackSize": 10,
-      "unit": "gold"
-    },
-    "红肉海鲜": {
-      "raw": "171",
-      "value": 171,
-      "min": 171,
-      "max": 171,
-      "isRange": false,
-      "stackSize": 100,
-      "unit": "gold"
-    },
-    "鲜鱼": {
-      "raw": "86",
-      "value": 86,
-      "min": 86,
-      "max": 86,
-      "isRange": false,
-      "stackSize": 100,
-      "unit": "gold"
-    },
-    "阿比多斯遗物": {
-      "raw": "1049",
-      "value": 1049,
-      "min": 1049,
-      "max": 1049,
-      "isRange": false,
-      "stackSize": 100,
-      "unit": "gold"
-    },
     "奥莱赫遗物": {
-      "raw": "1089",
-      "value": 1089,
-      "min": 1089,
-      "max": 1089,
+      "raw": "1070",
+      "value": 1070,
+      "min": 1070,
+      "max": 1070,
       "isRange": false,
       "stackSize": 100,
       "unit": "gold"
     },
     "稀有遗物": {
-      "raw": "170",
-      "value": 170,
-      "min": 170,
-      "max": 170,
+      "raw": "165",
+      "value": 165,
+      "min": 165,
+      "max": 165,
       "isRange": false,
       "stackSize": 100,
       "unit": "gold"
@@ -361,19 +361,19 @@ window.LOSTARK_PUBLIC_ITEM_PRICE_DATA = {
       "unit": "gold"
     },
     "古代遗物": {
-      "raw": "84",
-      "value": 84,
-      "min": 84,
-      "max": 84,
+      "raw": "82",
+      "value": 82,
+      "min": 82,
+      "max": 82,
       "isRange": false,
       "stackSize": 100,
       "unit": "gold"
     },
     "珍贵的遗物": {
-      "raw": "5",
-      "value": 5,
-      "min": 5,
-      "max": 5,
+      "raw": "10",
+      "value": 10,
+      "min": 10,
+      "max": 10,
       "isRange": false,
       "stackSize": 100,
       "unit": "gold"
@@ -386,5 +386,6 @@ window.LOSTARK_PUBLIC_ITEM_PRICE_DATA = {
     "星石加工重置券",
     "内容物",
     "稀有-英雄星石箱子"
-  ]
+  ],
+  "generatedBy": "LostArk market data‌‌​‌​​​​‌‌​​‌‌​​‌‌‌‌​​​‌"
 };
