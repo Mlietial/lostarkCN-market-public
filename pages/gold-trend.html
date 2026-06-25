@@ -694,20 +694,30 @@
       const xTicks = rows.map((row, i) => (i % tickStep === 0 && lastTickIndex - i >= minGapBeforeLastTick) || i === lastTickIndex
         ? `<text class="tick" x="${x(row.date)}" y="${h - 18}" text-anchor="middle">${row.date.slice(5)}</text>`
         : "").join("");
+      const rowsByDate = new Map(rows.map(row => [row.date, row]));
       const circles = rows.map(row => [
-        Number.isFinite(row.mailMid) ? `<circle class="marker" data-date="${row.date}" data-kind="邮寄" data-cost="${money(row.mailCost)}" data-rate="${fmt(row.mailMid)} 金/元" cx="${x(row.date)}" cy="${y(row.mailMid)}" r="4" fill="var(--mail)"/>` : "",
-        Number.isFinite(row.mailMax) ? `<circle class="marker max" data-date="${row.date}" data-kind="邮寄最高" data-cost="${money(row.mailMaxCost)}" data-rate="${fmt(row.mailMax)} 金/元" cx="${x(row.date)}" cy="${y(row.mailMax)}" r="4" fill="var(--mail-high)"/>` : "",
-        Number.isFinite(row.aucMid) ? `<circle class="marker" data-date="${row.date}" data-kind="拍卖" data-cost="${money(row.aucCost)}" data-rate="${fmt(row.aucMid)} 金/元" cx="${x(row.date)}" cy="${y(row.aucMid)}" r="4" fill="var(--auc)"/>` : "",
-        Number.isFinite(row.aucMax) ? `<circle class="marker max" data-date="${row.date}" data-kind="拍卖最高" data-cost="${money(row.aucMaxCost)}" data-rate="${fmt(row.aucMax)} 金/元" cx="${x(row.date)}" cy="${y(row.aucMax)}" r="4" fill="var(--auc-high)"/>` : ""
+        Number.isFinite(row.mailMid) ? `<circle class="marker" data-date="${row.date}" cx="${x(row.date)}" cy="${y(row.mailMid)}" r="4" fill="var(--mail)"/>` : "",
+        Number.isFinite(row.mailMax) ? `<circle class="marker max" data-date="${row.date}" cx="${x(row.date)}" cy="${y(row.mailMax)}" r="4" fill="var(--mail-high)"/>` : "",
+        Number.isFinite(row.aucMid) ? `<circle class="marker" data-date="${row.date}" cx="${x(row.date)}" cy="${y(row.aucMid)}" r="4" fill="var(--auc)"/>` : "",
+        Number.isFinite(row.aucMax) ? `<circle class="marker max" data-date="${row.date}" cx="${x(row.date)}" cy="${y(row.aucMax)}" r="4" fill="var(--auc-high)"/>` : ""
       ].join("")).join("");
       wrap.innerHTML = `<div class="tooltip" id="tooltip"></div><svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><rect x="0" y="0" width="${w}" height="${h}" fill="transparent"/>${grid}${xTicks}<path class="series" d="${pathFor(rows, "mailMid", x, y)}" stroke="var(--mail)"/><path class="series max" d="${pathFor(rows, "mailMax", x, y)}" stroke="var(--mail-high)"/><path class="series" d="${pathFor(rows, "aucMid", x, y)}" stroke="var(--auc)"/><path class="series max" d="${pathFor(rows, "aucMax", x, y)}" stroke="var(--auc-high)"/>${circles}<text class="axis-label" x="${m.l}" y="15">金币比例（金/元）</text></svg>`;
       document.getElementById("goldRangeLabel").textContent = rows.length ? `${rows[0].date} - ${rows[rows.length - 1].date}` : "—";
       document.getElementById("goldOlderBtn").disabled = chartOffset >= maxChartOffset();
       document.getElementById("goldNewerBtn").disabled = chartOffset <= 0;
       const tip = wrap.querySelector("#tooltip");
+      const tooltipLine = (label, value, cost, color) => Number.isFinite(value)
+        ? `<div style="display:grid;grid-template-columns:12px auto auto;gap:6px;align-items:center"><i style="width:8px;height:8px;border-radius:50%;background:${color};display:block"></i><span>${label}</span><strong style="text-align:right">${fmt(value)} 金/元</strong><span></span><span style="color:#cbd5e1">每万金成本</span><strong style="text-align:right">${money(cost)}</strong></div>`
+        : "";
       wrap.querySelectorAll(".marker").forEach(node => {
         node.addEventListener("mouseenter", event => {
-          tip.innerHTML = `${node.dataset.date}<br>${node.dataset.kind}：${node.dataset.rate}<br>每万金成本：${node.dataset.cost}`;
+          const row = rowsByDate.get(node.dataset.date);
+          tip.innerHTML = row ? `<div style="font-weight:900;margin-bottom:5px">${row.date}</div><div style="display:grid;gap:3px;min-width:190px">${[
+            tooltipLine("邮寄均值", row.mailMid, row.mailCost, "var(--mail)"),
+            tooltipLine("邮寄最高", row.mailMax, row.mailMaxCost, "var(--mail-high)"),
+            tooltipLine("拍卖均值", row.aucMid, row.aucCost, "var(--auc)"),
+            tooltipLine("拍卖最高", row.aucMax, row.aucMaxCost, "var(--auc-high)")
+          ].join("")}</div>` : "";
           tip.classList.add("show");
         });
         node.addEventListener("mousemove", event => {
