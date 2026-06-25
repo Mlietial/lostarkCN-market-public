@@ -502,8 +502,22 @@
       const tip = document.getElementById("tooltip");
       tip.textContent = text;
       tip.classList.add("show");
-      tip.style.left = `${Math.min(window.innerWidth - tip.offsetWidth - 8, event.clientX + 12)}px`;
-      tip.style.top = `${Math.max(8, event.clientY - 38)}px`;
+      const gap = 12;
+      const edge = 8;
+      const tipW = tip.offsetWidth || 180;
+      const tipH = tip.offsetHeight || 44;
+      let left = event.clientX + gap;
+      if (left + tipW > window.innerWidth - edge) {
+        left = event.clientX - tipW - gap;
+      }
+      left = Math.max(edge, Math.min(window.innerWidth - tipW - edge, left));
+      let top = event.clientY - tipH - 10;
+      if (top < edge) {
+        top = event.clientY + 16;
+      }
+      top = Math.max(edge, Math.min(window.innerHeight - tipH - edge, top));
+      tip.style.left = `${left}px`;
+      tip.style.top = `${top}px`;
     }
 
     function hideTooltip() {
