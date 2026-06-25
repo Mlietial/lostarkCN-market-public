@@ -688,7 +688,10 @@
         const yy = y(v);
         return `<line class="gridline" x1="${m.l}" y1="${yy}" x2="${w - m.r}" y2="${yy}"/><text class="tick" x="${m.l - 10}" y="${yy + 4}" text-anchor="end">${fmt(v)}</text>`;
       }).join("");
-      const xTicks = rows.map((row, i) => i % Math.ceil(rows.length / 8) === 0 || i === rows.length - 1
+      const tickStep = Math.max(1, Math.ceil(rows.length / 8));
+      const lastTickIndex = rows.length - 1;
+      const minGapBeforeLastTick = 2;
+      const xTicks = rows.map((row, i) => (i % tickStep === 0 && lastTickIndex - i >= minGapBeforeLastTick) || i === lastTickIndex
         ? `<text class="tick" x="${x(row.date)}" y="${h - 18}" text-anchor="middle">${row.date.slice(5)}</text>`
         : "").join("");
       const circles = rows.map(row => [
