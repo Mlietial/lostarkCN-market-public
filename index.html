@@ -306,7 +306,7 @@
         point.addEventListener('mouseenter', () => {
           const row = rows.find(item => item.date === point.dataset.date);
           if (!row) return;
-          tooltip.innerHTML = `<strong>${row.date}</strong><br>金币 ${relationFmt(row.gold)} 金/元<br>宝石 ${relationFmt(row.gem)} 金<br>刻印书 ${relationFmt(row.engraving)} 金`;
+          tooltip.innerHTML = `<strong>${row.date}</strong><br>金币中位 ${relationFmt(row.gold)} 金/元<br>宝石均价 ${relationFmt(row.gem)} 金<br>刻印书中位 ${relationFmt(row.engraving)} 金`;
           tooltip.classList.add('show');
         });
         point.addEventListener('mousemove', event => {
