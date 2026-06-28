@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>命运方舟市场工具</title>
   <style>
-    *{box-sizing:border-box}body{margin:0;font-family:"Microsoft YaHei",Arial,sans-serif;color:#111827;background:#f6f8fb}.shell{max-width:1040px;margin:0 auto;padding:42px 22px}.top{margin-bottom:22px}.title-row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:8px}h1{margin:0;font-size:34px}.updated-at{color:#64748b;font-size:13px;font-weight:600;white-space:nowrap}.sub{color:#64748b;line-height:1.6}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.card{display:block;text-decoration:none;color:inherit;background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:20px;box-shadow:0 12px 28px rgba(15,23,42,.07)}.card h2{margin:0 0 8px;font-size:22px}.card p{margin:0;color:#64748b;line-height:1.55}.creator-card{position:fixed;z-index:10;top:146px;left:max(22px,calc((100vw - 1040px)/2 - 196px));width:170px;padding:14px;text-align:center}.creator-avatar{display:block;width:86px;height:86px;margin:0 auto 10px;border-radius:50%;object-fit:cover;border:2px solid #e0f2fe;background:#fff}.creator-tag{display:inline-flex;align-items:center;margin-bottom:7px;padding:3px 8px;border-radius:999px;background:#f0f9ff;color:#0284c7;font-size:12px;font-weight:700}.creator-name{margin:0 0 6px;font-size:22px;font-weight:700}.creator-card p{font-size:13px}.support-card{grid-column:1 / -1;text-align:center;cursor:pointer;user-select:none}.support-card h2{margin-bottom:0}.support-card.is-open h2{margin-bottom:14px}.support-card:not(.is-open) .support-qr{display:none}.support-qr{display:block;width:428px;max-width:100%;height:auto;margin:0 auto;border:1px solid #e5e7eb;border-radius:8px;background:#fff;box-shadow:0 12px 28px rgba(15,23,42,.07)}.relation-dock{grid-column:1 / -1;position:relative}.relation-card{padding:18px 20px 20px;overflow:hidden}.relation-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}.relation-title-wrap{min-width:0}.relation-title-line{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.relation-head h2{margin:0;font-size:25px;line-height:1.1}.relation-sub{margin-top:8px;color:#64748b;font-size:14px;line-height:1.45}.relation-tabs{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end}.relation-tab{border:1px solid #e5e7eb;border-radius:999px;background:#fff;color:#374151;padding:7px 11px;font-size:12px;font-weight:700;cursor:pointer}.relation-tab.active{border-color:#111827;background:#111827;color:#fff}.relation-legend{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:8px;color:#374151;font-size:15px}.relation-legend span{display:inline-flex;align-items:center;gap:6px}.relation-dot{width:12px;height:12px;border-radius:50%;background:var(--c);display:inline-block}.relation-chart{position:relative;width:100%;height:300px;overflow:hidden}.relation-chart svg{display:block;width:100%;height:100%;max-height:100%}.relation-grid{stroke:#edf1f6;stroke-width:1}.relation-line{fill:none;stroke:var(--c);stroke-width:4.5;stroke-linecap:round;stroke-linejoin:round}.relation-point{fill:var(--c);stroke:#fff;stroke-width:2.4}.relation-tick{fill:#4b5563;font-size:15px;font-weight:650}.relation-empty{display:grid;place-items:center;height:220px;color:#64748b;font-size:13px}.relation-note{display:flex;align-items:stretch;gap:8px;flex-wrap:wrap}.change-pill{min-width:102px;border:1px solid #e5e7eb;border-radius:10px;background:#f8fafc;padding:7px 10px}.change-pill span{display:block;color:#64748b;font-size:12px;font-weight:800}.change-pill b{display:block;margin-top:2px;font-size:21px;line-height:1.05}.change-pill.up b{color:#dc2626}.change-pill.down b{color:#059669}.change-pill.flat b{color:#64748b}.relation-tooltip{position:absolute;z-index:3;display:none;pointer-events:none;background:rgba(17,24,39,.92);color:#fff;border-radius:10px;padding:7px 9px;font-size:12px;line-height:1.45;box-shadow:0 10px 24px rgba(15,23,42,.22);white-space:nowrap}.relation-tooltip.show{display:block}.relation-sync{position:absolute;top:0;left:calc(100% + 12px);width:360px;padding:18px 14px 14px;min-width:0}.relation-sync h3{margin:0 0 14px;text-align:center;font-size:18px}.sync-chart{display:grid;gap:12px}.sync-row{display:grid;grid-template-columns:72px minmax(0,1fr) 104px;align-items:center;gap:10px}.sync-name{font-size:15px;font-weight:850;color:#111827;white-space:nowrap}.sync-track{position:relative;height:34px;border-bottom:1px solid #cbd5e1}.sync-track:before{content:"";position:absolute;left:50%;top:0;bottom:0;width:1px;background:#cbd5e1}.sync-fill{position:absolute;top:7px;height:20px;background:var(--c);border-radius:2px}.sync-metric{font-size:14px;color:#1f2937;line-height:1.25;white-space:nowrap}.sync-metric b{font-size:15px}.sync-scale{display:grid;grid-template-columns:72px minmax(0,1fr) 104px;gap:10px;align-items:center}.sync-scale-line{display:flex;justify-content:space-between;color:#64748b;font-size:12px}.sync-caption{margin-top:12px;text-align:center;color:#374151;font-size:15px;font-weight:850}.sync-empty{height:188px;display:grid;place-items:center;color:#64748b;font-size:12px;text-align:center}@media(max-width:1280px){.creator-card{position:static;width:auto;margin:0 0 16px;padding:20px;text-align:left;display:flex;align-items:center;gap:16px}.creator-avatar{width:72px;height:72px;margin:0;flex:0 0 auto}.relation-sync{position:static;width:auto;margin-top:12px}}@media(max-width:720px){.grid{grid-template-columns:1fr}h1{font-size:28px}.updated-at{font-size:12px}.creator-card{align-items:flex-start}.relation-head{display:block}.relation-tabs{justify-content:flex-start;margin-top:10px}.relation-chart{height:260px}.relation-title-line{display:block}.relation-note{margin-top:10px}}
+    *{box-sizing:border-box}body{margin:0;font-family:"Microsoft YaHei",Arial,sans-serif;color:#111827;background:#f6f8fb}.shell{max-width:1040px;margin:0 auto;padding:42px 22px}.top{margin-bottom:22px}.title-row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:8px}h1{margin:0;font-size:34px}.updated-at{color:#64748b;font-size:13px;font-weight:600;white-space:nowrap}.sub{color:#64748b;line-height:1.6}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.card{display:block;text-decoration:none;color:inherit;background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:20px;box-shadow:0 12px 28px rgba(15,23,42,.07)}.card h2{margin:0 0 8px;font-size:22px}.card p{margin:0;color:#64748b;line-height:1.55}.creator-card{position:fixed;z-index:10;top:146px;left:max(22px,calc((100vw - 1040px)/2 - 196px));width:170px;padding:14px;text-align:center}.creator-avatar{display:block;width:86px;height:86px;margin:0 auto 10px;border-radius:50%;object-fit:cover;border:2px solid #e0f2fe;background:#fff}.creator-tag{display:inline-flex;align-items:center;margin-bottom:7px;padding:3px 8px;border-radius:999px;background:#f0f9ff;color:#0284c7;font-size:12px;font-weight:700}.creator-name{margin:0 0 6px;font-size:22px;font-weight:700}.creator-card p{font-size:13px}.support-card{grid-column:1 / -1;text-align:center;cursor:pointer;user-select:none}.support-card h2{margin-bottom:0}.support-card.is-open h2{margin-bottom:14px}.support-card:not(.is-open) .support-qr{display:none}.support-qr{display:block;width:428px;max-width:100%;height:auto;margin:0 auto;border:1px solid #e5e7eb;border-radius:8px;background:#fff;box-shadow:0 12px 28px rgba(15,23,42,.07)}.relation-dock{grid-column:1 / -1;position:relative}.relation-card{padding:18px 20px 20px;overflow:hidden}.relation-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}.relation-title-wrap{min-width:0}.relation-title-line{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.relation-head h2{margin:0;font-size:25px;line-height:1.1}.relation-sub{margin-top:8px;color:#64748b;font-size:14px;line-height:1.45}.relation-tabs{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end}.relation-tab{border:1px solid #e5e7eb;border-radius:999px;background:#fff;color:#374151;padding:7px 11px;font-size:12px;font-weight:700;cursor:pointer}.relation-tab.active{border-color:#111827;background:#111827;color:#fff}.relation-legend{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:8px;color:#374151;font-size:15px}.relation-legend span{display:inline-flex;align-items:center;gap:6px}.relation-dot{width:12px;height:12px;border-radius:50%;background:var(--c);display:inline-block}.relation-chart{position:relative;width:100%;height:300px;overflow:hidden}.relation-chart svg{display:block;width:100%;height:100%;max-height:100%}.relation-grid{stroke:#edf1f6;stroke-width:1}.relation-line{fill:none;stroke:var(--c);stroke-width:4.5;stroke-linecap:round;stroke-linejoin:round}.relation-point{fill:var(--c);stroke:#fff;stroke-width:2.4}.relation-tick{fill:#4b5563;font-size:15px;font-weight:650}.relation-empty{display:grid;place-items:center;height:220px;color:#64748b;font-size:13px}.relation-note{display:flex;align-items:stretch;gap:8px;flex-wrap:wrap}.change-pill{min-width:102px;border:1px solid #e5e7eb;border-radius:10px;background:#f8fafc;padding:7px 10px}.change-pill span{display:block;color:#64748b;font-size:12px;font-weight:800}.change-pill b{display:block;margin-top:2px;font-size:21px;line-height:1.05}.change-pill.up b{color:#dc2626}.change-pill.down b{color:#059669}.change-pill.flat b{color:#64748b}.relation-tooltip{position:absolute;z-index:3;display:none;pointer-events:none;background:rgba(17,24,39,.92);color:#fff;border-radius:10px;padding:7px 9px;font-size:12px;line-height:1.45;box-shadow:0 10px 24px rgba(15,23,42,.22);white-space:nowrap}.relation-tooltip.show{display:block}@media(max-width:1280px){.creator-card{position:static;width:auto;margin:0 0 16px;padding:20px;text-align:left;display:flex;align-items:center;gap:16px}.creator-avatar{width:72px;height:72px;margin:0;flex:0 0 auto}}@media(max-width:720px){.grid{grid-template-columns:1fr}h1{font-size:28px}.updated-at{font-size:12px}.creator-card{align-items:flex-start}.relation-head{display:block}.relation-tabs{justify-content:flex-start;margin-top:10px}.relation-chart{height:260px}.relation-title-line{display:block}.relation-note{margin-top:10px}}
   </style>
 </head>
 <body>
@@ -51,7 +51,7 @@
                 <h2 id="relationTitle">金币 / 宝石 / 刻印书走势</h2>
                 <div class="relation-note" id="relationNote"></div>
               </div>
-              <div class="relation-sub" id="relationSubtitle">统一成指数，看方向关系。</div>
+              <div class="relation-sub" id="relationSubtitle">线条为指数，悬停看原始值。</div>
             </div>
             <div class="relation-tabs" aria-label="选择走势范围">
               <button class="relation-tab" type="button" data-relation-range="3">3天</button>
@@ -67,11 +67,7 @@
           </div>
           <div class="relation-chart" id="relationChart" aria-label="金币、宝石、刻印书指数走势折线图"></div>
         </section>
-        <aside class="card relation-sync" aria-labelledby="syncTitle">
-          <h3 id="syncTitle">与金价的同步性</h3>
-          <div class="sync-chart" id="syncChart"></div>
-          <div class="sync-caption">走势相关系数 r</div>
-        </aside>
+
       </div>
     </section>
   </main>
@@ -117,7 +113,6 @@
     }
 
     const relationChart = document.getElementById('relationChart');
-    const syncChart = document.getElementById('syncChart');
     const relationNote = document.getElementById('relationNote');
     const relationSubtitle = document.getElementById('relationSubtitle');
     let relationRange = '30';
@@ -229,43 +224,11 @@
         .filter(row => Number.isFinite(row.gold) || Number.isFinite(row.gem) || Number.isFinite(row.engraving));
     }
 
-    function renderSyncChart(rows) {
-      if (!syncChart) return;
-      const items = [
-        { key: 'lowGem', label: '低级宝石', color: '#2563eb' },
-        { key: 'highGem', label: '高级宝石', color: '#7c3aed' },
-        { key: 'engraving', label: '刻印书', color: '#10b981' }
-      ].map(item => {
-        const pairs = relationDeltaPairs(rows, item.key);
-        return Object.assign({}, item, {
-          corr: relationCorr(pairs),
-          same: relationSameDirection(pairs),
-          count: pairs.length
-        });
-      });
-      if (!items.some(item => Number.isFinite(item.corr))) {
-        syncChart.innerHTML = '<div class="sync-empty">当前范围样本不足</div>';
-        return;
-      }
-      const rowsHtml = items.map(item => {
-        if (!Number.isFinite(item.corr)) {
-          return `<div class="sync-row"><div class="sync-name">${item.label}</div><div class="sync-track"></div><div class="sync-metric">样本不足</div></div>`;
-        }
-        const corr = Math.max(-1, Math.min(1, item.corr));
-        const left = corr >= 0 ? 50 : 50 + corr * 50;
-        const width = Math.max(2, Math.abs(corr) * 50);
-        const same = Number.isFinite(item.same) ? ` 同向${Math.round(item.same)}%` : '';
-        return `<div class="sync-row"><div class="sync-name">${item.label}</div><div class="sync-track"><span class="sync-fill" style="--c:${item.color};left:${left}%;width:${width}%"></span></div><div class="sync-metric"><b>r=${item.corr.toFixed(2)}</b>${same}</div></div>`;
-      }).join('');
-      syncChart.innerHTML = `${rowsHtml}<div class="sync-scale"><span></span><div class="sync-scale-line"><span>-1</span><span>-0.5</span><span>0</span><span>0.5</span><span>1</span></div><span></span></div>`;
-    }
-
     function renderRelationChart() {
       if (!relationChart) return;
       if (!relationRows.length) {
         relationChart.innerHTML = '<div class="relation-empty">暂无可用走势数据</div>';
-        if (syncChart) syncChart.innerHTML = '<div class="sync-empty">暂无可用走势数据</div>';
-        if (relationSubtitle) relationSubtitle.textContent = '统一成指数，看方向关系。';
+        if (relationSubtitle) relationSubtitle.textContent = '线条为指数，悬停看原始值。';
         if (relationNote) relationNote.textContent = '';
         return;
       }
@@ -288,8 +251,7 @@
       const values = indexed.flatMap(row => keys.map(item => row[item.key])).filter(Number.isFinite);
       if (!values.length) {
         relationChart.innerHTML = '<div class="relation-empty">当前范围暂无可用走势数据</div>';
-        if (syncChart) syncChart.innerHTML = '<div class="sync-empty">当前范围样本不足</div>';
-        if (relationSubtitle) relationSubtitle.textContent = relationRange === 'all' ? '全局需要三类数据同日出现。' : '统一成指数，看方向关系。';
+        if (relationSubtitle) relationSubtitle.textContent = relationRange === 'all' ? '全局需要三类数据同日出现。' : '线条为指数，悬停看原始值。';
         if (relationNote) relationNote.innerHTML = '';
         return;
       }
@@ -323,11 +285,10 @@
         : '').join('')).join('');
 
       relationChart.innerHTML = `<div class="relation-tooltip" id="relationTooltip"></div><svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">${grid}<line class="relation-grid" x1="${m.l}" x2="${w - m.r}" y1="${y(100)}" y2="${y(100)}"></line>${ticks}${lines}${points}<text class="relation-tick" x="${m.l}" y="18">指数</text></svg>`;
-      renderSyncChart(rows);
 
       const start = rows[0]?.date || '—';
       const end = rows[rows.length - 1]?.date || '—';
-      if (relationSubtitle) relationSubtitle.textContent = `${start} - ${end} · 起点=100`;
+      if (relationSubtitle) relationSubtitle.textContent = `${start} - ${end} · 线条起点=100，悬停看原始值`;
       if (relationNote) {
         const changeItems = [
           { label: '金币', value: relationChange(rows, 'gold') },
@@ -372,6 +333,7 @@
   </script>
 </body>
 </html>
+
 
 
 
