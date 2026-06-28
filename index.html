@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>命运方舟市场工具</title>
   <style>
-    *{box-sizing:border-box}body{margin:0;font-family:"Microsoft YaHei",Arial,sans-serif;color:#111827;background:#f6f8fb}.shell{max-width:1040px;margin:0 auto;padding:42px 22px}.top{margin-bottom:22px}.title-row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:8px}h1{margin:0;font-size:34px}.updated-at{color:#64748b;font-size:13px;font-weight:600;white-space:nowrap}.sub{color:#64748b;line-height:1.6}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.card{display:block;text-decoration:none;color:inherit;background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:20px;box-shadow:0 12px 28px rgba(15,23,42,.07)}.card h2{margin:0 0 8px;font-size:22px}.card p{margin:0;color:#64748b;line-height:1.55}.creator-card{position:fixed;z-index:10;top:146px;left:max(22px,calc((100vw - 1040px)/2 - 196px));width:170px;padding:14px;text-align:center}.creator-avatar{display:block;width:86px;height:86px;margin:0 auto 10px;border-radius:50%;object-fit:cover;border:2px solid #e0f2fe;background:#fff}.creator-tag{display:inline-flex;align-items:center;margin-bottom:7px;padding:3px 8px;border-radius:999px;background:#f0f9ff;color:#0284c7;font-size:12px;font-weight:700}.creator-name{margin:0 0 6px;font-size:22px;font-weight:700}.creator-card p{font-size:13px}.support-card{grid-column:1 / -1;text-align:center;cursor:pointer;user-select:none}.support-card h2{margin-bottom:0}.support-card.is-open h2{margin-bottom:14px}.support-card:not(.is-open) .support-qr{display:none}.support-qr{display:block;width:428px;max-width:100%;height:auto;margin:0 auto;border:1px solid #e5e7eb;border-radius:8px;background:#fff;box-shadow:0 12px 28px rgba(15,23,42,.07)}@media(max-width:1280px){.creator-card{position:static;width:auto;margin:0 0 16px;padding:20px;text-align:left;display:flex;align-items:center;gap:16px}.creator-avatar{width:72px;height:72px;margin:0;flex:0 0 auto}}@media(max-width:720px){.grid{grid-template-columns:1fr}h1{font-size:28px}.updated-at{font-size:12px}.creator-card{align-items:flex-start}}
+    *{box-sizing:border-box}body{margin:0;font-family:"Microsoft YaHei",Arial,sans-serif;color:#111827;background:#f6f8fb}.shell{max-width:1040px;margin:0 auto;padding:42px 22px}.top{margin-bottom:22px}.title-row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:8px}h1{margin:0;font-size:34px}.updated-at{color:#64748b;font-size:13px;font-weight:600;white-space:nowrap}.sub{color:#64748b;line-height:1.6}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.card{display:block;text-decoration:none;color:inherit;background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:20px;box-shadow:0 12px 28px rgba(15,23,42,.07)}.card h2{margin:0 0 8px;font-size:22px}.card p{margin:0;color:#64748b;line-height:1.55}.creator-card{position:fixed;z-index:10;top:146px;left:max(22px,calc((100vw - 1040px)/2 - 196px));width:170px;padding:14px;text-align:center}.creator-avatar{display:block;width:86px;height:86px;margin:0 auto 10px;border-radius:50%;object-fit:cover;border:2px solid #e0f2fe;background:#fff}.creator-tag{display:inline-flex;align-items:center;margin-bottom:7px;padding:3px 8px;border-radius:999px;background:#f0f9ff;color:#0284c7;font-size:12px;font-weight:700}.creator-name{margin:0 0 6px;font-size:22px;font-weight:700}.creator-card p{font-size:13px}.support-card{grid-column:1 / -1;text-align:center;cursor:pointer;user-select:none}.support-card h2{margin-bottom:0}.support-card.is-open h2{margin-bottom:14px}.support-card:not(.is-open) .support-qr{display:none}.support-qr{display:block;width:428px;max-width:100%;height:auto;margin:0 auto;border:1px solid #e5e7eb;border-radius:8px;background:#fff;box-shadow:0 12px 28px rgba(15,23,42,.07)}.relation-card{grid-column:1 / -1;padding:18px 20px 20px;overflow:hidden}.relation-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}.relation-head h2{margin-bottom:5px}.relation-sub{color:#64748b;font-size:13px;line-height:1.45}.relation-tabs{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end}.relation-tab{border:1px solid #e5e7eb;border-radius:999px;background:#fff;color:#374151;padding:7px 11px;font-size:12px;font-weight:700;cursor:pointer}.relation-tab.active{border-color:#111827;background:#111827;color:#fff}.relation-legend{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:8px;color:#374151;font-size:13px}.relation-legend span{display:inline-flex;align-items:center;gap:6px}.relation-dot{width:10px;height:10px;border-radius:50%;background:var(--c);display:inline-block}.relation-chart{position:relative;width:100%;height:300px;overflow:hidden}.relation-chart svg{display:block;width:100%;height:100%}.relation-grid{stroke:#edf1f6;stroke-width:1}.relation-line{fill:none;stroke:var(--c);stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round}.relation-point{fill:var(--c);stroke:#fff;stroke-width:2}.relation-tick{fill:#6b7280;font-size:11px}.relation-empty{display:grid;place-items:center;height:220px;color:#64748b;font-size:13px}.relation-note{margin-top:8px;color:#64748b;font-size:12px;line-height:1.45}.relation-tooltip{position:absolute;z-index:3;display:none;pointer-events:none;background:rgba(17,24,39,.92);color:#fff;border-radius:10px;padding:7px 9px;font-size:12px;line-height:1.45;box-shadow:0 10px 24px rgba(15,23,42,.22);white-space:nowrap}.relation-tooltip.show{display:block}@media(max-width:1280px){.creator-card{position:static;width:auto;margin:0 0 16px;padding:20px;text-align:left;display:flex;align-items:center;gap:16px}.creator-avatar{width:72px;height:72px;margin:0;flex:0 0 auto}}@media(max-width:720px){.grid{grid-template-columns:1fr}h1{font-size:28px}.updated-at{font-size:12px}.creator-card{align-items:flex-start}.relation-head{display:block}.relation-tabs{justify-content:flex-start;margin-top:10px}.relation-chart{height:260px}}
   </style>
 </head>
 <body>
@@ -43,8 +43,30 @@
         <h2>支持作者</h2>
         <img class="support-qr" src="./assets/support-author-428.jpg" alt="支持作者收款码" width="428" height="428">
       </section>
+      <section class="card relation-card" aria-labelledby="relationTitle">
+        <div class="relation-head">
+          <div>
+            <h2 id="relationTitle">金币 / 宝石 / 刻印书走势</h2>
+            <div class="relation-sub" id="relationSubtitle">统一成指数，看方向关系。</div>
+          </div>
+          <div class="relation-tabs" aria-label="选择走势范围">
+            <button class="relation-tab" type="button" data-relation-range="3">3天</button>
+            <button class="relation-tab" type="button" data-relation-range="7">7天</button>
+            <button class="relation-tab active" type="button" data-relation-range="30">1个月</button>
+            <button class="relation-tab" type="button" data-relation-range="all">全局</button>
+          </div>
+        </div>
+        <div class="relation-legend" aria-hidden="true">
+          <span><i class="relation-dot" style="--c:#2563eb"></i>金币</span>
+          <span><i class="relation-dot" style="--c:#059669"></i>宝石</span>
+          <span><i class="relation-dot" style="--c:#d97706"></i>刻印书</span>
+        </div>
+        <div class="relation-chart" id="relationChart" aria-label="金币、宝石、刻印书指数走势折线图"></div>
+        <div class="relation-note" id="relationNote"></div>
+      </section>
     </section>
   </main>
+  <script src="./data/dashboard-state.js"></script>
   <script>
     const dataUpdatedAt = document.getElementById('dataUpdatedAt');
     const formatDataUpdatedAt = (value) => {
@@ -84,6 +106,186 @@
         }
       });
     }
+
+    const relationChart = document.getElementById('relationChart');
+    const relationNote = document.getElementById('relationNote');
+    const relationSubtitle = document.getElementById('relationSubtitle');
+    let relationRange = '30';
+    let relationRows = [];
+
+    const relationFmt = (n) => Number.isFinite(n) ? Math.round(n).toLocaleString('zh-CN') : '—';
+    const relationPct = (n) => Number.isFinite(n) ? (n >= 0 ? '+' : '') + n.toFixed(1) + '%' : '—';
+    const relationDate = (value) => String(value || '').slice(0, 10);
+    const relationMean = (values) => {
+      const nums = values.filter(Number.isFinite);
+      return nums.length ? nums.reduce((sum, n) => sum + n, 0) / nums.length : null;
+    };
+    const relationMedian = (values) => {
+      const nums = values.filter(Number.isFinite).sort((a, b) => a - b);
+      if (!nums.length) return null;
+      const middle = Math.floor(nums.length / 2);
+      return nums.length % 2 ? nums[middle] : (nums[middle - 1] + nums[middle]) / 2;
+    };
+    const relationChange = (rows, key) => {
+      const values = rows.map(row => row[key]).filter(Number.isFinite);
+      if (values.length < 2 || !values[0]) return NaN;
+      return (values[values.length - 1] - values[0]) / values[0] * 100;
+    };
+
+    async function loadRelationData() {
+      let data = window.LOSTARK_PUBLIC_DASHBOARD_STATE || null;
+      if (location.protocol !== 'file:') {
+        try {
+          const response = await fetch('./data/dashboard-state.json?v=' + Date.now(), { cache: 'no-store' });
+          if (response.ok) data = await response.json();
+        } catch (error) {}
+      }
+      relationRows = buildRelationRows(data || {});
+      renderRelationChart();
+    }
+
+    function buildRelationRows(data) {
+      const byDate = new Map();
+      const ensure = (date) => {
+        if (!date) return null;
+        if (!byDate.has(date)) byDate.set(date, { date, gold: null, gem: null, engraving: null });
+        return byDate.get(date);
+      };
+
+      const goldByDate = {};
+      (Array.isArray(data.goldTxns) ? data.goldTxns : []).forEach(txn => {
+        const date = relationDate(txn.date);
+        const gold = Number(txn.gold);
+        const price = Number(txn.price);
+        if (!date || !(gold > 0) || !(price > 0)) return;
+        if (!goldByDate[date]) goldByDate[date] = [];
+        goldByDate[date].push(gold / price);
+      });
+      Object.keys(goldByDate).forEach(date => {
+        const row = ensure(date);
+        if (row) row.gold = relationMedian(goldByDate[date]);
+      });
+
+      (Array.isArray(data.gemRows) ? data.gemRows : []).forEach(src => {
+        const date = relationDate(src['日期']);
+        const row = ensure(date);
+        if (!row) return;
+        row.gem = relationMean(['7级', '8级', '9级', '10级'].map(level => Number(src[level])).filter(n => n > 0));
+      });
+
+      const engravingByDate = {};
+      (Array.isArray(data.engravingBookPrices) ? data.engravingBookPrices : []).forEach(book => {
+        const date = relationDate(book.date);
+        const price = Number(book.lowest);
+        if (!date || !(price > 0)) return;
+        if (!engravingByDate[date]) engravingByDate[date] = [];
+        engravingByDate[date].push(price);
+      });
+      Object.keys(engravingByDate).forEach(date => {
+        const row = ensure(date);
+        if (row) row.engraving = relationMedian(engravingByDate[date]);
+      });
+
+      return Array.from(byDate.values())
+        .sort((a, b) => a.date.localeCompare(b.date))
+        .filter(row => Number.isFinite(row.gold) || Number.isFinite(row.gem) || Number.isFinite(row.engraving));
+    }
+
+    function renderRelationChart() {
+      if (!relationChart) return;
+      if (!relationRows.length) {
+        relationChart.innerHTML = '<div class="relation-empty">暂无可用走势数据</div>';
+        if (relationSubtitle) relationSubtitle.textContent = '统一成指数，看方向关系。';
+        if (relationNote) relationNote.textContent = '';
+        return;
+      }
+
+      const rows = relationRange === 'all' ? relationRows : relationRows.slice(-Number(relationRange));
+      const keys = [
+        { key: 'gold', label: '金币', color: '#2563eb' },
+        { key: 'gem', label: '宝石', color: '#059669' },
+        { key: 'engraving', label: '刻印书', color: '#d97706' }
+      ];
+      const indexed = rows.map(row => {
+        const next = { date: row.date, raw: row };
+        keys.forEach(item => {
+          const first = rows.find(r => Number.isFinite(r[item.key]))?.[item.key];
+          next[item.key] = Number.isFinite(row[item.key]) && first > 0 ? row[item.key] / first * 100 : null;
+        });
+        return next;
+      });
+      const values = indexed.flatMap(row => keys.map(item => row[item.key])).filter(Number.isFinite);
+      if (!values.length) {
+        relationChart.innerHTML = '<div class="relation-empty">当前范围暂无可用走势数据</div>';
+        return;
+      }
+
+      const min = Math.min(...values);
+      const max = Math.max(...values);
+      const pad = Math.max(4, (max - min) * .18);
+      const lo = min - pad;
+      const hi = max + pad;
+      const w = 960;
+      const h = 280;
+      const m = { l: 52, r: 24, t: 20, b: 38 };
+      const x = index => m.l + index / Math.max(1, indexed.length - 1) * (w - m.l - m.r);
+      const y = value => m.t + (hi - value) / Math.max(1, hi - lo) * (h - m.t - m.b);
+      const path = item => indexed
+        .map((row, index) => Number.isFinite(row[item.key]) ? `${index ? 'L' : 'M'}${x(index).toFixed(1)},${y(row[item.key]).toFixed(1)}` : '')
+        .filter(Boolean)
+        .join(' ');
+      const grid = Array.from({ length: 4 }, (_, index) => {
+        const value = lo + (hi - lo) * index / 3;
+        const yy = y(value);
+        return `<line class="relation-grid" x1="${m.l}" x2="${w - m.r}" y1="${yy}" y2="${yy}"></line><text class="relation-tick" x="${m.l - 9}" y="${yy + 4}" text-anchor="end">${Math.round(value)}</text>`;
+      }).join('');
+      const tickStep = Math.max(1, Math.ceil(indexed.length / 6));
+      const ticks = indexed.map((row, index) => (index % tickStep === 0 || index === indexed.length - 1)
+        ? `<text class="relation-tick" x="${x(index)}" y="${h - 12}" text-anchor="middle">${row.date.slice(5)}</text>`
+        : '').join('');
+      const lines = keys.map(item => `<path class="relation-line" style="--c:${item.color}" d="${path(item)}"></path>`).join('');
+      const points = indexed.map((row, index) => keys.map(item => Number.isFinite(row[item.key])
+        ? `<circle class="relation-point" style="--c:${item.color}" cx="${x(index)}" cy="${y(row[item.key])}" r="4" data-date="${row.date}" data-key="${item.key}"></circle>`
+        : '').join('')).join('');
+
+      relationChart.innerHTML = `<div class="relation-tooltip" id="relationTooltip"></div><svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">${grid}<line class="relation-grid" x1="${m.l}" x2="${w - m.r}" y1="${y(100)}" y2="${y(100)}"></line>${ticks}${lines}${points}<text class="relation-tick" x="${m.l}" y="13">指数</text></svg>`;
+
+      const start = rows[0]?.date || '—';
+      const end = rows[rows.length - 1]?.date || '—';
+      if (relationSubtitle) relationSubtitle.textContent = `${start} - ${end} · 起点=100`;
+      if (relationNote) {
+        relationNote.textContent = `变化：金币 ${relationPct(relationChange(rows, 'gold'))}，宝石 ${relationPct(relationChange(rows, 'gem'))}，刻印书 ${relationPct(relationChange(rows, 'engraving'))}`;
+      }
+
+      const tooltip = relationChart.querySelector('#relationTooltip');
+      relationChart.querySelectorAll('.relation-point').forEach(point => {
+        point.addEventListener('mouseenter', () => {
+          const row = rows.find(item => item.date === point.dataset.date);
+          if (!row) return;
+          tooltip.innerHTML = `<strong>${row.date}</strong><br>金币 ${relationFmt(row.gold)} 金/元<br>宝石 ${relationFmt(row.gem)} 金<br>刻印书 ${relationFmt(row.engraving)} 金`;
+          tooltip.classList.add('show');
+        });
+        point.addEventListener('mousemove', event => {
+          const rect = relationChart.getBoundingClientRect();
+          const tipW = tooltip.offsetWidth || 150;
+          let left = event.clientX - rect.left + 12;
+          if (left + tipW > relationChart.clientWidth - 8) left = event.clientX - rect.left - tipW - 12;
+          tooltip.style.left = Math.max(8, left) + 'px';
+          tooltip.style.top = Math.max(8, event.clientY - rect.top - 52) + 'px';
+        });
+        point.addEventListener('mouseleave', () => tooltip.classList.remove('show'));
+      });
+    }
+
+    document.querySelectorAll('[data-relation-range]').forEach(button => {
+      button.addEventListener('click', () => {
+        relationRange = button.dataset.relationRange || '30';
+        document.querySelectorAll('[data-relation-range]').forEach(btn => btn.classList.toggle('active', btn === button));
+        renderRelationChart();
+      });
+    });
+
+    loadRelationData();
   </script>
 </body>
 </html>
