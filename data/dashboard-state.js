@@ -1,6 +1,6 @@
 window.LOSTARK_PUBLIC_DASHBOARD_STATE = {
   "version": 2,
-  "publishedAt": "2026-07-01 09:00",
+  "publishedAt": "2026-07-02 09:00",
   "gemRows": [
     {
       "日期": "2026-05-02",
@@ -496,6 +496,15 @@ window.LOSTARK_PUBLIC_DASHBOARD_STATE = {
       "8级": 348800,
       "9级": 1025555,
       "10级": 2900000
+    },
+    {
+      "日期": "2026-07-02",
+      "5级": 12666,
+      "6级": 39444,
+      "7级": 119998,
+      "8级": 357776,
+      "9级": 988888,
+      "10级": 2888888
     }
   ],
   "baselines": {},
@@ -1535,6 +1544,34 @@ window.LOSTARK_PUBLIC_DASHBOARD_STATE = {
       "gold": 236000,
       "price": 49.68,
       "date": "2026-07-01"
+    },
+    {
+      "id": "txn-2026-07-02-邮寄交易-1360000-292.46-0",
+      "type": "邮寄交易",
+      "gold": 1360000,
+      "price": 292.46,
+      "date": "2026-07-02"
+    },
+    {
+      "id": "txn-2026-07-02-邮寄交易-499999-123-1",
+      "type": "邮寄交易",
+      "gold": 499999,
+      "price": 123,
+      "date": "2026-07-02"
+    },
+    {
+      "id": "txn-2026-07-02-拍卖交易-199999-40.64-2",
+      "type": "拍卖交易",
+      "gold": 199999,
+      "price": 40.64,
+      "date": "2026-07-02"
+    },
+    {
+      "id": "txn-2026-07-02-拍卖交易-236000-49.68-3",
+      "type": "拍卖交易",
+      "gold": 236000,
+      "price": 49.68,
+      "date": "2026-07-02"
     }
   ],
   "engravingBookPrices": [
@@ -7651,6 +7688,186 @@ window.LOSTARK_PUBLIC_DASHBOARD_STATE = {
     },
     {
       "date": "2026-07-01",
+      "name": "咒术人偶",
+      "grade": "遗物",
+      "prevAvg": 32572,
+      "recentDeal": 31999,
+      "lowest": 31855,
+      "pageOrder": 11
+    },
+    {
+      "date": "2026-07-02",
+      "name": "法力爆发",
+      "grade": "遗物",
+      "prevAvg": 1870,
+      "recentDeal": 1887,
+      "lowest": 1886,
+      "pageOrder": 20
+    },
+    {
+      "date": "2026-07-02",
+      "name": "法力环绕",
+      "grade": "遗物",
+      "prevAvg": 5239,
+      "recentDeal": 5222,
+      "lowest": 5553,
+      "pageOrder": 14
+    },
+    {
+      "date": "2026-07-02",
+      "name": "护盾猛攻",
+      "grade": "遗物",
+      "prevAvg": 2679,
+      "recentDeal": 2795,
+      "lowest": 2699,
+      "pageOrder": 19
+    },
+    {
+      "date": "2026-07-02",
+      "name": "尖刺重锤",
+      "grade": "遗物",
+      "prevAvg": 110092,
+      "recentDeal": 113869,
+      "lowest": 110000,
+      "pageOrder": 4
+    },
+    {
+      "date": "2026-07-02",
+      "name": "精力充沛",
+      "grade": "遗物",
+      "prevAvg": 2175,
+      "recentDeal": 2999,
+      "lowest": 2999,
+      "pageOrder": 17
+    },
+    {
+      "date": "2026-07-02",
+      "name": "决斗大师",
+      "grade": "遗物",
+      "prevAvg": 38479,
+      "recentDeal": 36999,
+      "lowest": 37555,
+      "pageOrder": 8
+    },
+    {
+      "date": "2026-07-02",
+      "name": "觉醒",
+      "grade": "遗物",
+      "prevAvg": 35394,
+      "recentDeal": 35365,
+      "lowest": 35364,
+      "pageOrder": 9
+    },
+    {
+      "date": "2026-07-02",
+      "name": "妙手回春",
+      "grade": "遗物",
+      "prevAvg": 32959,
+      "recentDeal": 32987,
+      "lowest": 30997,
+      "pageOrder": 12
+    },
+    {
+      "date": "2026-07-02",
+      "name": "破釜沉舟",
+      "grade": "遗物",
+      "prevAvg": 2598,
+      "recentDeal": 2885,
+      "lowest": 2799,
+      "pageOrder": 18
+    },
+    {
+      "date": "2026-07-02",
+      "name": "奇袭大师",
+      "grade": "遗物",
+      "prevAvg": 46542,
+      "recentDeal": 47666,
+      "lowest": 46644,
+      "pageOrder": 6
+    },
+    {
+      "date": "2026-07-02",
+      "name": "强力侧击",
+      "grade": "遗物",
+      "prevAvg": 39849,
+      "recentDeal": 42222,
+      "lowest": 39999,
+      "pageOrder": 7
+    },
+    {
+      "date": "2026-07-02",
+      "name": "身披重甲",
+      "grade": "遗物",
+      "prevAvg": 3522,
+      "recentDeal": 3000,
+      "lowest": 3333,
+      "pageOrder": 16
+    },
+    {
+      "date": "2026-07-02",
+      "name": "肾上腺素",
+      "grade": "遗物",
+      "prevAvg": 123737,
+      "recentDeal": 125999,
+      "lowest": 125940,
+      "pageOrder": 1
+    },
+    {
+      "date": "2026-07-02",
+      "name": "速战速决",
+      "grade": "遗物",
+      "prevAvg": 5049,
+      "recentDeal": 4955,
+      "lowest": 4966,
+      "pageOrder": 15
+    },
+    {
+      "date": "2026-07-02",
+      "name": "蓄力强化",
+      "grade": "遗物",
+      "prevAvg": 33697,
+      "recentDeal": 34222,
+      "lowest": 34188,
+      "pageOrder": 10
+    },
+    {
+      "date": "2026-07-02",
+      "name": "迅捷利刃",
+      "grade": "遗物",
+      "prevAvg": 123390,
+      "recentDeal": 121988,
+      "lowest": 121996,
+      "pageOrder": 3
+    },
+    {
+      "date": "2026-07-02",
+      "name": "以太生成",
+      "grade": "遗物",
+      "prevAvg": 5259,
+      "recentDeal": 5888,
+      "lowest": 5777,
+      "pageOrder": 13
+    },
+    {
+      "date": "2026-07-02",
+      "name": "怨恨",
+      "grade": "遗物",
+      "prevAvg": 121914,
+      "recentDeal": 122990,
+      "lowest": 122995,
+      "pageOrder": 2
+    },
+    {
+      "date": "2026-07-02",
+      "name": "重量强化",
+      "grade": "遗物",
+      "prevAvg": 86100,
+      "recentDeal": 82995,
+      "lowest": 82998,
+      "pageOrder": 5
+    },
+    {
+      "date": "2026-07-02",
       "name": "咒术人偶",
       "grade": "遗物",
       "prevAvg": 32572,
