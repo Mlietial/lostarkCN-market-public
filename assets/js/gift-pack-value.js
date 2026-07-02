@@ -565,6 +565,7 @@ function itemPriceStorageKeys() {
 function buildGiftPackBackup() {
   const storage = {};
   giftPackStorageKeys().forEach(key => {
+    if (ITEM_PRICE_STORAGE_KEYS.includes(key) || key === "giftPackSettings") return;
     const value = localStorage.getItem(key);
     if (value !== null) storage[key] = value;
   });
@@ -574,16 +575,6 @@ function buildGiftPackBackup() {
     exportedAt: new Date().toISOString(),
     storage,
     snapshot: {
-      settings: {
-        goldPerRmb: state.goldPerRmb,
-        royalPerRmb: state.royalPerRmb,
-        blueSource: state.blueSource,
-        royalDiscount: state.royalDiscount,
-        valuationGoldPerRmb: state.valuationGoldPerRmb,
-        valuationGoldBaseLocked: !!state.valuationGoldBaseLocked,
-        settingsUpdatedAt: state.settingsUpdatedAt
-      },
-      manualValues: state.manualValues,
       packs: getGiftPacks()
     }
   };
@@ -1944,23 +1935,30 @@ function manualEntryText(entry) {
   return fmtUnitGold(entry.value);
 }
 
+function valuationName(name) {
+  if (state.manualValues[name] || itemPrices[name]) return name;
+  const alias = String(name || "").replace("选择箱子", "自选箱子");
+  return state.manualValues[alias] || itemPrices[alias] ? alias : name;
+}
+
 function itemUnitGold(content) {
-  const manualEntry = normalizeManualEntry(state.manualValues[content.name]);
-  const manual = manualEntry && manualEntry.value > 0 ? manualValueToGold(manualEntry, content.name) : null;
+  const name = valuationName(content.name);
+  const manualEntry = normalizeManualEntry(state.manualValues[name]);
+  const manual = manualEntry && manualEntry.value > 0 ? manualValueToGold(manualEntry, name) : null;
   if (manual !== null) {
     return {
       value: manual,
-      minValue: manualRangeToGold(manualEntry, "min", content.name),
-      maxValue: manualRangeToGold(manualEntry, "max", content.name),
-      source: itemSources[content.name] || manualSourceText(manualEntry, content.name),
+      minValue: manualRangeToGold(manualEntry, "min", name),
+      maxValue: manualRangeToGold(manualEntry, "max", name),
+      source: itemSources[name] || manualSourceText(manualEntry, name),
       isRange: !!manualEntry.isRange
     };
   }
-  const def = itemPrices[content.name];
+  const def = itemPrices[name];
   if (!def) return { value: null, source: "未计入估值" };
-  if (typeof def.gold === "number") return { value: def.gold, source: itemSources[content.name] || def.note || "金币单价" };
-  if (typeof def.royal === "number") return { value: royalToValuationGold(def.royal), source: `${itemSources[content.name] || def.note || "彩钻折金币"}（估值基准 ${fmtGold(state.valuationGoldPerRmb)} 金/元）` };
-  if (typeof def.blue === "number") return { value: blueToValuationGold(def.blue), source: `${itemSources[content.name] || def.note || "蓝钻折金币"}（${blueSourceText()}，估值基准 ${fmtGold(state.valuationGoldPerRmb)} 金/元）` };
+  if (typeof def.gold === "number") return { value: def.gold, source: itemSources[name] || def.note || "金币单价" };
+  if (typeof def.royal === "number") return { value: royalToValuationGold(def.royal), source: `${itemSources[name] || def.note || "彩钻折金币"}（估值基准 ${fmtGold(state.valuationGoldPerRmb)} 金/元）` };
+  if (typeof def.blue === "number") return { value: blueToValuationGold(def.blue), source: `${itemSources[name] || def.note || "蓝钻折金币"}（${blueSourceText()}，估值基准 ${fmtGold(state.valuationGoldPerRmb)} 金/元）` };
   if (Array.isArray(def.components) && def.components.length) {
     let missing = false;
     let minValue = 0;
@@ -1972,7 +1970,7 @@ function itemUnitGold(content) {
       maxValue += (unit.maxValue ?? unit.value ?? 0) * component.qty;
       return sum + (unit.value === null ? 0 : unit.value * component.qty);
     }, 0);
-    return missing ? { value: null, source: "组件未定价" } : { value, minValue, maxValue, source: itemSources[content.name] || def.note || "组件折算", isRange: Math.round(minValue) !== Math.round(maxValue) };
+    return missing ? { value: null, source: "组件未定价" } : { value, minValue, maxValue, source: itemSources[name] || def.note || "组件折算", isRange: Math.round(minValue) !== Math.round(maxValue) };
   }
   return { value: null, source: "未计入估值" };
 }
@@ -2469,7 +2467,10 @@ function applyManualSearchFilter() {
   document.querySelectorAll(".manual-list-item").forEach(button => {
     const name = button.dataset.manualSelect || "";
     const label = displayItemName(name);
-    button.hidden = !!query && !window.LostarkPinyinSearch?.any([name, label], query) && !name.toLowerCase().includes(query) && !label.toLowerCase().includes(query);
+    const pinyinMiss = window.LostarkPinyinSearch?.any
+      ? !window.LostarkPinyinSearch.any([name, label], query)
+      : true;
+    button.hidden = !!query && pinyinMiss && !name.toLowerCase().includes(query) && !label.toLowerCase().includes(query);
   });
 }
 
@@ -3536,9 +3537,7 @@ function bindControls() {
     if (event.target.id === "modalBackdrop") closeModal();
   });
   document.getElementById("closeEditDialogBtn").addEventListener("click", closeEditDialog);
-  document.getElementById("editDialogBackdrop").addEventListener("click", event => {
-    if (event.target.id === "editDialogBackdrop") closeEditDialog();
-  });
+  document.getElementById("editDialogBackdrop").addEventListener("click", event => event.stopPropagation());
   document.addEventListener("keydown", event => {
     if (event.key === "Escape" && !document.getElementById("modalBackdrop").hidden) closeModal();
     if (event.key === "Escape" && !document.getElementById("editDialogBackdrop").hidden) closeEditDialog();
