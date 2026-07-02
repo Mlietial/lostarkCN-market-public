@@ -1220,12 +1220,13 @@ textarea {
 
 .modal.fit-modal .modal-grid > div:first-child {
   max-height: 100%;
-  overflow: hidden;
+  overflow: auto;
 }
 
 .modal.fit-modal .modal-grid > div:last-child {
   max-height: 100%;
-  overflow: hidden;
+  overflow: auto;
+  padding-right: 4px;
 }
 
 .hero-img,
