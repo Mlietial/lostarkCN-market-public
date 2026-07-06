@@ -1,7 +1,7 @@
 {
   "app": "lostark-material-price-history",
   "version": 1,
-  "generatedAt": "2026-07-06T01:12:02.016Z",
+  "generatedAt": "2026-07-06T01:12:16.122Z",
   "source": "Daily item-price-data exports",
   "items": [
     "命运破坏石",
@@ -5610,5 +5610,5 @@
       }
     }
   ],
-  "generatedBy": "LostArk market data​​​‌​​​‌​‌‌​​‌​​‌​‌​​‌​‌"
+  "generatedBy": "LostArk market data‌​​​‌‌​​​‌​​‌‌​​​‌‌​​‌​‌"
 }
