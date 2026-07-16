@@ -202,9 +202,10 @@ body{position:relative;overflow-x:hidden;isolation:isolate}body:before,body:afte
     flex: 0 0 auto;
     position: relative;
     display: flex;
-    height: 100%;
+    height: auto;
     min-height: 0;
     flex-direction: column;
+    align-self: start;
     margin: 0;
     overflow: hidden;
     border: 1px solid #e5e7eb;
@@ -244,7 +245,8 @@ body{position:relative;overflow-x:hidden;isolation:isolate}body:before,body:afte
     background: var(--line-color);
   }
   .engraving-history-chart-scroll {
-    flex: 1 1 auto;
+    flex: 0 0 auto;
+    aspect-ratio: 720 / 250;
     min-height: 0;
     overflow: hidden;
     overflow-y: hidden;
@@ -254,7 +256,7 @@ body{position:relative;overflow-x:hidden;isolation:isolate}body:before,body:afte
     width: 100%;
     min-width: 0;
     height: 100%;
-    min-height: 300px;
+    min-height: 0;
   }
   .engraving-history-chart-grid {
     stroke: #edf1f6;
@@ -389,7 +391,7 @@ body{position:relative;overflow-x:hidden;isolation:isolate}body:before,body:afte
       justify-content: flex-start;
     }
     .engraving-history-chart-scroll svg {
-      min-height: 260px;
+      min-height: 0;
     }
     .engraving-history-ranges {
       padding: 0 14px 10px;
@@ -743,7 +745,7 @@ function renderEngravingHistoryChart(rows,name,rangeLabel){
   const series=[{key:"prevAvg",label:"昨日均价",color:"#94a3b8"},{key:"recentDeal",label:"最近成交",color:"#f59e0b"},{key:"lowest",label:"当前最低",color:"#2563eb",primary:true}];
   const values=rows.flatMap(row=>series.map(item=>Number(row[item.key])).filter(Number.isFinite));
   if(!values.length)return"";
-  const width=720,height=360,pad={left:70,right:24,top:22,bottom:44};
+  const width=720,height=250,pad={left:70,right:24,top:20,bottom:42};
   const rawMin=Math.min(...values),rawMax=Math.max(...values),rawSpan=rawMax-rawMin||Math.max(rawMax*.1,1),min=Math.max(0,rawMin-rawSpan*.12),max=rawMax+rawSpan*.12,span=max-min||1;
   const x=index=>rows.length===1?(pad.left+width-pad.right)/2:pad.left+index*(width-pad.left-pad.right)/(rows.length-1),y=value=>pad.top+(max-value)*(height-pad.top-pad.bottom)/span;
   let svg='<svg viewBox="0 0 '+width+' '+height+'" preserveAspectRatio="xMidYMid meet" role="img" aria-label="'+escapeHtml(name+rangeLabel+'价格折线图')+'">';
