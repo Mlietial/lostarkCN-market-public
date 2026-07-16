@@ -119,7 +119,7 @@ body{position:relative;overflow-x:hidden;isolation:isolate}body:before,body:afte
     backdrop-filter: blur(4px);
   }
   .engraving-history-panel {
-    width: min(980px, 100%);
+    width: min(1280px, 100%);
     max-height: min(780px, calc(100vh - 48px));
     display: flex;
     flex-direction: column;
@@ -172,9 +172,28 @@ body{position:relative;overflow-x:hidden;isolation:isolate}body:before,body:afte
   .engraving-history-kpi strong {
     font-size: 16px;
   }
+  .engraving-history-ranges {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 0 22px 12px;
+  }
+  .engraving-history-ranges .active {
+    border-color: #111827;
+    background: #111827;
+    color: #fff;
+  }
+  .engraving-history-details {
+    display: grid;
+    grid-template-columns: minmax(0, 1.45fr) minmax(390px, .85fr);
+    gap: 14px;
+    min-height: 0;
+    padding: 0 22px 20px;
+  }
   .engraving-history-chart-card {
     flex: 0 0 auto;
-    margin: 0 22px 14px;
+    position: relative;
+    margin: 0;
     overflow: hidden;
     border: 1px solid #e5e7eb;
     border-radius: 12px;
@@ -213,13 +232,13 @@ body{position:relative;overflow-x:hidden;isolation:isolate}body:before,body:afte
     background: var(--line-color);
   }
   .engraving-history-chart-scroll {
-    overflow-x: auto;
+    overflow: hidden;
     overflow-y: hidden;
-    scrollbar-width: thin;
   }
   .engraving-history-chart-scroll svg {
     display: block;
-    min-width: 100%;
+    width: 100%;
+    min-width: 0;
     height: 230px;
   }
   .engraving-history-chart-grid {
@@ -244,22 +263,48 @@ body{position:relative;overflow-x:hidden;isolation:isolate}body:before,body:afte
     fill: #fff;
     stroke: var(--line-color);
     stroke-width: 2.5;
+    cursor: crosshair;
+    transition: r .12s ease, stroke-width .12s ease;
+  }
+  .engraving-history-chart-dot:hover {
+    r: 6px;
+    stroke-width: 3.5;
+  }
+  .engraving-history-chart-tooltip {
+    position: absolute;
+    z-index: 4;
+    max-width: 220px;
+    pointer-events: none;
+    border-radius: 8px;
+    background: rgba(17, 24, 39, .94);
+    color: #fff;
+    box-shadow: 0 10px 28px rgba(15, 23, 42, .24);
+    padding: 7px 9px;
+    font-size: 12px;
+    line-height: 1.4;
+    white-space: nowrap;
+    transform: translateY(-100%);
+  }
+  .engraving-history-chart-tooltip[hidden] {
+    display: none;
   }
   .engraving-history-table-wrap {
-    flex: 1 1 auto;
-    min-height: 150px;
+    min-width: 0;
+    max-height: 286px;
     overflow: auto;
-    padding: 0 22px 20px;
+    padding: 0;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
   }
   .engraving-history-table {
     width: 100%;
-    min-width: 720px;
+    min-width: 430px;
     border-collapse: collapse;
     font-size: 13px;
   }
   .engraving-history-table th,
   .engraving-history-table td {
-    padding: 10px 9px;
+    padding: 9px 8px;
     border-bottom: 1px solid #edf1f6;
     text-align: right;
     white-space: nowrap;
@@ -312,10 +357,11 @@ body{position:relative;overflow-x:hidden;isolation:isolate}body:before,body:afte
       margin: 0;
     }
     .engraving-history-table-wrap {
-      padding: 0 14px 16px;
+      max-height: 300px;
+      padding: 0;
     }
     .engraving-history-chart-card {
-      margin: 0 14px 10px;
+      margin: 0;
     }
     .engraving-history-chart-head {
       align-items: flex-start;
@@ -327,6 +373,13 @@ body{position:relative;overflow-x:hidden;isolation:isolate}body:before,body:afte
     }
     .engraving-history-chart-scroll svg {
       height: 210px;
+    }
+    .engraving-history-ranges {
+      padding: 0 14px 10px;
+    }
+    .engraving-history-details {
+      grid-template-columns: 1fr;
+      padding: 0 14px 16px;
     }
   }
 </style>
@@ -667,9 +720,53 @@ function formatEngravingPercent(rate){if(!Number.isFinite(rate))return"—";cons
 function engravingPctClass(rate){if(!Number.isFinite(rate))return"flat";const pct=Number((rate*100).toFixed(2));return pct>0?"up":pct<0?"down":"flat";}
 function getEngravingBookHistory(name,grade){const rows=enrichEngravingRows().filter(row=>row.name===name&&row.grade===grade).sort((a,b)=>engravingDateKey(a).localeCompare(engravingDateKey(b))||a.pageOrder-b.pageOrder);return rows.map((row,index)=>Object.assign({},row,{lowVsPrevious:index&&rows[index-1].lowest?((row.lowest-rows[index-1].lowest)/rows[index-1].lowest):null}));}
 function formatEngravingAxisNumber(n){if(n>=100000000)return(n/100000000).toFixed(1)+"亿";if(n>=10000)return(n/10000).toFixed(n>=100000?0:1)+"万";return Math.round(n).toLocaleString("zh-CN");}
-function renderEngravingHistoryChart(rows,name){const series=[{key:"prevAvg",label:"昨日均价",color:"#94a3b8"},{key:"recentDeal",label:"最近成交",color:"#f59e0b"},{key:"lowest",label:"当前最低",color:"#2563eb",primary:true}],values=rows.flatMap(row=>series.map(item=>Number(row[item.key])).filter(Number.isFinite));if(!values.length)return"";const width=Math.max(720,96+Math.max(0,rows.length-1)*78),height=230,pad={left:70,right:24,top:18,bottom:42},rawMin=Math.min(...values),rawMax=Math.max(...values),rawSpan=rawMax-rawMin||Math.max(rawMax*.1,1),min=Math.max(0,rawMin-rawSpan*.12),max=rawMax+rawSpan*.12,span=max-min||1,x=index=>rows.length===1?(pad.left+width-pad.right)/2:pad.left+index*(width-pad.left-pad.right)/(rows.length-1),y=value=>pad.top+(max-value)*(height-pad.top-pad.bottom)/span;let svg='<svg viewBox="0 0 '+width+' '+height+'" width="'+width+'" height="'+height+'" role="img" aria-label="'+escapeHtml(name)+'历史价格折线图">';for(let i=0;i<5;i++){const value=max-span*i/4,py=y(value);svg+='<line class="engraving-history-chart-grid" x1="'+pad.left+'" y1="'+py+'" x2="'+(width-pad.right)+'" y2="'+py+'"></line><text class="engraving-history-chart-axis" x="'+(pad.left-8)+'" y="'+(py+3)+'" text-anchor="end">'+escapeHtml(formatEngravingAxisNumber(value))+'</text>';}rows.forEach((row,index)=>{svg+='<text class="engraving-history-chart-axis" x="'+x(index)+'" y="'+(height-14)+'" text-anchor="middle">'+escapeHtml(engravingDateKey(row).slice(5))+'</text>';});series.forEach(item=>{const points=rows.map((row,index)=>x(index)+','+y(Number(row[item.key]))).join(' ');svg+='<polyline class="engraving-history-chart-line '+(item.primary?'is-lowest':'')+'" style="--line-color:'+item.color+'" points="'+points+'"></polyline>';rows.forEach((row,index)=>{const value=Number(row[item.key]);svg+='<circle class="engraving-history-chart-dot" style="--line-color:'+item.color+'" cx="'+x(index)+'" cy="'+y(value)+'" r="'+(item.primary?4:3)+'"><title>'+escapeHtml(engravingDateKey(row)+' · '+item.label+'：'+formatEngravingNumber(value))+'</title></circle>';});});svg+='</svg>';return'<div class="engraving-history-chart-card"><div class="engraving-history-chart-head"><span class="engraving-history-chart-title">全部日期价格趋势</span><div class="engraving-history-chart-legend">'+series.map(item=>'<span><i style="--line-color:'+item.color+'"></i>'+item.label+'</span>').join('')+'</div></div><div class="engraving-history-chart-scroll">'+svg+'</div></div>';}
-function ensureEngravingHistoryDialog(){let dialog=document.getElementById("engravingHistoryDialog");if(dialog)return dialog;dialog=document.createElement("div");dialog.id="engravingHistoryDialog";dialog.className="engraving-history-dialog";dialog.hidden=true;dialog.setAttribute("role","dialog");dialog.setAttribute("aria-modal","true");dialog.setAttribute("aria-labelledby","engravingHistoryTitle");dialog.innerHTML='<section class="engraving-history-panel"><header class="engraving-history-head"><div><h2 id="engravingHistoryTitle">刻印书历史价格</h2><div id="engravingHistorySubtitle" class="engraving-history-subtitle"></div></div><button class="mini-btn engraving-history-close" type="button" data-engraving-history-close>关闭</button></header><div id="engravingHistoryKpis" class="engraving-history-kpis"></div><div id="engravingHistoryChart"></div><div id="engravingHistoryTableWrap" class="engraving-history-table-wrap"></div></section>';dialog.addEventListener("click",event=>{if(event.target===dialog||event.target.closest("[data-engraving-history-close]"))closeEngravingHistory();});dialog.addEventListener("keydown",event=>trapDialogFocus(event,dialog));document.body.appendChild(dialog);return dialog;}
-function openEngravingHistory(name,grade,trigger){const rows=getEngravingBookHistory(name,grade),dialog=ensureEngravingHistoryDialog();if(!rows.length)return;rememberDialogTrigger(trigger);const latest=rows[rows.length-1],historicLow=rows.reduce((best,row)=>!best||row.lowest<best.lowest?row:best,null);document.getElementById("engravingHistoryTitle").textContent=name+" · 历史价格";document.getElementById("engravingHistorySubtitle").textContent=grade+"，共 "+rows.length+" 个日期 · "+engravingDateKey(rows[0])+" 至 "+engravingDateKey(latest);document.getElementById("engravingHistoryKpis").innerHTML='<div class="engraving-history-kpi"><span>最新最低价</span><strong>'+formatEngravingNumber(latest.lowest)+'</strong></div><div class="engraving-history-kpi"><span>历史最低价</span><strong>'+formatEngravingNumber(historicLow.lowest)+' · '+escapeHtml(engravingDateKey(historicLow))+'</strong></div><div class="engraving-history-kpi"><span>最新较昨均</span><strong class="engraving-pct '+engravingPctClass(latest.lowVsPrevAvg)+'">'+formatEngravingPercent(latest.lowVsPrevAvg)+'</strong></div>';document.getElementById("engravingHistoryChart").innerHTML=renderEngravingHistoryChart(rows,name);document.getElementById("engravingHistoryTableWrap").innerHTML='<table class="engraving-history-table" aria-label="'+escapeHtml(name)+'所有日期价格"><thead><tr><th>日期</th><th>昨日均价</th><th>最近成交</th><th>当前最低</th><th>较昨均</th><th>较上次最低</th></tr></thead><tbody>'+rows.slice().reverse().map(row=>'<tr><td>'+escapeHtml(engravingDateKey(row))+'</td><td>'+formatEngravingNumber(row.prevAvg)+'</td><td>'+formatEngravingNumber(row.recentDeal)+'</td><td><strong>'+formatEngravingNumber(row.lowest)+'</strong></td><td class="engraving-pct '+engravingPctClass(row.lowVsPrevAvg)+'">'+formatEngravingPercent(row.lowVsPrevAvg)+'</td><td class="engraving-pct '+engravingPctClass(row.lowVsPrevious)+'">'+(row.lowVsPrevious==null?'—':formatEngravingPercent(row.lowVsPrevious))+'</td></tr>').join("")+'</tbody></table>';dialog.hidden=false;document.body.classList.add("engraving-history-open");dialog.querySelector("[data-engraving-history-close]")?.focus();}
+let engravingHistoryRange="30",engravingHistorySelection=null;
+function getRangedEngravingHistory(rows){if(engravingHistoryRange==="all")return rows.slice();const count=Number(engravingHistoryRange)||30;return rows.slice(-count);}
+function renderEngravingHistoryChart(rows,name,rangeLabel){
+  const series=[{key:"prevAvg",label:"昨日均价",color:"#94a3b8"},{key:"recentDeal",label:"最近成交",color:"#f59e0b"},{key:"lowest",label:"当前最低",color:"#2563eb",primary:true}];
+  const values=rows.flatMap(row=>series.map(item=>Number(row[item.key])).filter(Number.isFinite));
+  if(!values.length)return"";
+  const width=720,height=230,pad={left:70,right:24,top:18,bottom:42};
+  const rawMin=Math.min(...values),rawMax=Math.max(...values),rawSpan=rawMax-rawMin||Math.max(rawMax*.1,1),min=Math.max(0,rawMin-rawSpan*.12),max=rawMax+rawSpan*.12,span=max-min||1;
+  const x=index=>rows.length===1?(pad.left+width-pad.right)/2:pad.left+index*(width-pad.left-pad.right)/(rows.length-1),y=value=>pad.top+(max-value)*(height-pad.top-pad.bottom)/span;
+  let svg='<svg viewBox="0 0 '+width+' '+height+'" preserveAspectRatio="none" role="img" aria-label="'+escapeHtml(name+rangeLabel+'价格折线图')+'">';
+  for(let i=0;i<5;i++){const value=max-span*i/4,py=y(value);svg+='<line class="engraving-history-chart-grid" x1="'+pad.left+'" y1="'+py+'" x2="'+(width-pad.right)+'" y2="'+py+'"></line><text class="engraving-history-chart-axis" x="'+(pad.left-8)+'" y="'+(py+3)+'" text-anchor="end">'+escapeHtml(formatEngravingAxisNumber(value))+'</text>';}
+  const labelEvery=Math.max(1,Math.ceil(rows.length/8));
+  rows.forEach((row,index)=>{if(index===0||index===rows.length-1||index%labelEvery===0)svg+='<text class="engraving-history-chart-axis" x="'+x(index)+'" y="'+(height-14)+'" text-anchor="middle">'+escapeHtml(engravingDateKey(row).slice(5))+'</text>';});
+  series.forEach(item=>{const points=rows.map((row,index)=>x(index)+','+y(Number(row[item.key]))).join(' ');svg+='<polyline class="engraving-history-chart-line '+(item.primary?'is-lowest':'')+'" style="--line-color:'+item.color+'" points="'+points+'"></polyline>';rows.forEach((row,index)=>{const value=Number(row[item.key]),tip=engravingDateKey(row)+' · '+item.label+'：'+formatEngravingNumber(value);svg+='<circle class="engraving-history-chart-dot" data-tip="'+escapeHtml(tip)+'" style="--line-color:'+item.color+'" cx="'+x(index)+'" cy="'+y(value)+'" r="'+(item.primary?4:3)+'"></circle>';});});
+  svg+='</svg>';
+  return'<div class="engraving-history-chart-card"><div class="engraving-history-chart-head"><span class="engraving-history-chart-title">'+escapeHtml(rangeLabel)+'价格趋势</span><div class="engraving-history-chart-legend">'+series.map(item=>'<span><i style="--line-color:'+item.color+'"></i>'+item.label+'</span>').join('')+'</div></div><div class="engraving-history-chart-scroll">'+svg+'</div><div class="engraving-history-chart-tooltip" hidden></div></div>';
+}
+function renderEngravingHistoryView(){
+  if(!engravingHistorySelection)return;
+  const allRows=getEngravingBookHistory(engravingHistorySelection.name,engravingHistorySelection.grade),rows=getRangedEngravingHistory(allRows);
+  if(!rows.length)return;
+  const latest=rows[rows.length-1],rangeLow=rows.reduce((best,row)=>!best||row.lowest<best.lowest?row:best,null),rangeLabel=engravingHistoryRange==="7"?"近7日":engravingHistoryRange==="30"?"近30日":"全部";
+  document.getElementById("engravingHistorySubtitle").textContent=engravingHistorySelection.grade+"，显示 "+rows.length+" / "+allRows.length+" 个日期 · "+engravingDateKey(rows[0])+" 至 "+engravingDateKey(latest);
+  document.getElementById("engravingHistoryKpis").innerHTML='<div class="engraving-history-kpi"><span>最新最低价</span><strong>'+formatEngravingNumber(latest.lowest)+'</strong></div><div class="engraving-history-kpi"><span>'+rangeLabel+'最低价</span><strong>'+formatEngravingNumber(rangeLow.lowest)+' · '+escapeHtml(engravingDateKey(rangeLow))+'</strong></div><div class="engraving-history-kpi"><span>最新较昨均</span><strong class="engraving-pct '+engravingPctClass(latest.lowVsPrevAvg)+'">'+formatEngravingPercent(latest.lowVsPrevAvg)+'</strong></div>';
+  document.getElementById("engravingHistoryChart").innerHTML=renderEngravingHistoryChart(rows,engravingHistorySelection.name,rangeLabel);
+  document.getElementById("engravingHistoryTableWrap").innerHTML='<table class="engraving-history-table" aria-label="'+escapeHtml(engravingHistorySelection.name+rangeLabel+'具体价格')+'"><thead><tr><th>日期</th><th>昨日均价</th><th>最近成交</th><th>当前最低</th></tr></thead><tbody>'+rows.slice().reverse().map(row=>'<tr><td>'+escapeHtml(engravingDateKey(row))+'</td><td>'+formatEngravingNumber(row.prevAvg)+'</td><td>'+formatEngravingNumber(row.recentDeal)+'</td><td><strong>'+formatEngravingNumber(row.lowest)+'</strong></td></tr>').join("")+'</tbody></table>';
+  document.querySelectorAll("[data-engraving-history-range]").forEach(btn=>{const active=btn.dataset.engravingHistoryRange===engravingHistoryRange;btn.classList.toggle("active",active);btn.setAttribute("aria-pressed",String(active));});
+}
+function updateEngravingHistoryTooltip(event){
+  const marker=event.target.closest?.(".engraving-history-chart-dot[data-tip]"),card=event.target.closest?.(".engraving-history-chart-card")||document.querySelector(".engraving-history-chart-card"),tip=card?.querySelector(".engraving-history-chart-tooltip");
+  if(!tip)return;
+  if(!marker){tip.hidden=true;return;}
+  const rect=card.getBoundingClientRect();
+  tip.textContent=marker.dataset.tip;tip.hidden=false;
+  let left=event.clientX-rect.left+12,top=event.clientY-rect.top-8;
+  const tipWidth=tip.offsetWidth||180;
+  if(left+tipWidth>rect.width-8)left=event.clientX-rect.left-tipWidth-12;
+  tip.style.left=Math.max(8,left)+"px";tip.style.top=Math.max(34,top)+"px";
+}
+function ensureEngravingHistoryDialog(){
+  let dialog=document.getElementById("engravingHistoryDialog");if(dialog)return dialog;
+  dialog=document.createElement("div");dialog.id="engravingHistoryDialog";dialog.className="engraving-history-dialog";dialog.hidden=true;dialog.setAttribute("role","dialog");dialog.setAttribute("aria-modal","true");dialog.setAttribute("aria-labelledby","engravingHistoryTitle");
+  dialog.innerHTML='<section class="engraving-history-panel"><header class="engraving-history-head"><div><h2 id="engravingHistoryTitle">刻印书历史价格</h2><div id="engravingHistorySubtitle" class="engraving-history-subtitle"></div></div><button class="mini-btn engraving-history-close" type="button" data-engraving-history-close>关闭</button></header><div id="engravingHistoryKpis" class="engraving-history-kpis"></div><div class="engraving-history-ranges" role="group" aria-label="历史价格日期范围"><button class="mini-btn" type="button" data-engraving-history-range="7">近7日</button><button class="mini-btn" type="button" data-engraving-history-range="30">近30日</button><button class="mini-btn" type="button" data-engraving-history-range="all">全部</button></div><div class="engraving-history-details"><div id="engravingHistoryChart"></div><div id="engravingHistoryTableWrap" class="engraving-history-table-wrap"></div></div></section>';
+  dialog.addEventListener("click",event=>{if(event.target===dialog||event.target.closest("[data-engraving-history-close]")){closeEngravingHistory();return;}const rangeBtn=event.target.closest("[data-engraving-history-range]");if(rangeBtn){engravingHistoryRange=rangeBtn.dataset.engravingHistoryRange;renderEngravingHistoryView();}});
+  dialog.addEventListener("pointermove",updateEngravingHistoryTooltip);dialog.addEventListener("pointerleave",()=>{const tip=dialog.querySelector(".engraving-history-chart-tooltip");if(tip)tip.hidden=true;});dialog.addEventListener("keydown",event=>trapDialogFocus(event,dialog));document.body.appendChild(dialog);return dialog;
+}
+function openEngravingHistory(name,grade,trigger){const rows=getEngravingBookHistory(name,grade),dialog=ensureEngravingHistoryDialog();if(!rows.length)return;rememberDialogTrigger(trigger);engravingHistorySelection={name,grade};engravingHistoryRange="30";document.getElementById("engravingHistoryTitle").textContent=name+" · 历史价格";renderEngravingHistoryView();dialog.hidden=false;document.body.classList.add("engraving-history-open");dialog.querySelector("[data-engraving-history-close]")?.focus();}
 function closeEngravingHistory(){const dialog=document.getElementById("engravingHistoryDialog");if(!dialog||dialog.hidden)return;dialog.hidden=true;document.body.classList.remove("engraving-history-open");restoreDialogFocus();}
 function getVisibleEngravingRows(){let rows=enrichEngravingRows();const selectedDate=getSelectedEngravingDate();if(selectedDate){rows=rows.filter(row=>engravingDateKey(row)===selectedDate);}const q=engravingSearch.trim().toLowerCase();if(q){rows=rows.filter(row=>window.LostarkPinyinSearch?.match(row.name+" "+row.grade,q)||(row.name+" "+row.grade).toLowerCase().includes(q));}if(engravingFilter==="highCore")rows=rows.filter(row=>row.lowest>=100000);if(engravingFilter==="deepDiscount")rows=rows.filter(row=>row.lowVsPrevAvg<=-.08);if(engravingFilter==="pump")rows=rows.filter(row=>row.lowVsPrevAvg>=.08);const key=engravingSortKey;rows.sort((a,b)=>{let av=a[key],bv=b[key];if(key==="name"){return engravingSortDir*a.name.localeCompare(b.name,"zh-CN");}if(av==null)av=0;if(bv==null)bv=0;return engravingSortDir*(av-bv)||a.pageOrder-b.pageOrder;});return rows;}
 function resetEngravingPage(){engravingPage=0;}
