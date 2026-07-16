@@ -743,10 +743,10 @@ function renderEngravingHistoryChart(rows,name,rangeLabel){
   const series=[{key:"prevAvg",label:"昨日均价",color:"#94a3b8"},{key:"recentDeal",label:"最近成交",color:"#f59e0b"},{key:"lowest",label:"当前最低",color:"#2563eb",primary:true}];
   const values=rows.flatMap(row=>series.map(item=>Number(row[item.key])).filter(Number.isFinite));
   if(!values.length)return"";
-  const width=720,height=230,pad={left:70,right:24,top:18,bottom:42};
+  const width=720,height=360,pad={left:70,right:24,top:22,bottom:44};
   const rawMin=Math.min(...values),rawMax=Math.max(...values),rawSpan=rawMax-rawMin||Math.max(rawMax*.1,1),min=Math.max(0,rawMin-rawSpan*.12),max=rawMax+rawSpan*.12,span=max-min||1;
   const x=index=>rows.length===1?(pad.left+width-pad.right)/2:pad.left+index*(width-pad.left-pad.right)/(rows.length-1),y=value=>pad.top+(max-value)*(height-pad.top-pad.bottom)/span;
-  let svg='<svg viewBox="0 0 '+width+' '+height+'" preserveAspectRatio="none" role="img" aria-label="'+escapeHtml(name+rangeLabel+'价格折线图')+'">';
+  let svg='<svg viewBox="0 0 '+width+' '+height+'" preserveAspectRatio="xMidYMid meet" role="img" aria-label="'+escapeHtml(name+rangeLabel+'价格折线图')+'">';
   for(let i=0;i<5;i++){const value=max-span*i/4,py=y(value);svg+='<line class="engraving-history-chart-grid" x1="'+pad.left+'" y1="'+py+'" x2="'+(width-pad.right)+'" y2="'+py+'"></line><text class="engraving-history-chart-axis" x="'+(pad.left-8)+'" y="'+(py+3)+'" text-anchor="end">'+escapeHtml(formatEngravingAxisNumber(value))+'</text>';}
   const labelEvery=Math.max(1,Math.ceil(rows.length/8));
   rows.forEach((row,index)=>{if(index===0||index===rows.length-1||index%labelEvery===0)svg+='<text class="engraving-history-chart-axis" x="'+x(index)+'" y="'+(height-14)+'" text-anchor="middle">'+escapeHtml(engravingDateKey(row).slice(5))+'</text>';});
