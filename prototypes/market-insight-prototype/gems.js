@@ -183,15 +183,10 @@
             <div class="chart-summary"><div class="chart-metric"><span>区间最高</span><strong>${fmt(rangeHigh)}</strong></div><div class="chart-metric"><span>区间最低</span><strong>${fmt(rangeLow)}</strong></div><div class="chart-metric"><span>区间均价</span><strong>${fmt(rangeAverage)}</strong></div><div class="chart-metric"><span>距区间低位</span><strong>${pct((gem.current - rangeLow) / rangeLow)}</strong></div><div class="chart-metric"><span>数据点</span><strong>${rangePoints.length} 日</strong></div></div>
           </section>
 
-          <section class="panel decision-strip">
-            <article class="decision-card" style="--delay:0"><span>7 日方向</span><strong class="${tone(gem.weekChange)}">${gem.weekChange >= 0 ? "走高" : "回落"} ${fmt(Math.abs(gem.weekChange) * 100, 1)}%</strong><p>比单日变化更适合判断当前趋势是否延续。</p></article>
-            <article class="decision-card" style="--delay:1"><span>30 日位置</span><strong>${fmt(gem.position * 100)}%</strong><p>${positionText(gem)}，0% 为区间最低，100% 为最高。</p></article>
-            <article class="decision-card" style="--delay:2"><span>日波动率</span><strong>${fmt(gem.volatility * 100, 2)}%</strong><p>使用最近 30 个日价格变化计算，仅表示价格波动。</p></article>
-          </section>
         </section>
 
         <aside class="right-column">
-          <section class="panel"><header class="panel-head"><div><h3>行情判断</h3><p>方向与区间位置</p></div></header><div class="signal-overview"><span class="signal-label ${signal.style}">${signal.label}</span><h2>${signal.title}</h2><p>${signal.note}</p><div class="position-bar"><span class="position-marker" style="left:${Math.max(2, Math.min(98, gem.position * 100))}%"></span></div><div class="position-legend"><span>30日低位</span><span>当前 ${fmt(gem.position * 100)}%</span><span>30日高位</span></div></div></section>
+          <section class="panel"><header class="panel-head"><div><h3>行情判断</h3><p>方向、位置与波动</p></div></header><div class="signal-overview"><span class="signal-label ${signal.style}">${signal.label}</span><h2>${signal.title}</h2><p>${signal.note}</p><div class="position-bar"><span class="position-marker" style="left:${Math.max(2, Math.min(98, gem.position * 100))}%"></span></div><div class="position-legend"><span>30日低位</span><span>当前 ${fmt(gem.position * 100)}%</span><span>30日高位</span></div><div class="signal-metrics"><div><span>7 日方向</span><strong class="${tone(gem.weekChange)}">${gem.weekChange >= 0 ? "走高" : "回落"} ${fmt(Math.abs(gem.weekChange) * 100, 1)}%</strong></div><div title="${positionText(gem)}"><span>30 日位置</span><strong>${fmt(gem.position * 100)}%</strong></div><div><span>日波动率</span><strong>${fmt(gem.volatility * 100, 2)}%</strong></div></div></div></section>
 
           <section class="panel"><header class="panel-head"><div><h3>历史异动</h3><p>${gem.name}绝对变化最大的 5 天</p></div></header><div class="move-list">${movesMarkup(gem)}</div></section>
         </aside>

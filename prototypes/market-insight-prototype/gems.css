@@ -133,13 +133,6 @@ button { cursor: pointer; }
 .chart-metric span { display: block; color: var(--muted); font-size: 10px; }
 .chart-metric strong { display: block; margin-top: 5px; overflow: hidden; font-size: 13px; font-variant-numeric: tabular-nums; text-overflow: ellipsis; white-space: nowrap; }
 
-.decision-strip { display: grid; grid-template-columns: repeat(3, 1fr); overflow: hidden; }
-.decision-card { position: relative; padding: 14px; border-right: 1px solid var(--line); animation: card-rise .45s calc(var(--delay, 0) * 55ms) ease-out both; }
-.decision-card:last-child { border-right: 0; }
-.decision-card span { display: block; color: var(--muted); font-size: 10px; }
-.decision-card strong { display: block; margin-top: 7px; font-size: 15px; }
-.decision-card p { margin: 6px 0 0; color: var(--muted); font-size: 11px; line-height: 1.55; }
-
 .right-column .panel { overflow: hidden; }
 .signal-overview { padding: 14px; }
 .signal-label { display: inline-flex; align-items: center; min-height: 27px; padding: 0 10px; border-radius: 999px; font-size: 11px; font-weight: 850; }
@@ -148,6 +141,11 @@ button { cursor: pointer; }
 .position-bar { position: relative; height: 8px; margin-top: 17px; border-radius: 999px; background: linear-gradient(90deg, #b8efd5, #e8eef5 50%, #ffd0cc); }
 .position-marker { position: absolute; top: 50%; width: 14px; height: 14px; border: 3px solid #fff; border-radius: 50%; background: var(--blue); box-shadow: 0 0 0 1px #7ba7e9, 0 3px 8px rgba(16, 54, 103, .22); transform: translate(-50%, -50%); transition: left .45s cubic-bezier(.2, .8, .2, 1); }
 .position-legend { display: flex; justify-content: space-between; margin-top: 6px; color: var(--subtle); font-size: 10px; }
+.signal-metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 13px; overflow: hidden; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-soft); }
+.signal-metrics > div { min-width: 0; padding: 9px 7px; border-right: 1px solid var(--line); }
+.signal-metrics > div:last-child { border-right: 0; }
+.signal-metrics span { display: block; color: var(--muted); font-size: 9px; white-space: nowrap; }
+.signal-metrics strong { display: block; margin-top: 5px; overflow: hidden; font-size: 11px; font-variant-numeric: tabular-nums; text-overflow: ellipsis; white-space: nowrap; }
 
 .move-list { display: grid; }
 .move-row { display: grid; grid-template-columns: 72px minmax(0, 1fr) auto; gap: 9px; align-items: center; min-height: 49px; padding: 8px 12px; border-top: 1px solid #e8eef5; }
@@ -208,8 +206,6 @@ button { cursor: pointer; }
   .quote-stats, .chart-summary { grid-template-columns: repeat(2, 1fr); }
   .quote-stat, .chart-metric { border-top: 1px solid var(--line); }
   .quote-stat:nth-child(even), .chart-metric:nth-child(even) { border-right: 0; }
-  .decision-strip { grid-template-columns: 1fr; }
-  .decision-card { border-right: 0; border-top: 1px solid var(--line); }
   .chart-head { align-items: flex-start; flex-direction: column; }
   .chart-stage { height: 390px; }
 }
