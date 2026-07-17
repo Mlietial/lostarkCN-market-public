@@ -14,6 +14,9 @@
 - [宝石价格指数仪表盘](https://mlietial.github.io/lostarkCN-market-public/pages/gem-dashboard.html)
   查看宝石价格指数、金币行情换算、刻印书价格和近期市场变化。
 
+- [宝石行情终端](https://mlietial.github.io/lostarkCN-market-public/pages/gem-market.html)
+  按宝石等级查看价格走势、日涨跌、历史异动和人民币估值。
+
 ## 数据说明
 
 网站数据来自人工整理与公开页面发布，主要用于观察趋势和做个人决策参考。市场价格会随服务器、时间、交易方式和供需变化波动，页面展示结果不构成交易承诺或投资建议。

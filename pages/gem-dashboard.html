@@ -429,6 +429,124 @@ body{position:relative;overflow-x:hidden;isolation:isolate}body:before,body:afte
     }
   }
 </style>
+<style>
+  .market-terminal-fab {
+    position: fixed;
+    right: 22px;
+    bottom: 22px;
+    z-index: 35;
+    display: grid;
+    grid-template-columns: 46px minmax(0, 1fr);
+    align-items: center;
+    gap: 11px;
+    min-width: 218px;
+    padding: 10px 16px 10px 10px;
+    border: 1px solid rgba(255, 255, 255, .62);
+    border-radius: 18px;
+    color: #fff;
+    background: linear-gradient(135deg, #7c3aed 0%, #2563eb 54%, #0891b2 100%);
+    background-size: 180% 180%;
+    box-shadow: 0 16px 36px rgba(37, 99, 235, .34), 0 0 0 5px rgba(124, 58, 237, .09);
+    text-decoration: none;
+    isolation: isolate;
+    animation: gemTerminalFabGlow 2.6s ease-in-out infinite, gemTerminalFabFlow 5s ease-in-out infinite alternate;
+    transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+  }
+  .market-terminal-fab::before {
+    content: "NEW";
+    position: absolute;
+    top: -9px;
+    right: 12px;
+    z-index: 2;
+    padding: 3px 7px;
+    border: 2px solid #fff;
+    border-radius: 999px;
+    color: #7c2d12;
+    background: #fbbf24;
+    box-shadow: 0 5px 14px rgba(180, 83, 9, .28);
+    font-size: 10px;
+    font-weight: 950;
+    letter-spacing: .08em;
+    line-height: 1;
+  }
+  .market-terminal-fab:hover {
+    color: #fff;
+    transform: translateY(-4px) scale(1.02);
+    filter: saturate(1.12);
+    box-shadow: 0 22px 44px rgba(37, 99, 235, .42), 0 0 0 7px rgba(124, 58, 237, .12);
+  }
+  .market-terminal-fab:focus-visible {
+    outline: 4px solid rgba(245, 158, 11, .52);
+    outline-offset: 4px;
+  }
+  .market-terminal-fab-icon {
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    border: 1px solid rgba(255, 255, 255, .48);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, .17);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .28);
+    font-size: 24px;
+    line-height: 1;
+  }
+  .market-terminal-fab-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+  }
+  .market-terminal-fab-copy strong {
+    font-size: 15px;
+    font-weight: 950;
+    line-height: 1.15;
+    white-space: nowrap;
+  }
+  .market-terminal-fab-copy small {
+    color: rgba(255, 255, 255, .84);
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.15;
+    white-space: nowrap;
+  }
+  .dashboard-loading .market-terminal-fab,
+  .dashboard-error .market-terminal-fab,
+  .capture-mode .market-terminal-fab {
+    display: none !important;
+  }
+  @keyframes gemTerminalFabGlow {
+    0%, 100% { box-shadow: 0 16px 36px rgba(37, 99, 235, .34), 0 0 0 5px rgba(124, 58, 237, .09); }
+    50% { box-shadow: 0 18px 42px rgba(37, 99, 235, .48), 0 0 0 10px rgba(124, 58, 237, .03); }
+  }
+  @keyframes gemTerminalFabFlow {
+    from { background-position: 0% 50%; }
+    to { background-position: 100% 50%; }
+  }
+  @media (max-width: 720px) {
+    .market-terminal-fab {
+      right: 12px;
+      bottom: 14px;
+      grid-template-columns: 40px minmax(0, 1fr);
+      min-width: 196px;
+      padding: 8px 13px 8px 8px;
+      border-radius: 16px;
+    }
+    .market-terminal-fab-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      font-size: 21px;
+    }
+    .market-terminal-fab-copy strong { font-size: 14px; }
+  }
+  @media print {
+    .market-terminal-fab { display: none !important; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .market-terminal-fab { animation: none; }
+  }
+</style>
 <script>
   var _hmt = _hmt || [];
   (function() {
@@ -453,6 +571,13 @@ body{position:relative;overflow-x:hidden;isolation:isolate}body:before,body:afte
 <section class="grid bottom"><div class="card heat"><div class="heat-head"><div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap"><h2 id="heatTitle" style="margin:0;font-size:20px;min-width:9em;white-space:nowrap">近7日指数热力</h2><span style="display:inline-flex;align-items:center;gap:3px;margin-left:4px"><button id="heatPrevBtn" class="mini-btn" type="button" aria-label="查看更早数据" style="padding:3px 8px">◀</button><span id="heatPageLabel" style="font-size:11px;color:#6b7280;min-width:58px;text-align:center;white-space:nowrap"></span><button id="heatNextBtn" class="mini-btn" type="button" aria-label="查看更新数据" style="padding:3px 8px">▶</button></span></div><div class="heat-right"><div class="segmented" role="group" aria-label="热力与趋势显示口径"><button id="heatIndexBtn" class="active" type="button" aria-pressed="true">指数</button><button id="heatPriceBtn" type="button" aria-pressed="false">实际价格</button></div><div class="scale"><span>低</span><span class="bar"></span><span>高</span></div></div></div><div id="heatmap"></div></div><div class="card insights"><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px"><h2 style="margin:0;font-size:20px">操作提示</h2><div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap"><div class="segmented" role="group" aria-label="操作提示模式"><button id="notesMode0" class="active" type="button" aria-pressed="true">涨跌动态</button><button id="notesMode1" type="button" aria-pressed="false">基准对比</button><button id="notesMode2" type="button" aria-pressed="false">价格水位</button></div></div></div><div class="notes" id="notes"></div><div class="legend-bottom" id="notesLegend"><span><i class="dot" style="--c:#22c55e"></i> 绿色=偏低</span><span><i class="dot" style="--c:#f59e0b"></i> 黄色=接近基准</span><span><i class="dot" style="--c:#ef4444"></i> 红色=高于基准</span></div></div></section>
 <section class="grid" style="margin-top:16px"><div class="card" style="padding:18px 20px 22px"><h2 style="margin:0 0 14px;font-size:20px;font-weight:900">金价计算器</h2><div class="gcalc-top"><div class="gcalc-group"><div class="gcalc-group-title">金价行情统计</div><div id="gcStats"></div><div id="gcTxnWrap" style="overflow-x:auto;margin-top:8px"></div></div><div class="gcalc-group"><div class="gcalc-group-title">平台费率</div><table class="gcalc-fees-tbl"><tr><td>平台卖金手续费</td><td>3%</td></tr><tr><td>支付宝提现</td><td>0.90%</td></tr><tr class="dim"><td>└ 最低提现费</td><td>1.8 元</td></tr><tr><td>银行卡提现</td><td>0.60%</td></tr><tr class="dim"><td>└ 最低提现金额</td><td>≥ 334 元</td></tr></table><div class="gcalc-withdraw"><label><input type="radio" name="gcWithdraw" value="bank" checked> 银行卡 0.6%</label><label><input type="radio" name="gcWithdraw" value="alipay"> 支付宝 0.9%</label></div></div><div class="gcalc-group gcalc-buygold" id="goldCalc"><div class="gcalc-group-title">宝石总金币计算参考</div><div class="gcalc-inputs-grid"><div class="gcalc-field"><label>宝石等级<select id="gcGemLevel"><option value="5级">5级</option><option value="6级">6级</option><option value="7级">7级</option><option value="8级" selected>8级</option><option value="9级">9级</option><option value="10级">10级</option></select></label></div><div class="gcalc-field"><label>宝石报价日期<select id="gcGemQuoteDate"><option value="latest" selected>最新报价</option><option value="manual">手动输入</option></select></label></div><div class="gcalc-field"><label>购买数量<input id="gcGemQty" type="number" value="22"></label></div><div class="gcalc-field"><label>宝石单价（金）<input id="gcGemPrice" type="number" value="310000"></label></div><div class="gcalc-field"><label>买金标注金币<input id="gcBuyGold" type="number" value="499999"></label></div><div class="gcalc-field"><label>支付金额（RMB）<input id="gcPayRmb" type="number" step="0.01" value="141"></label></div></div><div id="gcBuyResults"></div></div></div><div class="gcalc-sec-hd"><div class="gcalc-sec-label">宝石卖出分析</div></div><div id="gcGemTable" style="overflow-x:auto"></div><div class="gcalc-sec-hd"><div class="gcalc-sec-label">合成成本对比 <span id="gcSynthQuoteDate" style="margin-left:8px;color:#6b7280;font-size:11px;font-weight:500"></span></div></div><div id="gcSynthTable" style="overflow-x:auto"></div></div></section>
 </main>
+<a class="market-terminal-fab" href="./gem-market.html" aria-label="打开新版宝石行情终端">
+  <span class="market-terminal-fab-icon" aria-hidden="true">◆</span>
+  <span class="market-terminal-fab-copy">
+    <strong>宝石行情终端</strong>
+    <small>价格走势 · 异动 · RMB估值</small>
+  </span>
+</a>
 <script>
 const TAB=String.fromCharCode(9);const NL=String.fromCharCode(10);const CR=String.fromCharCode(13);
 const levels=["5级","6级","7级","8级","9级","10级"];

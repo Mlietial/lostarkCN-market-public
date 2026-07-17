@@ -229,7 +229,7 @@
         <header class="terminal-topbar">
           <div class="terminal-brand"><span class="terminal-logo"><span>◆</span></span><div><strong>方舟宝石行情终端</strong><small>Gem Market Terminal</small></div></div>
           <div class="terminal-session"><span class="live-dot"></span><span>公开行情已接入 · 日价格快照</span></div>
-          <div class="terminal-actions"><div class="snapshot"><strong>${html(dashboard.publishedAt || "—")}</strong>数据更新时间</div><a class="back-link" href="./?market=gems">← 返回市场台</a></div>
+          <div class="terminal-actions"><div class="snapshot"><strong>${html(dashboard.publishedAt || "—")}</strong>数据更新时间</div><a class="back-link" href="./gem-dashboard.html">← 返回宝石仪表盘</a></div>
         </header>
         <div class="ticker-window" aria-label="宝石行情滚动栏"><div class="ticker-track">${tickerMarkup()}</div></div>
         <main class="terminal-main" data-terminal-main></main>`;
