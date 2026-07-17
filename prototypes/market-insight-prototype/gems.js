@@ -85,7 +85,7 @@
   const validRange = value => ["7", "30", "all"].includes(value) ? value : "30";
   const requestedGem = params.get("gem");
   const state = {
-    gemId: gems.some(gem => gem.id === requestedGem) ? requestedGem : "8",
+    gemId: gems.some(gem => gem.id === requestedGem) ? requestedGem : "10",
     range: validRange(params.get("range")),
     unit: params.get("unit") === "rmb" ? "rmb" : "gold",
     animationToken: 0
@@ -142,7 +142,7 @@
 
   function updateUrl() {
     const url = new URL(location.href);
-    state.gemId === "8" ? url.searchParams.delete("gem") : url.searchParams.set("gem", state.gemId);
+    state.gemId === "10" ? url.searchParams.delete("gem") : url.searchParams.set("gem", state.gemId);
     state.range === "30" ? url.searchParams.delete("range") : url.searchParams.set("range", state.range);
     state.unit === "gold" ? url.searchParams.delete("unit") : url.searchParams.set("unit", state.unit);
     history.replaceState({}, "", url);
