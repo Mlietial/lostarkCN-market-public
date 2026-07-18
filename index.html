@@ -267,7 +267,7 @@
       </a>
       <a class="card" href="./pages/gold-trend.html">
         <h2>国服金币价格走势</h2>
-        <p>查看邮寄和拍卖交易的每万金币人民币成本走势。</p>
+        <p>查看邮寄和拍卖交易的金币比例走势。</p>
       </a>
       <a class="card" href="./pages/material-trend.html">
         <h2>强化材料价格趋势</h2>
@@ -294,7 +294,7 @@
             </div>
           </div>
           <div class="relation-legend" aria-hidden="true">
-            <span><i class="relation-dot" style="--c:#2563eb"></i>金币</span>
+            <span><i class="relation-dot" style="--c:#2563eb"></i>金币比例</span>
             <span><i class="relation-dot" style="--c:#059669"></i>宝石</span>
             <span><i class="relation-dot" style="--c:#d97706"></i>刻印书</span>
           </div>
@@ -354,7 +354,6 @@
     let relationRows = [];
 
     const relationFmt = (n) => Number.isFinite(n) ? Math.round(n).toLocaleString('zh-CN') : '—';
-    const relationGoldFmt = (n) => Number.isFinite(n) ? Number(n).toFixed(2) : '—';
     const relationPct = (n) => Number.isFinite(n) ? (n >= 0 ? '+' : '') + n.toFixed(1) + '%' : '—';
     const relationDate = (value) => String(value || '').slice(0, 10);
     const relationMean = (values) => {
@@ -370,6 +369,11 @@
     const relationChange = (rows, key) => {
       const values = rows.map(row => row[key]).filter(Number.isFinite);
       if (values.length < 2 || !values[0]) return NaN;
+      if (key === 'gold') {
+        const firstCost = 10000 / values[0];
+        const lastCost = 10000 / values[values.length - 1];
+        return (lastCost - firstCost) / firstCost * 100;
+      }
       return (values[values.length - 1] - values[0]) / values[0] * 100;
     };
     const relationDeltaPairs = (rows, key) => {
@@ -431,7 +435,7 @@
       Object.keys(goldByDate).forEach(date => {
         const row = ensure(date);
         const rate = relationMedian(goldByDate[date]);
-        if (row && Number.isFinite(rate) && rate > 0) row.gold = 10000 / rate;
+        if (row && Number.isFinite(rate) && rate > 0) row.gold = rate;
       });
 
       (Array.isArray(data.gemRows) ? data.gemRows : []).forEach(src => {
@@ -473,7 +477,7 @@
       const completeRows = relationRows.filter(row => Number.isFinite(row.gold) && Number.isFinite(row.gem) && Number.isFinite(row.engraving));
       const rows = relationRange === 'all' ? completeRows : relationRows.slice(-Number(relationRange));
       const keys = [
-        { key: 'gold', label: '金币', color: '#2563eb' },
+        { key: 'gold', label: '金币比例', color: '#2563eb' },
         { key: 'gem', label: '宝石', color: '#059669' },
         { key: 'engraving', label: '刻印书', color: '#d97706' }
       ];
@@ -531,10 +535,10 @@
 
       const start = rows[0]?.date || '—';
       const end = rows[rows.length - 1]?.date || '—';
-      if (relationSubtitle) relationSubtitle.textContent = `${start} - ${end} · 线条起点=100，悬停看原始值`;
+      if (relationSubtitle) relationSubtitle.textContent = `${start} - ${end} · 金币线按金/元比例展示，金币涨跌按实际价格计算`;
       if (relationNote) {
         const changeItems = [
-          { label: '金币', value: relationChange(rows, 'gold') },
+          { label: '金币价格', value: relationChange(rows, 'gold') },
           { label: '宝石', value: relationChange(rows, 'gem') },
           { label: '刻印书', value: relationChange(rows, 'engraving') }
         ];
@@ -556,8 +560,8 @@
         const row = rows[index];
         if (!row) return;
         tooltip.innerHTML = `<time>${row.date}</time>${keys.map(item => {
-          const unit = item.key === 'gold' ? ' 元/万金' : ' 金币';
-          const value = item.key === 'gold' ? relationGoldFmt(row[item.key]) : relationFmt(row[item.key]);
+          const unit = item.key === 'gold' ? ' 金/元' : ' 金币';
+          const value = relationFmt(row[item.key]);
           return `<div class="relation-tooltip-row"><span><i style="--c:${item.color}"></i>${item.label}</span><strong>${value}${Number.isFinite(row[item.key]) ? unit : ''}</strong></div>`;
         }).join('')}`;
         tooltip.classList.add('show');

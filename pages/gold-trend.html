@@ -471,7 +471,7 @@
     <section class="topbar">
       <div class="title">
         <h1>国服金币价格走势</h1>
-        <div class="subtitle" id="subtitle">读取公开金价交易记录，展示每万金币人民币成本走势。</div>
+        <div class="subtitle" id="subtitle">读取公开金价交易记录，优先展示邮寄和拍卖金币比例走势。</div>
       </div>
       <div class="actions">
         <a class="btn secondary" href="../index.html">返回首页</a>
@@ -485,8 +485,8 @@
     <section class="card panel">
       <div class="panel-head">
         <div>
-          <h2>金币价格走势</h2>
-          <div class="legend"><span><i class="dot" style="--c:var(--mail)"></i>邮寄均价</span><span><i class="dot hollow" style="--c:var(--mail-high)"></i>邮寄最低价</span><span><i class="dot" style="--c:var(--auc)"></i>拍卖均价</span><span><i class="dot hollow" style="--c:var(--auc-high)"></i>拍卖最低价</span></div>
+          <h2>金币比例走势</h2>
+          <div class="legend"><span><i class="dot" style="--c:var(--mail)"></i>邮寄中间比例</span><span><i class="dot hollow" style="--c:var(--mail-high)"></i>邮寄最高比例</span><span><i class="dot" style="--c:var(--auc)"></i>拍卖中间比例</span><span><i class="dot hollow" style="--c:var(--auc-high)"></i>拍卖最高比例</span></div>
         </div>
         <div class="chart-controls">
           <button class="btn secondary" id="goldOlderBtn" type="button">前30日</button>
@@ -494,7 +494,7 @@
           <button class="btn secondary" id="goldNewerBtn" type="button">后30日</button>
         </div>
       </div>
-      <div class="price-rule-note"><strong>涨跌口径：</strong><span>按“元/万金”计算，数值变大表示金币变贵、金价上涨；“金/元”只是兑换比例，方向相反。例如 4400 → 4300 金/元，实际金价为上涨。</span></div>
+      <div class="price-rule-note"><strong>显示与涨跌：</strong><span>图表优先显示“金/元”兑换比例；涨跌按“元/万金”成本判断，因此方向相反。例如 4400 → 4300 金/元，实际金价为上涨。</span></div>
       <div class="chart-wrap" id="costChart"></div>
     </section>
 
@@ -711,8 +711,8 @@
       const mailChg = changeFor("mailCost"), aucChg = changeFor("aucCost");
       const dates = state.history.map(row => row.date);
       const cards = [
-        ["邮寄金币价格", `${money(mail?.mailCost)} / 万金`, `${mail?.date || "—"} · 较前次 <b class="${clsPriceChange(mailChg)}">${pct(mailChg)}</b> · 比例 ${fmt(mail?.mailMid)} 金/元`],
-        ["拍卖金币价格", `${money(auc?.aucCost)} / 万金`, `${auc?.date || "—"} · 较前次 <b class="${clsPriceChange(aucChg)}">${pct(aucChg)}</b> · 比例 ${fmt(auc?.aucMid)} 金/元`],
+        ["邮寄金币比例", `${fmt(mail?.mailMid)} 金/元`, `${mail?.date || "—"} · 实际金价 <b class="${clsPriceChange(mailChg)}">${pct(mailChg)}</b> · 每万 ${money(mail?.mailCost)}`],
+        ["拍卖金币比例", `${fmt(auc?.aucMid)} 金/元`, `${auc?.date || "—"} · 实际金价 <b class="${clsPriceChange(aucChg)}">${pct(aucChg)}</b> · 每万 ${money(auc?.aucCost)}`],
         ["交易记录", fmt(state.txns.length) + " 条", `${dates[0] || "—"} 至 ${dates[dates.length - 1] || "—"}`],
         ["采样天数", fmt(state.history.length) + " 日", "按每日中间价聚合，抗极端单"]
       ];
@@ -732,7 +732,7 @@
       }
       const rows = visibleHistory();
       const dates = rows.map(row => row.date);
-      const values = rows.flatMap(row => [row.mailCost, row.aucCost, row.mailMaxCost, row.aucMaxCost]).filter(Number.isFinite);
+      const values = rows.flatMap(row => [row.mailMid, row.aucMid, row.mailMax, row.aucMax]).filter(Number.isFinite);
       const min = Math.min(...values), max = Math.max(...values);
       const pad = Math.max(1, (max - min) * .12);
       const lo = min - pad, hi = max + pad;
@@ -748,7 +748,7 @@
       const grid = Array.from({ length: 5 }, (_, i) => {
         const v = lo + (hi - lo) * i / 4;
         const yy = y(v);
-        return `<line class="gridline" x1="${m.l}" y1="${yy}" x2="${w - m.r}" y2="${yy}"/><text class="tick" x="${m.l - 10}" y="${yy + 4}" text-anchor="end">${money(v)}</text>`;
+        return `<line class="gridline" x1="${m.l}" y1="${yy}" x2="${w - m.r}" y2="${yy}"/><text class="tick" x="${m.l - 10}" y="${yy + 4}" text-anchor="end">${fmt(v)}</text>`;
       }).join("");
       const tickStep = Math.max(1, Math.ceil(rows.length / 8));
       const lastTickIndex = rows.length - 1;
@@ -757,10 +757,10 @@
         ? `<text class="tick" x="${x(row.date)}" y="${h - 18}" text-anchor="middle">${row.date.slice(5)}</text>`
         : "").join("");
       const circles = rows.map((row, index) => [
-        Number.isFinite(row.mailCost) ? `<circle class="marker" data-point-index="${index}" style="--series:var(--mail)" cx="${x(row.date)}" cy="${y(row.mailCost)}" r="4"/>` : "",
-        Number.isFinite(row.mailMaxCost) ? `<circle class="marker max" data-point-index="${index}" style="--series:var(--mail-high)" cx="${x(row.date)}" cy="${y(row.mailMaxCost)}" r="4"/>` : "",
-        Number.isFinite(row.aucCost) ? `<circle class="marker" data-point-index="${index}" style="--series:var(--auc)" cx="${x(row.date)}" cy="${y(row.aucCost)}" r="4"/>` : "",
-        Number.isFinite(row.aucMaxCost) ? `<circle class="marker max" data-point-index="${index}" style="--series:var(--auc-high)" cx="${x(row.date)}" cy="${y(row.aucMaxCost)}" r="4"/>` : ""
+        Number.isFinite(row.mailMid) ? `<circle class="marker" data-point-index="${index}" style="--series:var(--mail)" cx="${x(row.date)}" cy="${y(row.mailMid)}" r="4"/>` : "",
+        Number.isFinite(row.mailMax) ? `<circle class="marker max" data-point-index="${index}" style="--series:var(--mail-high)" cx="${x(row.date)}" cy="${y(row.mailMax)}" r="4"/>` : "",
+        Number.isFinite(row.aucMid) ? `<circle class="marker" data-point-index="${index}" style="--series:var(--auc)" cx="${x(row.date)}" cy="${y(row.aucMid)}" r="4"/>` : "",
+        Number.isFinite(row.aucMax) ? `<circle class="marker max" data-point-index="${index}" style="--series:var(--auc-high)" cx="${x(row.date)}" cy="${y(row.aucMax)}" r="4"/>` : ""
       ].join("")).join("");
       const hitAreas = rows.map((row, index) => {
         const currentX = x(row.date);
@@ -770,14 +770,14 @@
         const right = index === rows.length - 1 ? w - m.r : (currentX + nextX) / 2;
         return `<rect class="chart-hit" data-chart-index="${index}" data-chart-x="${currentX.toFixed(1)}" x="${left.toFixed(1)}" y="${m.t}" width="${Math.max(1, right - left).toFixed(1)}" height="${h - m.t - m.b}" tabindex="0" role="button" aria-label="${row.date} 金价详情"/>`;
       }).join("");
-      wrap.innerHTML = `<div class="tooltip" id="tooltip" role="status" aria-live="polite"></div><svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="邮寄与拍卖每万金币人民币成本走势图"><rect x="0" y="0" width="${w}" height="${h}" fill="transparent"/>${grid}${xTicks}<path class="series" style="--series:var(--mail)" d="${pathFor(rows, "mailCost", x, y)}" stroke="var(--mail)"/><path class="series max" style="--series:var(--mail-high)" d="${pathFor(rows, "mailMaxCost", x, y)}" stroke="var(--mail-high)"/><path class="series" style="--series:var(--auc)" d="${pathFor(rows, "aucCost", x, y)}" stroke="var(--auc)"/><path class="series max" style="--series:var(--auc-high)" d="${pathFor(rows, "aucMaxCost", x, y)}" stroke="var(--auc-high)"/>${circles}<line class="chart-guide" id="chartGuide" x1="0" x2="0" y1="${m.t}" y2="${h - m.b}"/>${hitAreas}<text class="axis-label" x="${m.l}" y="15">每万金币成本（人民币）</text></svg>`;
+      wrap.innerHTML = `<div class="tooltip" id="tooltip" role="status" aria-live="polite"></div><svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="邮寄与拍卖金币比例走势图"><rect x="0" y="0" width="${w}" height="${h}" fill="transparent"/>${grid}${xTicks}<path class="series" style="--series:var(--mail)" d="${pathFor(rows, "mailMid", x, y)}" stroke="var(--mail)"/><path class="series max" style="--series:var(--mail-high)" d="${pathFor(rows, "mailMax", x, y)}" stroke="var(--mail-high)"/><path class="series" style="--series:var(--auc)" d="${pathFor(rows, "aucMid", x, y)}" stroke="var(--auc)"/><path class="series max" style="--series:var(--auc-high)" d="${pathFor(rows, "aucMax", x, y)}" stroke="var(--auc-high)"/>${circles}<line class="chart-guide" id="chartGuide" x1="0" x2="0" y1="${m.t}" y2="${h - m.b}"/>${hitAreas}<text class="axis-label" x="${m.l}" y="15">金币比例（金/元）</text></svg>`;
       document.getElementById("goldRangeLabel").textContent = rows.length ? `${rows[0].date} - ${rows[rows.length - 1].date}` : "—";
       document.getElementById("goldOlderBtn").disabled = chartOffset >= maxChartOffset();
       document.getElementById("goldNewerBtn").disabled = chartOffset <= 0;
       const tip = wrap.querySelector("#tooltip");
       const guide = wrap.querySelector("#chartGuide");
-      const tooltipLine = (label, cost, rate, color) => Number.isFinite(cost)
-        ? `<div class="gold-tooltip-row"><i style="--series:${color}"></i><span>${label}</span><strong>${money(cost)} / 万金</strong><small>兑换比例 ${fmt(rate)} 金/元</small></div>`
+      const tooltipLine = (label, rate, cost, color) => Number.isFinite(rate)
+        ? `<div class="gold-tooltip-row"><i style="--series:${color}"></i><span>${label}</span><strong>${fmt(rate)} 金/元</strong><small>每万金币成本 ${money(cost)}</small></div>`
         : "";
       const hideTooltip = () => {
         tip.classList.remove("show");
@@ -789,10 +789,10 @@
         const row = rows[index];
         if (!row) return;
         tip.innerHTML = `<time>${row.date}</time>${[
-            tooltipLine("邮寄均价", row.mailCost, row.mailMid, "var(--mail)"),
-            tooltipLine("邮寄最低价", row.mailMaxCost, row.mailMax, "var(--mail-high)"),
-            tooltipLine("拍卖均价", row.aucCost, row.aucMid, "var(--auc)"),
-            tooltipLine("拍卖最低价", row.aucMaxCost, row.aucMax, "var(--auc-high)")
+            tooltipLine("邮寄中间比例", row.mailMid, row.mailCost, "var(--mail)"),
+            tooltipLine("邮寄最高比例", row.mailMax, row.mailMaxCost, "var(--mail-high)"),
+            tooltipLine("拍卖中间比例", row.aucMid, row.aucCost, "var(--auc)"),
+            tooltipLine("拍卖最高比例", row.aucMax, row.aucMaxCost, "var(--auc-high)")
         ].join("")}`;
         tip.classList.add("show");
         guide.setAttribute("x1", hit.dataset.chartX);
@@ -849,8 +849,8 @@
         if (dateText === selectedDate) classes.push("selected");
         cells.push(`<button class="${classes.join(" ")}" type="button" data-date="${dateText}" ${row ? "" : "disabled"} aria-label="${dateText}${row ? `，${row.count}条数据` : "，暂无数据"}">
           <div class="gold-day-top"><span class="gold-day-num">${date.getDate()}</span><span class="gold-day-count">${row ? row.count + "条" : ""}</span></div>
-          <div class="gold-day-line"><span>邮</span><strong class="mail">${row ? money(row.mailCost) : "—"}</strong></div>
-          <div class="gold-day-line"><span>拍</span><strong class="auc">${row ? money(row.aucCost) : "—"}</strong></div>
+          <div class="gold-day-line"><span>邮</span><strong class="mail">${row ? fmt(row.mailMid) : "—"}</strong></div>
+          <div class="gold-day-line"><span>拍</span><strong class="auc">${row ? fmt(row.aucMid) : "—"}</strong></div>
         </button>`);
       }
       wrap.innerHTML = cells.join("");
@@ -868,11 +868,11 @@
         document.getElementById("txnTable").innerHTML = '<div class="day-empty">暂无当日交易数据</div>';
         return;
       }
-      document.getElementById("txnTable").innerHTML = `<table class="data-table"><thead><tr><th>类型</th><th>金币</th><th>标价</th><th>金币价格</th></tr></thead><tbody>${txns.map(t => `<tr><td class="${t.type === MAIL ? "mail" : "auc"}">${escapeHtml(t.type || "—")}</td><td>${fmt(t.gold)}</td><td>${money(t.price)}</td><td><strong>${money(costPer10k(rateOf(t)))} / 万金</strong><br><span class="muted">比例 ${fmt(rateOf(t))} 金/元</span></td></tr>`).join("")}</tbody></table>`;
+      document.getElementById("txnTable").innerHTML = `<table class="data-table"><thead><tr><th>类型</th><th>金币</th><th>标价</th><th>金币比例</th></tr></thead><tbody>${txns.map(t => `<tr><td class="${t.type === MAIL ? "mail" : "auc"}">${escapeHtml(t.type || "—")}</td><td>${fmt(t.gold)}</td><td>${money(t.price)}</td><td><strong>${fmt(rateOf(t))} 金/元</strong><br><span class="muted">每万金币成本 ${money(costPer10k(rateOf(t)))}</span></td></tr>`).join("")}</tbody></table>`;
     }
 
     function render() {
-      document.getElementById("subtitle").textContent = `读取 ${state.txns.length} 条公开金价交易记录，展示每万金币人民币成本走势。`;
+      document.getElementById("subtitle").textContent = `读取 ${state.txns.length} 条公开金价交易记录，优先展示邮寄和拍卖金币比例走势。`;
       renderKpis();
       renderChart();
       renderCalendar();
