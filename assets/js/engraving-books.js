@@ -345,6 +345,29 @@
       const secondaryClass = chartSeries === "all" && item.key !== "lowest" ? " is-secondary" : "";
       return `<path class="book-chart-line${secondaryClass}" style="--series:${item.color}" d="${path}"></path>${points.map((point) => `<circle class="book-chart-point${secondaryClass}" data-chart-point-index="${point.index}" style="--series:${item.color}" cx="${point.x}" cy="${point.y}" r="4"><title>${escapeHtml(point.row.date)} · ${escapeHtml(item.label)} ${fmtUnitValue(point.value)}</title></circle>`).join("")}`;
     }).join("");
+    const extremeGuides = series.some((item) => item.key === "lowest") ? (() => {
+      const lowestValues = shown.map((row) => chartValue(row, "lowest")).filter(Number.isFinite);
+      if (!lowestValues.length) return "";
+      const rangeHigh = Math.max(...lowestValues);
+      const rangeLow = Math.min(...lowestValues);
+      const minimumOf = (items) => {
+        const candidates = items.map((row) => chartValue(row, "lowest")).filter(Number.isFinite);
+        return candidates.length ? Math.min(...candidates) : null;
+      };
+      const globalLow = minimumOf(history);
+      const thirtyDayLow = minimumOf(history.slice(-30));
+      const lowColor = rangeLow === globalLow ? "#0ea5e9" : rangeLow === thirtyDayLow ? "#10b981" : "#8b5cf6";
+      const guides = rangeHigh === rangeLow
+        ? [{ label: "区间高低", value: rangeHigh, color: "#64748b" }]
+        : [
+            { label: "区间最高", value: rangeHigh, color: "#f59e0b" },
+            { label: "区间最低", value: rangeLow, color: lowColor }
+          ];
+      return guides.map((guide) => {
+        const yy = y(guide.value);
+        return `<g class="book-chart-extreme-guide" style="--marker:${guide.color}"><line x1="${margin.left}" x2="${width - margin.right}" y1="${yy}" y2="${yy}"></line><text class="book-chart-extreme-guide-label" x="${width - margin.right - 6}" y="${yy - 6}" text-anchor="end">${escapeHtml(guide.label)} ${escapeHtml(fmtUnitValue(guide.value))}</text></g>`;
+      }).join("");
+    })() : "";
     const lowMarkers = series.some((item) => item.key === "lowest") ? (() => {
       const findLows = (count, label, color, priority) => {
         const candidates = history.slice(-count).map((row) => {
@@ -388,7 +411,7 @@
       const right = index === shown.length - 1 ? width - margin.right : (currentX + x(index + 1)) / 2;
       return `<rect class="book-chart-hit" data-chart-index="${index}" data-chart-x="${currentX.toFixed(1)}" x="${left.toFixed(1)}" y="${margin.top}" width="${Math.max(1, right - left).toFixed(1)}" height="${height - margin.top - margin.bottom}" tabindex="0" role="button" aria-label="${escapeHtml(row.date)} 价格详情"></rect>`;
     }).join("");
-    return `<svg class="market-chart" viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" role="img" aria-label="刻印书历史价格走势图">${grids}${ticks}${paths}${lowMarkers}<line class="book-chart-guide" id="chartGuide" x1="0" x2="0" y1="${margin.top}" y2="${height - margin.bottom}"></line>${hitAreas}</svg><div class="chart-tooltip" id="chartTooltip" role="status" aria-live="polite"></div>`;
+    return `<svg class="market-chart" viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" role="img" aria-label="刻印书历史价格走势图">${grids}${ticks}${extremeGuides}${paths}${lowMarkers}<line class="book-chart-guide" id="chartGuide" x1="0" x2="0" y1="${margin.top}" y2="${height - margin.bottom}"></line>${hitAreas}</svg><div class="chart-tooltip" id="chartTooltip" role="status" aria-live="polite"></div>`;
   };
 
   const renderChart = () => {
