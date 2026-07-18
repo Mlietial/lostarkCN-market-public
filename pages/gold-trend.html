@@ -60,6 +60,140 @@
     .chart-wrap {
       height: 430px;
     }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 44px;
+      min-height: 34px;
+      padding: 0 12px;
+      border: 1px solid #1261e8;
+      border-radius: 7px;
+      background: #1261e8;
+      color: #fff;
+      box-shadow: none;
+      font-size: 12px;
+      line-height: 1;
+      transition: transform .18s ease, border-color .18s ease, background-color .18s ease, color .18s ease, box-shadow .18s ease;
+    }
+    .btn.secondary {
+      border-color: #bfd0e2;
+      background: #fff;
+      color: #66758a;
+      box-shadow: none;
+    }
+    .btn:not(:disabled):hover,
+    .btn:not(:disabled):focus-visible {
+      transform: translateY(-1px);
+      border-color: #0d3f9e;
+      background: #0d53c7;
+      color: #fff;
+      box-shadow: 0 8px 18px rgba(18, 97, 232, .16);
+    }
+    .btn.secondary:not(:disabled):hover,
+    .btn.secondary:not(:disabled):focus-visible {
+      border-color: #7aa9f8;
+      background: #f8fbff;
+      color: #1261e8;
+    }
+    .btn:disabled {
+      transform: none;
+      box-shadow: none;
+    }
+    .series {
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      pointer-events: none;
+      transition: opacity .16s ease;
+    }
+    .legend .dot {
+      width: 12px;
+      height: 3px;
+      border: 0;
+      border-radius: 999px;
+      background: var(--c);
+    }
+    .legend .dot.hollow {
+      opacity: .46;
+    }
+    .series.max {
+      stroke-width: 2.5;
+      stroke-dasharray: none;
+      opacity: .42;
+    }
+    .marker {
+      fill: #fff;
+      stroke: var(--series);
+      stroke-width: 2;
+      pointer-events: none;
+      transition: fill .12s ease, stroke-width .12s ease, opacity .16s ease;
+    }
+    .marker.max {
+      stroke-width: 2;
+      opacity: .46;
+    }
+    .marker.is-hovered {
+      fill: var(--series);
+      stroke-width: 3;
+      opacity: 1;
+    }
+    .chart-guide {
+      stroke: #64748b;
+      stroke-width: 1;
+      stroke-dasharray: 4 4;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .chart-guide.visible {
+      opacity: .7;
+    }
+    .chart-hit {
+      fill: transparent;
+      cursor: crosshair;
+    }
+    .chart-hit:focus {
+      outline: none;
+    }
+    .tooltip {
+      min-width: 224px;
+      padding: 10px 12px;
+    }
+    .tooltip time {
+      display: block;
+      margin-bottom: 6px;
+      color: #cbd5e1;
+      font-size: 10px;
+    }
+    .gold-tooltip-row {
+      display: grid;
+      grid-template-columns: 12px minmax(64px, 1fr) auto;
+      align-items: center;
+      gap: 7px;
+      margin-top: 5px;
+    }
+    .gold-tooltip-row i {
+      width: 12px;
+      height: 3px;
+      border-radius: 999px;
+      background: var(--series);
+    }
+    .gold-tooltip-row span {
+      color: #dbe5f1;
+      white-space: nowrap;
+    }
+    .gold-tooltip-row strong {
+      font-size: 12px;
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+      white-space: nowrap;
+    }
+    .gold-tooltip-row small {
+      grid-column: 2 / -1;
+      color: #94a3b8;
+      font-size: 10px;
+      text-align: right;
+    }
     .calendar-head {
       display: flex;
       align-items: center;
@@ -110,6 +244,11 @@
     .gold-day:hover {
       border-color: #bfdbfe;
       background: #f8fbff;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 18px rgba(37, 99, 235, .08);
+    }
+    .gold-day {
+      transition: transform .18s ease, border-color .18s ease, background-color .18s ease, box-shadow .18s ease;
     }
     .gold-day.out-month {
       background: #f9fafb;
@@ -121,7 +260,8 @@
     }
     .gold-day.selected {
       border-color: #2563eb;
-      box-shadow: inset 0 0 0 1px #2563eb, 0 10px 24px rgba(37, 99, 235, .14);
+      background: #f3f7ff;
+      box-shadow: inset 0 0 0 1px #2563eb, 0 8px 20px rgba(37, 99, 235, .12);
     }
     .gold-day-top {
       display: flex;
@@ -229,8 +369,8 @@
       min-width: 0;
       height: 38px;
       padding: 0 12px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
+      border: 1px solid #bfd0e2;
+      border-radius: 7px;
       background: #fff;
       color: #334155;
       font-size: 13px;
@@ -584,48 +724,71 @@
       const xTicks = rows.map((row, i) => (i % tickStep === 0 && lastTickIndex - i >= minGapBeforeLastTick) || i === lastTickIndex
         ? `<text class="tick" x="${x(row.date)}" y="${h - 18}" text-anchor="middle">${row.date.slice(5)}</text>`
         : "").join("");
-      const rowsByDate = new Map(rows.map(row => [row.date, row]));
-      const circles = rows.map(row => [
-        Number.isFinite(row.mailMid) ? `<circle class="marker" data-date="${row.date}" cx="${x(row.date)}" cy="${y(row.mailMid)}" r="4" fill="var(--mail)"/>` : "",
-        Number.isFinite(row.mailMax) ? `<circle class="marker max" data-date="${row.date}" cx="${x(row.date)}" cy="${y(row.mailMax)}" r="4" fill="var(--mail-high)"/>` : "",
-        Number.isFinite(row.aucMid) ? `<circle class="marker" data-date="${row.date}" cx="${x(row.date)}" cy="${y(row.aucMid)}" r="4" fill="var(--auc)"/>` : "",
-        Number.isFinite(row.aucMax) ? `<circle class="marker max" data-date="${row.date}" cx="${x(row.date)}" cy="${y(row.aucMax)}" r="4" fill="var(--auc-high)"/>` : ""
+      const circles = rows.map((row, index) => [
+        Number.isFinite(row.mailMid) ? `<circle class="marker" data-point-index="${index}" style="--series:var(--mail)" cx="${x(row.date)}" cy="${y(row.mailMid)}" r="4"/>` : "",
+        Number.isFinite(row.mailMax) ? `<circle class="marker max" data-point-index="${index}" style="--series:var(--mail-high)" cx="${x(row.date)}" cy="${y(row.mailMax)}" r="4"/>` : "",
+        Number.isFinite(row.aucMid) ? `<circle class="marker" data-point-index="${index}" style="--series:var(--auc)" cx="${x(row.date)}" cy="${y(row.aucMid)}" r="4"/>` : "",
+        Number.isFinite(row.aucMax) ? `<circle class="marker max" data-point-index="${index}" style="--series:var(--auc-high)" cx="${x(row.date)}" cy="${y(row.aucMax)}" r="4"/>` : ""
       ].join("")).join("");
-      wrap.innerHTML = `<div class="tooltip" id="tooltip"></div><svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><rect x="0" y="0" width="${w}" height="${h}" fill="transparent"/>${grid}${xTicks}<path class="series" d="${pathFor(rows, "mailMid", x, y)}" stroke="var(--mail)"/><path class="series max" d="${pathFor(rows, "mailMax", x, y)}" stroke="var(--mail-high)"/><path class="series" d="${pathFor(rows, "aucMid", x, y)}" stroke="var(--auc)"/><path class="series max" d="${pathFor(rows, "aucMax", x, y)}" stroke="var(--auc-high)"/>${circles}<text class="axis-label" x="${m.l}" y="15">金币比例（金/元）</text></svg>`;
+      const hitAreas = rows.map((row, index) => {
+        const currentX = x(row.date);
+        const previousX = index ? x(rows[index - 1].date) : m.l;
+        const nextX = index < rows.length - 1 ? x(rows[index + 1].date) : w - m.r;
+        const left = index === 0 ? m.l : (previousX + currentX) / 2;
+        const right = index === rows.length - 1 ? w - m.r : (currentX + nextX) / 2;
+        return `<rect class="chart-hit" data-chart-index="${index}" data-chart-x="${currentX.toFixed(1)}" x="${left.toFixed(1)}" y="${m.t}" width="${Math.max(1, right - left).toFixed(1)}" height="${h - m.t - m.b}" tabindex="0" role="button" aria-label="${row.date} 金价详情"/>`;
+      }).join("");
+      wrap.innerHTML = `<div class="tooltip" id="tooltip" role="status" aria-live="polite"></div><svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" role="img" aria-label="邮寄与拍卖金币比例走势图"><rect x="0" y="0" width="${w}" height="${h}" fill="transparent"/>${grid}${xTicks}<path class="series" style="--series:var(--mail)" d="${pathFor(rows, "mailMid", x, y)}" stroke="var(--mail)"/><path class="series max" style="--series:var(--mail-high)" d="${pathFor(rows, "mailMax", x, y)}" stroke="var(--mail-high)"/><path class="series" style="--series:var(--auc)" d="${pathFor(rows, "aucMid", x, y)}" stroke="var(--auc)"/><path class="series max" style="--series:var(--auc-high)" d="${pathFor(rows, "aucMax", x, y)}" stroke="var(--auc-high)"/>${circles}<line class="chart-guide" id="chartGuide" x1="0" x2="0" y1="${m.t}" y2="${h - m.b}"/>${hitAreas}<text class="axis-label" x="${m.l}" y="15">金币比例（金/元）</text></svg>`;
       document.getElementById("goldRangeLabel").textContent = rows.length ? `${rows[0].date} - ${rows[rows.length - 1].date}` : "—";
       document.getElementById("goldOlderBtn").disabled = chartOffset >= maxChartOffset();
       document.getElementById("goldNewerBtn").disabled = chartOffset <= 0;
       const tip = wrap.querySelector("#tooltip");
+      const guide = wrap.querySelector("#chartGuide");
       const tooltipLine = (label, value, cost, color) => Number.isFinite(value)
-        ? `<div style="display:grid;grid-template-columns:12px auto auto;gap:6px;align-items:center"><i style="width:8px;height:8px;border-radius:50%;background:${color};display:block"></i><span>${label}</span><strong style="text-align:right">${fmt(value)} 金/元</strong><span></span><span style="color:#cbd5e1">每万金成本</span><strong style="text-align:right">${money(cost)}</strong></div>`
+        ? `<div class="gold-tooltip-row"><i style="--series:${color}"></i><span>${label}</span><strong>${fmt(value)} 金/元</strong><small>每万金成本 ${money(cost)}</small></div>`
         : "";
-      wrap.querySelectorAll(".marker").forEach(node => {
-        node.addEventListener("mouseenter", event => {
-          const row = rowsByDate.get(node.dataset.date);
-          tip.innerHTML = row ? `<div style="font-weight:900;margin-bottom:5px">${row.date}</div><div style="display:grid;gap:3px;min-width:190px">${[
+      const hideTooltip = () => {
+        tip.classList.remove("show");
+        guide.classList.remove("visible");
+        wrap.querySelectorAll(".marker.is-hovered").forEach(point => point.classList.remove("is-hovered"));
+      };
+      const showTooltip = (hit, event) => {
+        const index = Number(hit.dataset.chartIndex);
+        const row = rows[index];
+        if (!row) return;
+        tip.innerHTML = `<time>${row.date}</time>${[
             tooltipLine("邮寄均值", row.mailMid, row.mailCost, "var(--mail)"),
             tooltipLine("邮寄最高", row.mailMax, row.mailMaxCost, "var(--mail-high)"),
             tooltipLine("拍卖均值", row.aucMid, row.aucCost, "var(--auc)"),
             tooltipLine("拍卖最高", row.aucMax, row.aucMaxCost, "var(--auc-high)")
-          ].join("")}</div>` : "";
-          tip.classList.add("show");
-        });
-        node.addEventListener("mousemove", event => {
-          const rect = wrap.getBoundingClientRect();
-          const tipW = tip.offsetWidth || 180;
-          const tipH = tip.offsetHeight || 60;
-          let left = event.clientX - rect.left + 12;
-          if (left + tipW > wrap.clientWidth - 8) left = event.clientX - rect.left - tipW - 12;
-          if (left < 8) left = 8;
-          let top = event.clientY - rect.top - tipH - 10;
-          if (top < 8) top = event.clientY - rect.top + 16;
-          if (top + tipH > wrap.clientHeight - 8) top = Math.max(8, wrap.clientHeight - tipH - 8);
-          tip.style.transform = "none";
-          tip.style.left = left + "px";
-          tip.style.top = top + "px";
-        });
-        node.addEventListener("mouseleave", () => tip.classList.remove("show"));
+        ].join("")}`;
+        tip.classList.add("show");
+        guide.setAttribute("x1", hit.dataset.chartX);
+        guide.setAttribute("x2", hit.dataset.chartX);
+        guide.classList.add("visible");
+        wrap.querySelectorAll(".marker").forEach(point => point.classList.toggle("is-hovered", Number(point.dataset.pointIndex) === index));
+
+        const rect = wrap.getBoundingClientRect();
+        const hitRect = hit.getBoundingClientRect();
+        const pointerX = event && Number.isFinite(event.clientX) ? event.clientX : hitRect.left + hitRect.width / 2;
+        const pointerY = event && Number.isFinite(event.clientY) ? event.clientY : hitRect.top + Math.min(90, hitRect.height / 2);
+        const tipW = tip.offsetWidth || 224;
+        const tipH = tip.offsetHeight || 150;
+        let left = pointerX - rect.left + 14;
+        if (left + tipW > wrap.clientWidth - 8) left = pointerX - rect.left - tipW - 14;
+        let top = pointerY - rect.top - tipH / 2;
+        left = Math.max(8, Math.min(left, wrap.clientWidth - tipW - 8));
+        top = Math.max(8, Math.min(top, wrap.clientHeight - tipH - 8));
+        tip.style.left = left + "px";
+        tip.style.top = top + "px";
+      };
+      wrap.querySelectorAll(".chart-hit").forEach(hit => {
+        hit.addEventListener("pointerenter", event => showTooltip(hit, event));
+        hit.addEventListener("pointermove", event => showTooltip(hit, event));
+        hit.addEventListener("focus", () => showTooltip(hit));
+        hit.addEventListener("blur", hideTooltip);
       });
+      wrap.onpointerleave = hideTooltip;
     }
 
     function renderCalendar() {
