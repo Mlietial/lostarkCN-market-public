@@ -1695,8 +1695,8 @@ function renderRateTimestamp() {
   const element = document.getElementById("rateUpdatedAt");
   if (!element) return;
   element.textContent = state.settingsUpdatedAt
-    ? `金价更新时间：${formatDateTime(state.settingsUpdatedAt)}`
-    : "金价更新时间：未记录";
+    ? `金币比例更新时间：${formatDateTime(state.settingsUpdatedAt)}`
+    : "金币比例更新时间：未记录";
 }
 
 function authorDataStatusText() {
@@ -1704,8 +1704,8 @@ function authorDataStatusText() {
     ? `作者数据更新时间：${formatDateTime(state.publicDataExportedAt)}`
     : "作者数据更新时间：未记录";
   const goldText = state.settingsUpdatedAt
-    ? `金价更新时间：${formatDateTime(state.settingsUpdatedAt)}`
-    : "金价更新时间：未记录";
+    ? `金币比例更新时间：${formatDateTime(state.settingsUpdatedAt)}`
+    : "金币比例更新时间：未记录";
   return `${authorText} ｜ ${goldText}`;
 }
 
@@ -1728,10 +1728,10 @@ async function refreshAuthorGiftPackData() {
     const currentText = state.publicDataExportedAt ? formatDateTime(state.publicDataExportedAt) : "未记录";
     const nextText = backup.exportedAt ? formatDateTime(backup.exportedAt) : "未记录";
     const goldNote = goldSync?.synced
-      ? `\n金价已同步：${fmtGold(goldSync.rate)} 金/元`
+      ? `\n金币比例已同步：${fmtGold(goldSync.rate)} 金/元`
       : goldSync?.skipped === "manual"
-        ? "\n金价保留：使用你手动填写的数值"
-        : "\n金价同步：暂无可用更新";
+        ? "\n金币比例保留：使用你手动填写的数值"
+        : "\n金币比例同步：暂无可用更新";
     const localNote = hasLocalGiftPackEdits() ? "\n\n检测到你当前浏览器里有本地礼包修改；确认后会改用作者数据。" : "";
     const ok = window.confirm(`当前作者数据：${currentText}\n最新作者数据：${nextText}${goldNote}${localNote}\n\n是否使用作者数据？`);
     if (!ok) {
@@ -1924,8 +1924,8 @@ function getManualGold(name) {
 function manualSourceText(entry, name) {
   if (!entry) return "手动估值";
   const valueText = manualEntryText(entry);
-  if (entry.unit === "royal") return `手动估值（${valueText}彩钻，按估值基准金价）`;
-  if (entry.unit === "blue") return `手动估值（${valueText}蓝钻，按估值基准金价）`;
+  if (entry.unit === "royal") return `手动估值（${valueText}彩钻，按估值基准比例）`;
+  if (entry.unit === "blue") return `手动估值（${valueText}蓝钻，按估值基准比例）`;
   return entry.isRange ? `手动估值区间（${valueText}金币）` : "手动估值（金）";
 }
 
@@ -1957,8 +1957,8 @@ function itemUnitGold(content) {
   const def = itemPrices[name];
   if (!def) return { value: null, source: "未计入估值" };
   if (typeof def.gold === "number") return { value: def.gold, source: itemSources[name] || def.note || "金币单价" };
-  if (typeof def.royal === "number") return { value: royalToValuationGold(def.royal), source: `${itemSources[name] || def.note || "彩钻折金币"}（估值基准 ${fmtGold(state.valuationGoldPerRmb)} 金/元）` };
-  if (typeof def.blue === "number") return { value: blueToValuationGold(def.blue), source: `${itemSources[name] || def.note || "蓝钻折金币"}（${blueSourceText()}，估值基准 ${fmtGold(state.valuationGoldPerRmb)} 金/元）` };
+  if (typeof def.royal === "number") return { value: royalToValuationGold(def.royal), source: `${itemSources[name] || def.note || "彩钻折金币"}（估值基准比例 ${fmtGold(state.valuationGoldPerRmb)} 金/元）` };
+  if (typeof def.blue === "number") return { value: blueToValuationGold(def.blue), source: `${itemSources[name] || def.note || "蓝钻折金币"}（${blueSourceText()}，估值基准比例 ${fmtGold(state.valuationGoldPerRmb)} 金/元）` };
   if (Array.isArray(def.components) && def.components.length) {
     let missing = false;
     let minValue = 0;
@@ -2417,12 +2417,12 @@ function manualDetailHtml(name) {
             <input type="text" value="${escapeAttr(meta)}" readonly>
           </label>
           <label>
-            估值基准金价
+            估值基准比例
             <input id="valuationGoldRateInput" type="number" min="0" step="0.01" value="${escapeAttr(state.valuationGoldPerRmb)}">
           </label>
           <label>
             基准操作
-            <button id="syncValuationGoldRateBtn" type="button" class="ghost-btn">同步当前金价</button>
+            <button id="syncValuationGoldRateBtn" type="button" class="ghost-btn">同步当前比例</button>
           </label>
           <input id="manualIconInput" class="hidden-file-input" type="file" accept="image/*" data-manual-icon="${escapeAttr(name)}">
         </div>

@@ -297,7 +297,7 @@
         return ratio > 0 ? `自定义比例 ${fmt(ratio)} 金/元` : "自定义比例：请输入金币/元";
       }
       const ratio = ratioForDate(date);
-      const label = state.priceMode === "mail" ? "邮寄最高" : "拍卖最高";
+      const label = state.priceMode === "mail" ? "邮寄最高比例" : "拍卖最高比例";
       return ratio ? `${date} · ${label} ${fmt(ratio)} 金/元` : `${date} · 无当日${label}比例`;
     }
 

@@ -286,7 +286,7 @@
     const dailyPriceChange = Number.isFinite(currentValue) && Number.isFinite(previousValue) ? currentValue - previousValue : null;
     const rateInfo = rateInfoForDate(row.date);
     const quoteNote = priceUnit === "rmb"
-      ? `拍卖最高 ${fmt(rateInfo?.rate)} 金/元 · 较前日 ${fmtSignedPrice(dailyPriceChange)}`
+      ? `拍卖最高比例 ${fmt(rateInfo?.rate)} 金/元 · 较前日 ${fmtSignedPrice(dailyPriceChange)}`
       : `较前一日 ${fmtSignedPrice(dailyPriceChange)} · 当前价格单位：金币`;
     panel.innerHTML = `<div class="quote-main">
       <div class="quote-identity"><span class="quote-book"><img src="${BOOK_ICON}" alt="刻印书"></span><div class="quote-title"><h1>${escapeHtml(row.name)}</h1><p>${escapeHtml(row.grade)}刻印书 · ${escapeHtml(row.date)}${priceUnit === "rmb" ? " · RMB估值" : ""}</p></div></div>

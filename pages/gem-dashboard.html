@@ -941,10 +941,10 @@ function renderGcStats(){
   h+=`<th class="ca">拍卖${auc?"（"+auc.n+"条）":""}</th>`;
   h+='</tr></thead><tbody>';
   const rows=[
-    ["最低金价",m=>fr(m.min),a=>fr(a.min),""],
-    ["最高金价",m=>fr(m.max),a=>fr(a.max),""],
-    ["中间金价",m=>fr(m.mid),a=>fr(a.mid),"ck"],
-    ["每万金买入",m=>fp(m.per10k),a=>fp(a.per10k),""],
+    ["最低比例",m=>fr(m.min),a=>fr(a.min),""],
+    ["最高比例",m=>fr(m.max),a=>fr(a.max),""],
+    ["中间比例",m=>fr(m.mid),a=>fr(a.mid),"ck"],
+    ["每万金币价格",m=>fp(m.per10k),a=>fp(a.per10k),""],
     ["卖出净收/万金",m=>fp(m.per10kNet),a=>fp(a.per10kNet),"ck"],
   ];
   for(const[label,mFn,aFn,cls] of rows){
@@ -952,7 +952,7 @@ function renderGcStats(){
     h+=`<tr><td>${label}</td><td${c}>${mail?mFn(mail):"—"}</td><td${c}>${auc?aFn(auc):"—"}</td></tr>`;
   }
   h+='</tbody></table>';
-  h+=`<div style="font-size:10px;color:#9ca3af;margin-top:4px">当前折算仅使用 ${quoteDate||"未选择日期"} 报价；趋势按成本计算，金/¥ 上升表示金价下跌。</div>`;
+  h+=`<div style="font-size:10px;color:#9ca3af;margin-top:4px">统一口径：涨跌按元/万金成本计算，数值变大表示金价上涨；金/¥ 仅表示兑换比例。</div>`;
   // 金价趋势迷你图
   if(goldHistory.length>=2){
     h+=renderGoldMiniChart();
@@ -1005,7 +1005,7 @@ function renderGcTxns(){
     return;
   }
   let h='<table class="gcalc-txn-tbl"><thead><tr>'
-    +'<th style="text-align:left">交易方式</th><th>日期</th><th>金币数</th><th>标价（¥）</th><th>金价（金/¥）</th>'
+    +'<th style="text-align:left">交易方式</th><th>日期</th><th>金币数</th><th>标价（¥）</th><th>金币比例（金/¥）</th>'
     +'</tr></thead><tbody>';
   visibleTxns.forEach(({t,i})=>{
     const isM=t.type==="邮寄交易";
@@ -1179,8 +1179,8 @@ function renderGcBuyResults(){
 
   el.innerHTML='<div class="gcalc-buy-kpis">'
     +kpi("宝石总金币",fmt(totalGem),"卖出服务费 "+Math.round(serviceFee).toLocaleString()+" 金 / 到账 "+Math.round(netGemGold).toLocaleString()+" 金")
-    +kpi("买金实际到账",fmt(actualGold),"邮寄手续费 "+Math.round(buyFee).toLocaleString()+" 金 / 表面金价 "+fmtg(surfaceRate))
-    +kpi("每万金买入成本","¥"+actualCost10k.toFixed(2),"实际金价 "+fmtg(actualRate))
+    +kpi("买金实际到账",fmt(actualGold),"邮寄手续费 "+Math.round(buyFee).toLocaleString()+" 金 / 表面比例 "+fmtg(surfaceRate))
+    +kpi("每万金买入成本","¥"+actualCost10k.toFixed(2),"实际比例 "+fmtg(actualRate))
     +kpi("邮寄卖出回收",mailSale?fmtr(mailSale.grossRmb):"—",(quoteDate?"报价日 "+quoteDate+" / ":"")+feeLine(mailSale))
     +kpi("拍卖卖出回收",aucSale?fmtr(aucSale.grossRmb):"—",(quoteDate?"报价日 "+quoteDate+" / ":"")+feeLine(aucSale))
     +(()=>{

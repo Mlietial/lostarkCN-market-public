@@ -221,7 +221,7 @@
     const priceTone = tone(gem.dayChange);
     const latestPoint = gem.points.at(-1);
     const quoteNote = state.unit === "rmb"
-      ? `${shortDate(latestPoint?.date)}拍卖最高 ${fmt(latestPoint?.rate)} 金/元 · 较前一日 ${signedPrice(gem.current - gem.previous)}`
+      ? `${shortDate(latestPoint?.date)}拍卖最高比例 ${fmt(latestPoint?.rate)} 金/元 · 较前一日 ${signedPrice(gem.current - gem.previous)}`
       : `较前一日 ${signedPrice(gem.current - gem.previous)} · 当前价格单位：金币`;
     terminal.className = "terminal-shell";
     if (!terminal.querySelector(".ticker-window")) {
@@ -253,7 +253,7 @@
           </section>
 
           <section class="panel chart-panel">
-            <header class="chart-head"><div><h2>${gem.name}价格走势</h2><p>${state.unit === "rmb" ? "每日按当日拍卖最高金价折算 · " : "价格与日波动合并显示 · "}0% 中线上涨向上、下跌向下</p></div><div class="chart-tools"><div class="unit-switch" role="group" aria-label="价格单位"><button class="unit-button ${state.unit === "gold" ? "active" : ""}" type="button" data-unit="gold">金币</button><button class="unit-button ${state.unit === "rmb" ? "active" : ""}" type="button" data-unit="rmb">¥ RMB</button></div><span class="tool-divider" aria-hidden="true"></span>${[{ id: "7", label: "7日" }, { id: "30", label: "30日" }, { id: "all", label: "全部" }].map(range => `<button class="range-button ${state.range === range.id ? "active" : ""}" type="button" data-range="${range.id}">${range.label}</button>`).join("")}</div></header>
+            <header class="chart-head"><div><h2>${gem.name}价格走势</h2><p>${state.unit === "rmb" ? "每日按当日拍卖最高比例折算 · " : "价格与日波动合并显示 · "}0% 中线上涨向上、下跌向下</p></div><div class="chart-tools"><div class="unit-switch" role="group" aria-label="价格单位"><button class="unit-button ${state.unit === "gold" ? "active" : ""}" type="button" data-unit="gold">金币</button><button class="unit-button ${state.unit === "rmb" ? "active" : ""}" type="button" data-unit="rmb">¥ RMB</button></div><span class="tool-divider" aria-hidden="true"></span>${[{ id: "7", label: "7日" }, { id: "30", label: "30日" }, { id: "all", label: "全部" }].map(range => `<button class="range-button ${state.range === range.id ? "active" : ""}" type="button" data-range="${range.id}">${range.label}</button>`).join("")}</div></header>
             <div class="chart-stage"><canvas class="market-chart" data-gem-chart aria-label="${gem.name}价格走势图"></canvas><div class="chart-tooltip" data-chart-tooltip></div></div>
             <div class="chart-summary"><div class="chart-metric"><span>区间最高</span><strong>${priceFull(rangeHigh)}</strong></div><div class="chart-metric"><span>区间最低</span><strong>${priceFull(rangeLow)}</strong></div><div class="chart-metric"><span>区间均价</span><strong>${priceFull(rangeAverage)}</strong></div><div class="chart-metric"><span>距区间低位</span><strong>${pct((gem.current - rangeLow) / rangeLow)}</strong></div><div class="chart-metric"><span>数据点</span><strong>${rangePoints.length} 日</strong></div></div>
           </section>
@@ -436,7 +436,7 @@
         context.lineWidth = 1.5;
         context.strokeRect(xx - barWidth / 2 - 1, barY - 1, barWidth + 2, barHeight + 2);
       }
-      tooltip.innerHTML = `<span>${html(point.date)}</span><strong>${priceFull(point.value)}${state.unit === "gold" ? " 金" : ""}</strong>${state.unit === "rmb" ? `<span>拍卖最高 ${fmt(point.rate)} 金/元</span>` : ""}<span class="${tone(change)}">较前一点 ${pct(change)}</span>`;
+      tooltip.innerHTML = `<span>${html(point.date)}</span><strong>${priceFull(point.value)}${state.unit === "gold" ? " 金" : ""}</strong>${state.unit === "rmb" ? `<span>拍卖最高比例 ${fmt(point.rate)} 金/元</span>` : ""}<span class="${tone(change)}">较前一点 ${pct(change)}</span>`;
       tooltip.style.display = "block";
       tooltip.style.left = `${Math.max(8, Math.min(width - 154, xx + 11))}px`;
       tooltip.style.top = `${Math.max(8, Math.min(height - 78, yy - 68))}px`;
