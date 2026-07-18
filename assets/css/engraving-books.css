@@ -322,6 +322,12 @@
 .book-chart-grid { stroke: #e7edf5; stroke-width: 1; }
 .book-chart-axis { fill: #8290a4; font-size: 10px; }
 .book-chart-low-marker { pointer-events: none; }
+.book-chart-low-ring {
+  fill: none;
+  stroke: var(--marker);
+  stroke-width: 2;
+  filter: drop-shadow(0 0 3px color-mix(in srgb, var(--marker) 55%, transparent));
+}
 .book-chart-low-pulse {
   fill: var(--marker);
   opacity: .34;
