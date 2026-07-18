@@ -104,6 +104,7 @@
       stroke-width: 2.5;
       stroke-linecap: round;
       stroke-linejoin: round;
+      vector-effect: non-scaling-stroke;
       pointer-events: none;
       transition: opacity .16s ease;
     }
@@ -126,6 +127,7 @@
       fill: #fff;
       stroke: var(--series);
       stroke-width: 2;
+      vector-effect: non-scaling-stroke;
       pointer-events: none;
       transition: fill .12s ease, stroke-width .12s ease, opacity .16s ease;
     }
@@ -142,6 +144,7 @@
       stroke: #64748b;
       stroke-width: 1;
       stroke-dasharray: 4 4;
+      vector-effect: non-scaling-stroke;
       opacity: 0;
       pointer-events: none;
     }
@@ -398,6 +401,9 @@
       body.gold-ready {
         padding-bottom: 270px;
       }
+      .chart-wrap {
+        height: 320px;
+      }
       .calendar-head {
         display: block;
       }
@@ -514,6 +520,7 @@
     const CHART_PAGE = 30;
     let state = { publishedAt: "", txns: [], history: [] };
     let chartOffset = 0;
+    let chartResizeTimer = null;
     let selectedDate = "";
     let calendarMonth = "";
 
@@ -649,8 +656,8 @@
       chartOffset = Math.min(chartOffset, maxChartOffset());
       syncCalendarSelection();
       status.textContent = state.publishedAt ? "数据更新时间 " + state.publishedAt : "";
-      render();
       setGoldPageLoadState("ready");
+      render();
     }
 
     function maxChartOffset() {
@@ -709,8 +716,13 @@
       const min = Math.min(...values), max = Math.max(...values);
       const pad = Math.max(1, (max - min) * .12);
       const lo = min - pad, hi = max + pad;
-      const w = 980, h = 400;
-      const m = { l: 78, r: 98, t: 24, b: 54 };
+      const wrapStyle = getComputedStyle(wrap);
+      const contentWidth = wrap.clientWidth - (parseFloat(wrapStyle.paddingLeft) || 0) - (parseFloat(wrapStyle.paddingRight) || 0);
+      const contentHeight = wrap.clientHeight - (parseFloat(wrapStyle.paddingTop) || 0) - (parseFloat(wrapStyle.paddingBottom) || 0);
+      const h = 400;
+      const measuredAspect = contentWidth > 0 && contentHeight > 0 ? contentWidth / contentHeight : 980 / 400;
+      const w = Math.max(360, Math.round(h * measuredAspect));
+      const m = { l: contentWidth < 600 ? 58 : 78, r: contentWidth < 600 ? 24 : 34, t: 24, b: 54 };
       const x = date => m.l + (dates.indexOf(date) / Math.max(1, dates.length - 1)) * (w - m.l - m.r);
       const y = value => m.t + (hi - value) / Math.max(1, hi - lo) * (h - m.t - m.b);
       const grid = Array.from({ length: 5 }, (_, i) => {
@@ -738,7 +750,7 @@
         const right = index === rows.length - 1 ? w - m.r : (currentX + nextX) / 2;
         return `<rect class="chart-hit" data-chart-index="${index}" data-chart-x="${currentX.toFixed(1)}" x="${left.toFixed(1)}" y="${m.t}" width="${Math.max(1, right - left).toFixed(1)}" height="${h - m.t - m.b}" tabindex="0" role="button" aria-label="${row.date} 金价详情"/>`;
       }).join("");
-      wrap.innerHTML = `<div class="tooltip" id="tooltip" role="status" aria-live="polite"></div><svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" role="img" aria-label="邮寄与拍卖金币比例走势图"><rect x="0" y="0" width="${w}" height="${h}" fill="transparent"/>${grid}${xTicks}<path class="series" style="--series:var(--mail)" d="${pathFor(rows, "mailMid", x, y)}" stroke="var(--mail)"/><path class="series max" style="--series:var(--mail-high)" d="${pathFor(rows, "mailMax", x, y)}" stroke="var(--mail-high)"/><path class="series" style="--series:var(--auc)" d="${pathFor(rows, "aucMid", x, y)}" stroke="var(--auc)"/><path class="series max" style="--series:var(--auc-high)" d="${pathFor(rows, "aucMax", x, y)}" stroke="var(--auc-high)"/>${circles}<line class="chart-guide" id="chartGuide" x1="0" x2="0" y1="${m.t}" y2="${h - m.b}"/>${hitAreas}<text class="axis-label" x="${m.l}" y="15">金币比例（金/元）</text></svg>`;
+      wrap.innerHTML = `<div class="tooltip" id="tooltip" role="status" aria-live="polite"></div><svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="邮寄与拍卖金币比例走势图"><rect x="0" y="0" width="${w}" height="${h}" fill="transparent"/>${grid}${xTicks}<path class="series" style="--series:var(--mail)" d="${pathFor(rows, "mailMid", x, y)}" stroke="var(--mail)"/><path class="series max" style="--series:var(--mail-high)" d="${pathFor(rows, "mailMax", x, y)}" stroke="var(--mail-high)"/><path class="series" style="--series:var(--auc)" d="${pathFor(rows, "aucMid", x, y)}" stroke="var(--auc)"/><path class="series max" style="--series:var(--auc-high)" d="${pathFor(rows, "aucMax", x, y)}" stroke="var(--auc-high)"/>${circles}<line class="chart-guide" id="chartGuide" x1="0" x2="0" y1="${m.t}" y2="${h - m.b}"/>${hitAreas}<text class="axis-label" x="${m.l}" y="15">金币比例（金/元）</text></svg>`;
       document.getElementById("goldRangeLabel").textContent = rows.length ? `${rows[0].date} - ${rows[rows.length - 1].date}` : "—";
       document.getElementById("goldOlderBtn").disabled = chartOffset >= maxChartOffset();
       document.getElementById("goldNewerBtn").disabled = chartOffset <= 0;
@@ -891,6 +903,13 @@
       document.getElementById("status").textContent = "加载失败：" + (error.message || error);
       setGoldPageLoadState("error", "加载失败：" + (error.message || error));
     }));
+
+    window.addEventListener("resize", () => {
+      clearTimeout(chartResizeTimer);
+      chartResizeTimer = setTimeout(() => {
+        if (document.body.classList.contains("gold-ready")) renderChart();
+      }, 120);
+    });
 
     loadData().catch(error => {
       document.getElementById("status").textContent = "加载失败：" + (error.message || error);
