@@ -55,10 +55,12 @@
     }
     .relation-line {
       stroke-width: 2.5;
+      stroke-dasharray: none;
       pointer-events: none;
     }
     .relation-point {
       fill: #fff;
+      stroke: var(--c);
       stroke-width: 2;
       pointer-events: none;
       transition: fill .12s ease, stroke-width .12s ease;
@@ -114,6 +116,55 @@
     .relation-tooltip-row strong {
       font-size: 12px;
       font-variant-numeric: tabular-nums;
+    }
+    .relation-tabs {
+      gap: 5px;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+    }
+    .relation-tab {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 44px;
+      height: 32px;
+      padding: 0 10px;
+      border: 1px solid #bfd0e2;
+      border-radius: 7px;
+      background: #fff;
+      color: #66758a;
+      box-shadow: none;
+      font-size: 11px;
+      font-weight: 750;
+      line-height: 1;
+      transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease, background-color .18s ease, color .18s ease;
+    }
+    .relation-tab:hover {
+      transform: translateY(-1px);
+      border-color: #7aa9f8;
+      color: #1261e8;
+      box-shadow: 0 7px 16px rgba(18, 97, 232, .12);
+    }
+    .relation-tab.active {
+      border-color: #1261e8;
+      background: #1261e8;
+      color: #fff;
+      box-shadow: none;
+    }
+    .relation-toggle,
+    .relation-toggle.active {
+      min-width: 54px;
+      border-color: #bfd0e2;
+      background: #fff;
+      color: #66758a;
+      box-shadow: none;
+    }
+    .relation-toggle:hover,
+    .relation-toggle.active:hover {
+      border-color: #7aa9f8;
+      color: #1261e8;
     }
     .grid > a.card {
       position: relative;
