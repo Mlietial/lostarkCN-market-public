@@ -197,8 +197,9 @@
     .market-links-card {
       position: fixed;
       z-index: 20;
+      top: 50%;
       left: max(18px, calc((100vw - 1280px) / 2 - 272px));
-      bottom: 22px;
+      bottom: auto;
       width: 252px;
       padding: 16px;
       border: 1px solid rgba(229, 231, 235, .96);
@@ -206,6 +207,7 @@
       background: rgba(255, 255, 255, .94);
       box-shadow: 0 14px 34px rgba(15, 23, 42, .1);
       backdrop-filter: blur(14px);
+      transform: translateY(-50%);
     }
     .market-links-card h2 {
       margin: 0 0 12px;
@@ -262,10 +264,12 @@
         display: block;
       }
       .market-links-card {
+        top: auto;
         right: auto;
         bottom: 12px;
         left: 12px;
         width: 220px;
+        transform: none;
       }
       .market-links-card h2 {
         margin-bottom: 7px;
