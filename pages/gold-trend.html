@@ -9,7 +9,9 @@
   </style>
   <style>
     .gold-loading .app,
-    .gold-error .app {
+    .gold-loading .market-links-card,
+    .gold-error .app,
+    .gold-error .market-links-card {
       display: none !important;
     }
     .gold-page-loader {
@@ -192,93 +194,59 @@
       color: var(--muted);
       font-size: 13px;
     }
-    .yxdr-panel {
-      padding: 18px 20px 20px;
-      margin-bottom: 16px;
-      overflow: hidden;
+    .market-links-card {
+      position: fixed;
+      z-index: 20;
+      left: max(18px, calc((100vw - 1280px) / 2 - 238px));
+      bottom: 22px;
+      width: 218px;
+      padding: 12px;
+      border: 1px solid rgba(229, 231, 235, .96);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, .94);
+      box-shadow: 0 14px 34px rgba(15, 23, 42, .1);
+      backdrop-filter: blur(14px);
     }
-    .yxdr-head {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 14px;
-      margin-bottom: 14px;
-    }
-    .yxdr-head h2 {
-      margin: 0 0 7px;
-      font-size: 20px;
+    .market-links-card h2 {
+      margin: 0 0 9px;
+      color: #475569;
+      font-size: 13px;
       line-height: 1.2;
       font-weight: 900;
     }
-    .yxdr-source {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.5;
+    .market-links {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 7px;
     }
-    .yxdr-source a {
-      color: #2563eb;
-      font-weight: 850;
-      text-decoration: none;
-    }
-    .yxdr-actions {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-    }
-    .yxdr-actions .btn.active {
-      background: #111827;
-      color: #fff;
-      border-color: #111827;
-      box-shadow: 0 8px 20px rgba(17, 24, 39, .12);
-    }
-    .yxdr-state {
+    .market-link-button {
       display: inline-flex;
       align-items: center;
-      min-height: 28px;
+      justify-content: center;
+      min-width: 0;
+      height: 30px;
+      padding: 0 8px;
       border: 1px solid var(--line);
-      border-radius: 999px;
-      background: #f9fafb;
-      color: #374151;
-      padding: 5px 10px;
-      font-size: 12px;
-      font-weight: 850;
-      white-space: nowrap;
-    }
-    .yxdr-warning {
-      margin: 0 0 12px;
-      border: 1px solid rgba(217, 119, 6, .26);
-      border-radius: 10px;
-      background: #fff7ed;
-      color: #9a3412;
-      padding: 8px 10px;
-      font-size: 12px;
-      line-height: 1.55;
-      font-weight: 750;
-    }
-    .yxdr-frame-wrap {
-      width: 100%;
-      height: 360px;
-      border: 1px solid #edf1f6;
-      border-radius: 12px;
-      overflow: hidden;
+      border-radius: 8px;
       background: #fff;
+      color: #334155;
+      font-size: 11px;
+      line-height: 1;
+      font-weight: 850;
+      text-decoration: none;
+      transition: transform .18s ease, border-color .18s ease, color .18s ease, box-shadow .18s ease;
     }
-    .yxdr-frame {
-      display: block;
-      width: 100%;
-      height: 980px;
-      border: 0;
-      margin-top: -145px;
-    }
-    .yxdr-frame-note {
-      margin-top: 10px;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.55;
+    .market-link-button:hover,
+    .market-link-button:focus-visible {
+      transform: translateY(-2px);
+      border-color: #93b4ef;
+      color: #1261e8;
+      box-shadow: 0 8px 18px rgba(37, 99, 235, .12);
     }
     @media(max-width:860px) {
+      body.gold-ready {
+        padding-bottom: 82px;
+      }
       .calendar-head {
         display: block;
       }
@@ -293,23 +261,17 @@
       .gold-day-line {
         display: block;
       }
-      .yxdr-head {
-        display: block;
+      .market-links-card {
+        right: 12px;
+        bottom: 12px;
+        left: 12px;
+        width: auto;
       }
-      .yxdr-state {
-        margin-top: 10px;
+      .market-links-card h2 {
+        margin-bottom: 7px;
       }
-      .yxdr-actions {
-        justify-content: flex-start;
-        margin-top: 10px;
-      }
-      .yxdr-frame-wrap {
-        height: 360px;
-      }
-      .yxdr-frame {
-        min-width: 1040px;
-        height: 920px;
-        margin-top: -115px;
+      .market-links {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
       }
     }
   </style>
@@ -344,37 +306,6 @@
     </section>
 
     <section class="grid kpis" id="kpiGrid"></section>
-
-    <section class="card yxdr-panel" aria-labelledby="yxdrTitle">
-      <div class="yxdr-head">
-        <div>
-          <h2 id="yxdrTitle">YXDR 游戏达人比价金价</h2>
-          <div class="yxdr-source">
-            来源：
-            <a id="yxdrSourceLink" href="https://www.yxdr.com/bijiaqi/mingyunfangzhou/youxibi/ninafu" target="_blank" rel="noopener">yxdr.com 妮娜芙游戏币比价器</a>
-          </div>
-        </div>
-        <div class="yxdr-actions">
-          <button class="btn secondary" id="yxdrReloadBtn" type="button">刷新窗口</button>
-          <button class="btn secondary" type="button" data-yxdr-frame="yxdr">YXDR</button>
-          <button class="btn secondary" type="button" data-yxdr-frame="7881">7881</button>
-          <button class="btn secondary" type="button" data-yxdr-frame="dd373">DD373</button>
-          <button class="btn secondary" type="button" data-yxdr-frame="uu898">UU898</button>
-          <span class="yxdr-state" id="yxdrStatus">正在连接原站...</span>
-        </div>
-      </div>
-      <div class="yxdr-warning">不要频繁刷新 YXDR，短时间多次访问可能会被原站临时禁止。若窗口空白或显示受限，请切换到 7881、DD373 或 UU898 备用页面。</div>
-      <div class="yxdr-frame-wrap">
-        <iframe
-          class="yxdr-frame"
-          id="yxdrFrame"
-          title="YXDR 妮娜芙游戏币实时比价"
-          src="https://www.yxdr.com/bijiaqi/mingyunfangzhou/youxibi/ninafu?baidutongji"
-          loading="lazy"
-          referrerpolicy="no-referrer-when-downgrade"></iframe>
-      </div>
-      <div class="yxdr-frame-note">此窗口直接加载所选原站页面，窗口内容保持 100% 原始尺寸并裁切一部分顶部区域；数据刷新和加载限制由对应原站决定。</div>
-    </section>
 
     <section class="card panel">
       <div class="panel-head">
@@ -414,32 +345,20 @@
     </section>
   </main>
 
+  <aside class="market-links-card" aria-labelledby="marketLinksTitle">
+    <h2 id="marketLinksTitle">金价参考网站</h2>
+    <nav class="market-links" aria-label="外部金价参考网站">
+      <a class="market-link-button" href="https://www.yxdr.com/bijiaqi/mingyunfangzhou/youxibi/ninafu?baidutongji" target="_blank" rel="noopener noreferrer">YXDR</a>
+      <a class="market-link-button" href="https://search.7881.com/list.html?gameId=G5709&amp;carrierId=0&amp;gtid=100001&amp;groupId=G5709P002&amp;serverId=G5709P002003&amp;pageNum=0" target="_blank" rel="noopener noreferrer">7881</a>
+      <a class="market-link-button" href="https://www.dd373.com/s-7u2tcu-q6m7m8-ek0n8e-0-0-0-qqnsrh-0-0-0-0-0-0-0-0-0.html" target="_blank" rel="noopener noreferrer">DD373</a>
+      <a class="market-link-button" href="https://www.uu898.com/newTrade.aspx?gm=607&amp;area=4475&amp;srv=54491&amp;c=-3&amp;o=5&amp;sa=0&amp;p=1" target="_blank" rel="noopener noreferrer">UU898</a>
+    </nav>
+  </aside>
+
   <script id="EMBEDDED_GOLD_DATA" type="application/json">{}</script>
   <script src="../data/dashboard-state.js"></script>
   <script>
     const DATA_URL = "../data/dashboard-state.json";
-    const YXDR_FRAME_SOURCES = {
-      yxdr: {
-        label: "YXDR",
-        linkText: "YXDR 原站页面",
-        url: "https://www.yxdr.com/bijiaqi/mingyunfangzhou/youxibi/ninafu?baidutongji"
-      },
-      "7881": {
-        label: "7881",
-        linkText: "7881 备用页面",
-        url: "https://search.7881.com/list.html?gameId=G5709&carrierId=0&gtid=100001&groupId=G5709P002&serverId=G5709P002003&pageNum=0"
-      },
-      dd373: {
-        label: "DD373",
-        linkText: "DD373 备用页面",
-        url: "https://www.dd373.com/s-7u2tcu-q6m7m8-ek0n8e-0-0-0-qqnsrh-0-0-0-0-0-0-0-0-0.html"
-      },
-      uu898: {
-        label: "UU898",
-        linkText: "UU898 备用页面",
-        url: "https://www.uu898.com/newTrade.aspx?gm=607&area=4475&srv=54491&c=-3&o=5&sa=0&p=1"
-      }
-    };
     const MAIL = "邮寄交易";
     const AUC = "拍卖交易";
     const CHART_PAGE = 30;
@@ -551,54 +470,6 @@
       } catch (error) {
         return {};
       }
-    }
-
-    function setupYxdrFrame() {
-      const frame = document.getElementById("yxdrFrame");
-      const status = document.getElementById("yxdrStatus");
-      const reload = document.getElementById("yxdrReloadBtn");
-      const sourceLink = document.getElementById("yxdrSourceLink");
-      const buttons = document.querySelectorAll("[data-yxdr-frame]");
-      if (!frame || !status || !reload) return;
-
-      function sourceFor(key) {
-        return YXDR_FRAME_SOURCES[key] || YXDR_FRAME_SOURCES.yxdr;
-      }
-
-      function setActiveButton(key) {
-        buttons.forEach(button => {
-          const active = button.dataset.yxdrFrame === key;
-          button.classList.toggle("active", active);
-          button.setAttribute("aria-pressed", String(active));
-        });
-      }
-
-      function loadFrame(key, withCacheBust = false) {
-        const source = sourceFor(key);
-        const joiner = source.url.includes("?") ? "&" : "?";
-        frame.dataset.currentSource = key;
-        status.textContent = "正在连接 " + source.label + "...";
-        if (sourceLink) {
-          sourceLink.href = source.url;
-          sourceLink.textContent = source.linkText || source.label;
-        }
-        setActiveButton(key);
-        frame.src = source.url + (withCacheBust ? joiner + "t=" + Date.now() : "");
-      }
-
-      frame.addEventListener("load", () => {
-        const source = sourceFor(frame.dataset.currentSource || "yxdr");
-        status.textContent = "已连接 " + source.label;
-      });
-      buttons.forEach(button => {
-        button.addEventListener("click", () => {
-          loadFrame(button.dataset.yxdrFrame || "yxdr");
-        });
-      });
-      reload.addEventListener("click", () => {
-        loadFrame(frame.dataset.currentSource || "yxdr", true);
-      });
-      loadFrame("yxdr");
     }
 
     async function fetchGoldData() {
@@ -848,7 +719,6 @@
       setGoldPageLoadState("error", "加载失败：" + (error.message || error));
     }));
 
-    setupYxdrFrame();
     loadData().catch(error => {
       document.getElementById("status").textContent = "加载失败：" + (error.message || error);
       setGoldPageLoadState("error", "加载失败：" + (error.message || error));
