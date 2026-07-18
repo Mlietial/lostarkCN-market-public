@@ -5,4 +5,5 @@ Thumbs.db
 .env
 .env.*
 AGENTS.md
+prototypes/
 scripts/build-public-data-js.mjs
