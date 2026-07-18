@@ -546,7 +546,6 @@ body{position:relative;overflow-x:hidden;isolation:isolate}body:before,body:afte
   @media (prefers-reduced-motion: reduce) {
     .market-terminal-fab { animation: none; }
   }
-  .public-readonly .engraving-section { display: none !important; }
 </style>
 <script>
   var _hmt = _hmt || [];
@@ -852,7 +851,7 @@ function renderMeta(){document.getElementById("subtitle").textContent=`基准价
 function renderTitles(){const isPrice=heatMode==="price";document.getElementById("heatTitle").textContent=isPrice?"近7日价格热力":"近7日指数热力";document.getElementById("lowChartTitle").textContent=isPrice?"5–7级价格趋势":"5–7级指数趋势";document.getElementById("highChartTitle").textContent=isPrice?"8–10级价格趋势":"8–10级指数趋势";}
 function bindBaselineControls(){const apply=document.getElementById("applyBaseline"),reset=document.getElementById("resetBaseline");if(apply){apply.addEventListener("click",applyCustomBaselinesFromInputs);}if(reset){reset.addEventListener("click",resetCustomBaselines);}}
 function updateChartDescriptions(){const win=getChartWindow(),label=getChartWindowLabel(win);[["lowChart",groups.low],["highChart",groups.high]].forEach(([id,list])=>{const el=document.getElementById(id);const summary=list.map(level=>{const last=latestValueInRows(win.rows,level);return level+" "+(last?fmt(last.value):"无数据");}).join("，");el.setAttribute("role","img");el.setAttribute("aria-label",(heatMode==="price"?"价格":"指数")+"趋势图："+label+"，"+summary);});}
-function render(){if(!data.length){renderDataPreview();renderEngravingModule();showStatus("暂无数据，请导入数据。");return;}chartBaseWidth={lowChart:0,highChart:0};renderMeta();bindBaselineControls();renderTitles();renderLegend("lowLegend",groups.low);renderLegend("highLegend",groups.high);renderKpis();renderAllCharts();renderHeatmap();renderNotes();renderEngravingModule();syncModeState();showStatus(`已载入 ${data.length} 条日期记录，最新日期：${data[data.length-1].日期}`);}
+function render(){if(!data.length){renderDataPreview();showStatus("暂无数据，请导入数据。");return;}chartBaseWidth={lowChart:0,highChart:0};renderMeta();bindBaselineControls();renderTitles();renderLegend("lowLegend",groups.low);renderLegend("highLegend",groups.high);renderKpis();renderAllCharts();renderHeatmap();renderNotes();syncModeState();showStatus(`已载入 ${data.length} 条日期记录，最新日期：${data[data.length-1].日期}`);}
 function applyCustomBaselinesFromInputs(){const next={};document.querySelectorAll("[data-baseline-level]").forEach(input=>{const level=input.dataset.baselineLevel,n=cleanNum(input.value);if(n!=null&&n>0){next[level]=n;}});customBaselines=next;localStorage.setItem("gemDashboardBaselines",JSON.stringify(customBaselines));data=rowsToData(rawRows);render();showStatus("已应用自定义基准价。",true);}
 function resetCustomBaselines(){customBaselines={};localStorage.removeItem("gemDashboardBaselines");data=rowsToData(rawRows);render();showStatus("已恢复自动基准价。",true);}
 function rememberDialogTrigger(trigger){lastDialogTrigger=trigger||document.activeElement||null;}
@@ -1003,7 +1002,7 @@ function runSelfTests(){const oldCustom=customBaselines;customBaselines={};const
 try{customBaselines=JSON.parse(localStorage.getItem("gemDashboardBaselines")||"{}");}catch(e){customBaselines={};}
 try{notesTplOverride=JSON.parse(localStorage.getItem("gemDashboardNotesTpl")||"{}");}catch(e){notesTplOverride={};}
 importTimestamps=loadImportTimestamps();
-try{runSelfTests();runEngravingSelfTests();}catch(e){console.warn("自检未通过：",e);}
+try{runSelfTests();}catch(e){console.warn("自检未通过：",e);}
 // 公开页只以 data/dashboard-state.json 为数据源；加载失败时保持空数据。
 data=[];
 rawRows=[];
@@ -1970,7 +1969,7 @@ if(embeddedDashboardState&&embeddedDashboardState.settings)applyCalculatorSettin
 else applyCalculatorSettings(loadCalculatorSettings());
 renderGcAll(true);
 
-bindEngravingControls();setupChartTooltip("lowChart");setupChartTooltip("highChart");window.addEventListener("resize",()=>{chartBaseWidth={lowChart:0,highChart:0};render();});window.addEventListener("pageshow",()=>renderGcAll());render();
+setupChartTooltip("lowChart");setupChartTooltip("highChart");window.addEventListener("resize",()=>{chartBaseWidth={lowChart:0,highChart:0};render();});window.addEventListener("pageshow",()=>renderGcAll());render();
 // ── 保存到文件 ───────────────────────────────────────
 function embeddedDataBounds(srcText){
   const startTag='<'+'script id="EMBEDDED_DATA" type="application/json">';
