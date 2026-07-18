@@ -346,7 +346,7 @@
       return `<path class="book-chart-line${secondaryClass}" style="--series:${item.color}" d="${path}"></path>${points.map((point) => `<circle class="book-chart-point${secondaryClass}" data-chart-point-index="${point.index}" style="--series:${item.color}" cx="${point.x}" cy="${point.y}" r="4"><title>${escapeHtml(point.row.date)} · ${escapeHtml(item.label)} ${fmtUnitValue(point.value)}</title></circle>`).join("")}`;
     }).join("");
     const lowMarkers = series.some((item) => item.key === "lowest") ? (() => {
-      const findLows = (count, label, color) => {
+      const findLows = (count, label, color, priority) => {
         const candidates = history.slice(-count).map((row) => {
           const value = priceForUnit(row.lowest, row.date);
           return Number.isFinite(value) ? { row, value } : null;
@@ -355,17 +355,17 @@
         const minimum = Math.min(...candidates.map((item) => item.value));
         return candidates.filter((item) => item.value === minimum).map((item) => {
           const index = shown.findIndex((row) => row.date === item.row.date);
-          return index < 0 ? null : { ...item, index, label, color, x: x(index), y: y(item.value) };
+          return index < 0 ? null : { ...item, index, label, color, priority, x: x(index), y: y(item.value) };
         }).filter(Boolean);
       };
       const markers = [
-        ...findLows(7, "7日史低", "#8b5cf6"),
-        ...findLows(30, "30日史低", "#10b981"),
-        ...findLows(history.length, "全部日期史低", "#0ea5e9")
+        ...findLows(7, "7日史低", "#8b5cf6", 1),
+        ...findLows(30, "30日史低", "#10b981", 2),
+        ...findLows(history.length, "全部日期史低", "#0ea5e9", 3)
       ];
       const rangeHighCandidates = shown.map((row, index) => {
         const value = chartValue(row, "lowest");
-        return Number.isFinite(value) ? { row, value, index, label: "区间最高", color: "#f59e0b", x: x(index), y: y(value) } : null;
+        return Number.isFinite(value) ? { row, value, index, label: "区间最高", color: "#f59e0b", priority: 0, x: x(index), y: y(value) } : null;
       }).filter(Boolean);
       if (rangeHighCandidates.length) {
         const rangeHigh = Math.max(...rangeHighCandidates.map((item) => item.value));
@@ -378,11 +378,8 @@
         grouped.set(marker.row.date, group);
       });
       return Array.from(grouped.values()).map((group) => {
-        const marker = group[0];
-        const outerMarker = group[group.length - 1];
-        const rings = group.map((item, index) => `<circle class="book-chart-extreme-ring" style="--marker:${item.color}" cx="${item.x}" cy="${item.y}" r="${5 + index * 3}"></circle>`).join("");
-        const labels = group.map((item) => item.label).join("、");
-        return `<g class="book-chart-extreme-marker" data-extreme-date="${escapeHtml(marker.row.date)}" data-extreme-labels="${escapeHtml(labels)}"><circle class="book-chart-extreme-pulse" style="--marker:${outerMarker.color}" cx="${marker.x}" cy="${marker.y}" r="${7 + (group.length - 1) * 3}"></circle>${rings}<circle class="book-chart-extreme-dot" style="--marker:${marker.color}" cx="${marker.x}" cy="${marker.y}" r="4"></circle><title>${escapeHtml(marker.row.date)} · ${escapeHtml(labels)}</title></g>`;
+        const marker = group.reduce((highest, item) => !highest || item.priority > highest.priority ? item : highest, null);
+        return `<g class="book-chart-extreme-marker" data-extreme-date="${escapeHtml(marker.row.date)}" data-extreme-labels="${escapeHtml(marker.label)}"><circle class="book-chart-extreme-pulse" style="--marker:${marker.color}" cx="${marker.x}" cy="${marker.y}" r="7"></circle><circle class="book-chart-extreme-ring" style="--marker:${marker.color}" cx="${marker.x}" cy="${marker.y}" r="5"></circle><circle class="book-chart-extreme-dot" style="--marker:${marker.color}" cx="${marker.x}" cy="${marker.y}" r="4"></circle><title>${escapeHtml(marker.row.date)} · ${escapeHtml(marker.label)}</title></g>`;
       }).join("");
     })() : "";
     const hitAreas = shown.map((row, index) => {
