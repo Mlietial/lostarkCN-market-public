@@ -197,10 +197,10 @@
     .market-links-card {
       position: fixed;
       z-index: 20;
-      left: max(18px, calc((100vw - 1280px) / 2 - 238px));
+      left: max(18px, calc((100vw - 1280px) / 2 - 272px));
       bottom: 22px;
-      width: 218px;
-      padding: 12px;
+      width: 252px;
+      padding: 16px;
       border: 1px solid rgba(229, 231, 235, .96);
       border-radius: 14px;
       background: rgba(255, 255, 255, .94);
@@ -208,29 +208,29 @@
       backdrop-filter: blur(14px);
     }
     .market-links-card h2 {
-      margin: 0 0 9px;
+      margin: 0 0 12px;
       color: #475569;
-      font-size: 13px;
+      font-size: 15px;
       line-height: 1.2;
       font-weight: 900;
     }
     .market-links {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 7px;
+      grid-template-columns: 1fr;
+      gap: 9px;
     }
     .market-link-button {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       min-width: 0;
-      height: 30px;
-      padding: 0 8px;
+      height: 38px;
+      padding: 0 12px;
       border: 1px solid var(--line);
       border-radius: 8px;
       background: #fff;
       color: #334155;
-      font-size: 11px;
+      font-size: 13px;
       line-height: 1;
       font-weight: 850;
       text-decoration: none;
@@ -245,7 +245,7 @@
     }
     @media(max-width:860px) {
       body.gold-ready {
-        padding-bottom: 82px;
+        padding-bottom: 270px;
       }
       .calendar-head {
         display: block;
@@ -262,16 +262,13 @@
         display: block;
       }
       .market-links-card {
-        right: 12px;
+        right: auto;
         bottom: 12px;
         left: 12px;
-        width: auto;
+        width: 220px;
       }
       .market-links-card h2 {
         margin-bottom: 7px;
-      }
-      .market-links {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
       }
     }
   </style>
