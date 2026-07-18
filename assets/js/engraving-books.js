@@ -433,7 +433,7 @@
     const index = Number(hitArea.dataset.chartIndex);
     const point = shown[index];
     if (!point) return;
-    const series = visibleChartSeries();
+    const series = [...visibleChartSeries()].sort((a, b) => ["lowest", "recentDeal", "prevAvg"].indexOf(a.key) - ["lowest", "recentDeal", "prevAvg"].indexOf(b.key));
     tooltip.innerHTML = `<time>${escapeHtml(point.date)}</time>${series.map((item) => `<div class="chart-tooltip-row"><span><i style="--series:${item.color}"></i>${escapeHtml(item.label)}</span><strong>${fmtUnitValue(chartValue(point, item.key))}</strong></div>`).join("")}`;
     tooltip.classList.add("visible");
     guide.setAttribute("x1", hitArea.dataset.chartX);
