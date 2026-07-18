@@ -303,12 +303,21 @@
 
   const chartRows = (history) => chartRange === "all" ? history : history.slice(-Number(chartRange));
   const visibleChartSeries = () => chartSeries === "all" ? CHART_SERIES : CHART_SERIES.filter((item) => item.key === chartSeries);
+  const chartValue = (row, key) => {
+    const value = priceForUnit(row[key], row.date);
+    if (!Number.isFinite(value) || value <= 0) return null;
+    if (key === "lowest") return value;
+    const reference = priceForUnit(row.lowest, row.date);
+    if (!Number.isFinite(reference) || reference <= 0) return value;
+    const scale = value / reference;
+    return scale >= .1 && scale <= 10 ? value : null;
+  };
 
   const buildChart = (history) => {
     const shown = chartRows(history);
     if (!shown.length) return `<div class="book-chart-empty">暂无历史价格数据</div>`;
     const series = visibleChartSeries();
-    const values = shown.flatMap((row) => series.map((item) => priceForUnit(row[item.key], row.date))).filter(Number.isFinite);
+    const values = shown.flatMap((row) => series.map((item) => chartValue(row, item.key))).filter(Number.isFinite);
     if (!values.length) return `<div class="book-chart-empty">暂无可绘制价格</div>`;
     const width = 1040;
     const height = 500;
@@ -329,7 +338,7 @@
     const ticks = shown.map((row, index) => index % tickStep === 0 || index === shown.length - 1 ? `<text class="book-chart-axis" x="${x(index)}" y="${height - 15}" text-anchor="middle">${escapeHtml(row.date.slice(5))}</text>` : "").join("");
     const paths = series.map((item) => {
       const points = shown.map((row, index) => {
-        const value = priceForUnit(row[item.key], row.date);
+        const value = chartValue(row, item.key);
         return Number.isFinite(value) ? { row, value, index, x: x(index), y: y(value) } : null;
       }).filter(Boolean);
       const path = points.map((point, index) => `${index ? "L" : "M"}${point.x.toFixed(1)},${point.y.toFixed(1)}`).join(" ");
@@ -354,6 +363,14 @@
         ...findLows(30, "30日史低", "#10b981"),
         ...findLows(history.length, "全部日期史低", "#0ea5e9")
       ];
+      const rangeHighCandidates = shown.map((row, index) => {
+        const value = chartValue(row, "lowest");
+        return Number.isFinite(value) ? { row, value, index, label: "区间最高", color: "#f59e0b", x: x(index), y: y(value) } : null;
+      }).filter(Boolean);
+      if (rangeHighCandidates.length) {
+        const rangeHigh = Math.max(...rangeHighCandidates.map((item) => item.value));
+        markers.push(...rangeHighCandidates.filter((item) => item.value === rangeHigh));
+      }
       const grouped = new Map();
       markers.forEach((marker) => {
         const group = grouped.get(marker.row.date) || [];
@@ -363,9 +380,9 @@
       return Array.from(grouped.values()).map((group) => {
         const marker = group[0];
         const outerMarker = group[group.length - 1];
-        const rings = group.map((item, index) => `<circle class="book-chart-low-ring" style="--marker:${item.color}" cx="${item.x}" cy="${item.y}" r="${5 + index * 3}"></circle>`).join("");
+        const rings = group.map((item, index) => `<circle class="book-chart-extreme-ring" style="--marker:${item.color}" cx="${item.x}" cy="${item.y}" r="${5 + index * 3}"></circle>`).join("");
         const labels = group.map((item) => item.label).join("、");
-        return `<g class="book-chart-low-marker" data-low-date="${escapeHtml(marker.row.date)}" data-low-labels="${escapeHtml(labels)}"><circle class="book-chart-low-pulse" style="--marker:${outerMarker.color}" cx="${marker.x}" cy="${marker.y}" r="${7 + (group.length - 1) * 3}"></circle>${rings}<circle class="book-chart-low-dot" style="--marker:${marker.color}" cx="${marker.x}" cy="${marker.y}" r="4"></circle><title>${escapeHtml(marker.row.date)} · ${escapeHtml(labels)}</title></g>`;
+        return `<g class="book-chart-extreme-marker" data-extreme-date="${escapeHtml(marker.row.date)}" data-extreme-labels="${escapeHtml(labels)}"><circle class="book-chart-extreme-pulse" style="--marker:${outerMarker.color}" cx="${marker.x}" cy="${marker.y}" r="${7 + (group.length - 1) * 3}"></circle>${rings}<circle class="book-chart-extreme-dot" style="--marker:${marker.color}" cx="${marker.x}" cy="${marker.y}" r="4"></circle><title>${escapeHtml(marker.row.date)} · ${escapeHtml(labels)}</title></g>`;
       }).join("");
     })() : "";
     const hitAreas = shown.map((row, index) => {
@@ -420,7 +437,7 @@
     const point = shown[index];
     if (!point) return;
     const series = visibleChartSeries();
-    tooltip.innerHTML = `<time>${escapeHtml(point.date)}</time>${series.map((item) => `<div class="chart-tooltip-row"><span><i style="--series:${item.color}"></i>${escapeHtml(item.label)}</span><strong>${fmtPrice(point[item.key], point.date)}</strong></div>`).join("")}`;
+    tooltip.innerHTML = `<time>${escapeHtml(point.date)}</time>${series.map((item) => `<div class="chart-tooltip-row"><span><i style="--series:${item.color}"></i>${escapeHtml(item.label)}</span><strong>${fmtUnitValue(chartValue(point, item.key))}</strong></div>`).join("")}`;
     tooltip.classList.add("visible");
     guide.setAttribute("x1", hitArea.dataset.chartX);
     guide.setAttribute("x2", hitArea.dataset.chartX);
