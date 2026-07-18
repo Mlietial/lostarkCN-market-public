@@ -225,6 +225,7 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      gap: 9px;
       min-width: 0;
       height: 38px;
       padding: 0 12px;
@@ -237,6 +238,14 @@
       font-weight: 850;
       text-decoration: none;
       transition: transform .18s ease, border-color .18s ease, color .18s ease, box-shadow .18s ease;
+    }
+    .market-link-button img {
+      display: block;
+      flex: 0 0 auto;
+      width: 20px;
+      height: 20px;
+      border-radius: 5px;
+      object-fit: contain;
     }
     .market-link-button:hover,
     .market-link-button:focus-visible {
@@ -349,10 +358,10 @@
   <aside class="market-links-card" aria-labelledby="marketLinksTitle">
     <h2 id="marketLinksTitle">金价参考网站</h2>
     <nav class="market-links" aria-label="外部金价参考网站">
-      <a class="market-link-button" href="https://www.yxdr.com/bijiaqi/mingyunfangzhou/youxibi/ninafu?baidutongji" target="_blank" rel="noopener noreferrer">YXDR</a>
-      <a class="market-link-button" href="https://search.7881.com/list.html?gameId=G5709&amp;carrierId=0&amp;gtid=100001&amp;groupId=G5709P002&amp;serverId=G5709P002003&amp;pageNum=0" target="_blank" rel="noopener noreferrer">7881</a>
-      <a class="market-link-button" href="https://www.dd373.com/s-7u2tcu-q6m7m8-ek0n8e-0-0-0-qqnsrh-0-0-0-0-0-0-0-0-0.html" target="_blank" rel="noopener noreferrer">DD373</a>
-      <a class="market-link-button" href="https://www.uu898.com/newTrade.aspx?gm=607&amp;area=4475&amp;srv=54491&amp;c=-3&amp;o=5&amp;sa=0&amp;p=1" target="_blank" rel="noopener noreferrer">UU898</a>
+      <a class="market-link-button" href="https://www.yxdr.com/bijiaqi/mingyunfangzhou/youxibi/ninafu?baidutongji" target="_blank" rel="noopener noreferrer"><img src="https://www.yxdr.com/favicon.ico" alt="" aria-hidden="true">YXDR</a>
+      <a class="market-link-button" href="https://search.7881.com/list.html?gameId=G5709&amp;carrierId=0&amp;gtid=100001&amp;groupId=G5709P002&amp;serverId=G5709P002003&amp;pageNum=0" target="_blank" rel="noopener noreferrer"><img src="https://www.7881.com/favicon.ico" alt="" aria-hidden="true">7881</a>
+      <a class="market-link-button" href="https://www.dd373.com/s-7u2tcu-q6m7m8-ek0n8e-0-0-0-qqnsrh-0-0-0-0-0-0-0-0-0.html" target="_blank" rel="noopener noreferrer"><img src="https://www.dd373.com/favicon.ico" alt="" aria-hidden="true">DD373</a>
+      <a class="market-link-button" href="https://www.uu898.com/newTrade.aspx?gm=607&amp;area=4475&amp;srv=54491&amp;c=-3&amp;o=5&amp;sa=0&amp;p=1" target="_blank" rel="noopener noreferrer"><img src="https://www.uu898.com/favicon.ico" alt="" aria-hidden="true">UU898</a>
     </nav>
   </aside>
 
