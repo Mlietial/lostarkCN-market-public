@@ -158,7 +158,7 @@
       <header class="terminal-topbar">
         <div class="terminal-brand">
           <span class="terminal-logo book-logo"><span><img src="${BOOK_ICON}" alt=""></span></span>
-          <div><strong>方舟刻印书行情终端</strong><small>Engraving Book Terminal</small></div>
+          <div><strong>遗物刻印市场行情</strong><small>Engraving Book Terminal</small></div>
         </div>
         <div class="terminal-session"><span class="live-dot"></span><span>公开行情已接入 · 日价格快照</span></div>
         <div class="terminal-actions">
