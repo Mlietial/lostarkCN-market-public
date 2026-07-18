@@ -53,6 +53,68 @@
     .creator-rail .support-qr {
       width: 100%;
     }
+    .relation-line {
+      stroke-width: 2.5;
+      pointer-events: none;
+    }
+    .relation-point {
+      fill: #fff;
+      stroke-width: 2;
+      pointer-events: none;
+      transition: fill .12s ease, stroke-width .12s ease;
+    }
+    .relation-point.is-hovered {
+      fill: var(--c);
+      stroke-width: 3;
+    }
+    .relation-guide {
+      stroke: #64748b;
+      stroke-width: 1;
+      stroke-dasharray: 4 4;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .relation-guide.visible {
+      opacity: .72;
+    }
+    .relation-hit {
+      fill: transparent;
+      cursor: crosshair;
+    }
+    .relation-tooltip {
+      min-width: 178px;
+      padding: 10px 12px;
+      line-height: 1.35;
+    }
+    .relation-tooltip time {
+      display: block;
+      margin-bottom: 7px;
+      color: #cbd5e1;
+      font-size: 11px;
+    }
+    .relation-tooltip-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-top: 5px;
+    }
+    .relation-tooltip-row span {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: #e2e8f0;
+    }
+    .relation-tooltip-row i {
+      width: 12px;
+      height: 3px;
+      border-radius: 999px;
+      background: var(--c);
+    }
+    .relation-tooltip-row strong {
+      font-size: 12px;
+      font-variant-numeric: tabular-nums;
+    }
     .grid > a.card {
       position: relative;
       overflow: visible;
@@ -172,10 +234,10 @@
             </div>
             <div class="relation-actions">
               <div class="relation-tabs" aria-label="选择走势范围">
-                <button class="relation-tab" type="button" data-relation-range="3">3天</button>
-                <button class="relation-tab active" type="button" data-relation-range="7">7天</button>
-                <button class="relation-tab" type="button" data-relation-range="30">1个月</button>
-                <button class="relation-tab" type="button" data-relation-range="all">全局</button>
+                <button class="relation-tab" type="button" data-relation-range="3">3日</button>
+                <button class="relation-tab active" type="button" data-relation-range="7">7日</button>
+                <button class="relation-tab" type="button" data-relation-range="30">30日</button>
+                <button class="relation-tab" type="button" data-relation-range="all">全部日期</button>
               </div>
               <button class="relation-tab relation-toggle" id="relationToggle" type="button" aria-expanded="false">展开</button>
             </div>
@@ -403,10 +465,16 @@
         : '').join('');
       const lines = keys.map(item => `<path class="relation-line" style="--c:${item.color}" d="${path(item)}"></path>`).join('');
       const points = indexed.map((row, index) => keys.map(item => Number.isFinite(row[item.key])
-        ? `<circle class="relation-point" style="--c:${item.color}" cx="${x(index)}" cy="${y(row[item.key])}" r="5" data-date="${row.date}" data-key="${item.key}"></circle>`
+        ? `<circle class="relation-point" style="--c:${item.color}" cx="${x(index)}" cy="${y(row[item.key])}" r="4" data-relation-point-index="${index}"></circle>`
         : '').join('')).join('');
+      const hitAreas = indexed.map((row, index) => {
+        const currentX = x(index);
+        const left = index === 0 ? m.l : (x(index - 1) + currentX) / 2;
+        const right = index === indexed.length - 1 ? w - m.r : (currentX + x(index + 1)) / 2;
+        return `<rect class="relation-hit" data-relation-index="${index}" data-relation-x="${currentX.toFixed(1)}" x="${left.toFixed(1)}" y="${m.t}" width="${Math.max(1, right - left).toFixed(1)}" height="${h - m.t - m.b}" tabindex="0" role="button" aria-label="${row.date} 走势详情"></rect>`;
+      }).join('');
 
-      relationChart.innerHTML = `<div class="relation-tooltip" id="relationTooltip"></div><svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">${grid}<line class="relation-grid" x1="${m.l}" x2="${w - m.r}" y1="${y(100)}" y2="${y(100)}"></line>${ticks}${lines}${points}<text class="relation-tick" x="${m.l}" y="18">指数</text></svg>`;
+      relationChart.innerHTML = `<div class="relation-tooltip" id="relationTooltip" role="status" aria-live="polite"></div><svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">${grid}<line class="relation-grid" x1="${m.l}" x2="${w - m.r}" y1="${y(100)}" y2="${y(100)}"></line>${ticks}${lines}${points}<line class="relation-guide" id="relationGuide" x1="0" x2="0" y1="${m.t}" y2="${h - m.b}"></line>${hitAreas}<text class="relation-tick" x="${m.l}" y="18">指数</text></svg>`;
 
       const start = rows[0]?.date || '—';
       const end = rows[rows.length - 1]?.date || '—';
@@ -424,23 +492,46 @@
       }
 
       const tooltip = relationChart.querySelector('#relationTooltip');
-      relationChart.querySelectorAll('.relation-point').forEach(point => {
-        point.addEventListener('mouseenter', () => {
-          const row = rows.find(item => item.date === point.dataset.date);
-          if (!row) return;
-          tooltip.innerHTML = `<strong>${row.date}</strong><br>金币中位 ${relationFmt(row.gold)} 金/元<br>宝石均价 ${relationFmt(row.gem)} 金<br>刻印书中位 ${relationFmt(row.engraving)} 金`;
-          tooltip.classList.add('show');
-        });
-        point.addEventListener('mousemove', event => {
-          const rect = relationChart.getBoundingClientRect();
-          const tipW = tooltip.offsetWidth || 150;
-          let left = event.clientX - rect.left + 12;
-          if (left + tipW > relationChart.clientWidth - 8) left = event.clientX - rect.left - tipW - 12;
-          tooltip.style.left = Math.max(8, left) + 'px';
-          tooltip.style.top = Math.max(8, event.clientY - rect.top - 52) + 'px';
-        });
-        point.addEventListener('mouseleave', () => tooltip.classList.remove('show'));
+      const guide = relationChart.querySelector('#relationGuide');
+      const hideRelationTooltip = () => {
+        tooltip.classList.remove('show');
+        guide.classList.remove('visible');
+        relationChart.querySelectorAll('.relation-point').forEach(point => point.classList.remove('is-hovered'));
+      };
+      const showRelationTooltip = (hit, event) => {
+        const index = Number(hit.dataset.relationIndex);
+        const row = rows[index];
+        if (!row) return;
+        tooltip.innerHTML = `<time>${row.date}</time>${keys.map(item => {
+          const unit = item.key === 'gold' ? ' 金/元' : ' 金币';
+          return `<div class="relation-tooltip-row"><span><i style="--c:${item.color}"></i>${item.label}</span><strong>${relationFmt(row[item.key])}${Number.isFinite(row[item.key]) ? unit : ''}</strong></div>`;
+        }).join('')}`;
+        tooltip.classList.add('show');
+        guide.setAttribute('x1', hit.dataset.relationX);
+        guide.setAttribute('x2', hit.dataset.relationX);
+        guide.classList.add('visible');
+        relationChart.querySelectorAll('.relation-point').forEach(point => point.classList.toggle('is-hovered', Number(point.dataset.relationPointIndex) === index));
+
+        const chartRect = relationChart.getBoundingClientRect();
+        const anchorRect = event && Number.isFinite(event.clientX) ? null : hit.getBoundingClientRect();
+        const pointerX = anchorRect ? anchorRect.left + anchorRect.width / 2 : event.clientX;
+        const pointerY = anchorRect ? anchorRect.top + 24 : event.clientY;
+        const tipW = tooltip.offsetWidth || 178;
+        const tipH = tooltip.offsetHeight || 100;
+        let left = pointerX - chartRect.left + 14;
+        if (left + tipW > relationChart.clientWidth - 8) left = pointerX - chartRect.left - tipW - 14;
+        let top = pointerY - chartRect.top - tipH - 12;
+        if (top < 8) top = pointerY - chartRect.top + 16;
+        tooltip.style.left = Math.max(8, left) + 'px';
+        tooltip.style.top = Math.max(8, top) + 'px';
+      };
+      relationChart.querySelectorAll('.relation-hit').forEach(hit => {
+        hit.addEventListener('pointerenter', event => showRelationTooltip(hit, event));
+        hit.addEventListener('pointermove', event => showRelationTooltip(hit, event));
+        hit.addEventListener('focus', () => showRelationTooltip(hit));
+        hit.addEventListener('blur', hideRelationTooltip);
       });
+      relationChart.onpointerleave = hideRelationTooltip;
     }
 
     document.querySelectorAll('[data-relation-range]').forEach(button => {
