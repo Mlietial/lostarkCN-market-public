@@ -199,6 +199,23 @@
     }
     .price-up { color: var(--bad); }
     .price-down { color: var(--good); }
+    .price-rule-note {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      margin: 2px 0 10px;
+      padding: 8px 10px;
+      border: 1px solid #cfe0f7;
+      border-radius: 8px;
+      background: #f5f9ff;
+      color: #52657d;
+      font-size: 11px;
+      line-height: 1.55;
+    }
+    .price-rule-note strong {
+      flex: 0 0 auto;
+      color: #1d4ed8;
+    }
     .calendar-head {
       display: flex;
       align-items: center;
@@ -477,6 +494,7 @@
           <button class="btn secondary" id="goldNewerBtn" type="button">后30日</button>
         </div>
       </div>
+      <div class="price-rule-note"><strong>涨跌口径：</strong><span>按“元/万金”计算，数值变大表示金币变贵、金价上涨；“金/元”只是兑换比例，方向相反。例如 4400 → 4300 金/元，实际金价为上涨。</span></div>
       <div class="chart-wrap" id="costChart"></div>
     </section>
 
