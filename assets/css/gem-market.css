@@ -98,12 +98,12 @@ button { cursor: pointer; }
 .quote-identity { display: flex; align-items: center; gap: 15px; min-width: 0; }
 .quote-gem { display: block; flex: 0 0 auto; width: 64px; height: 64px; border: 1px solid #c9a968; border-radius: 9px; box-shadow: 0 9px 20px rgba(93, 55, 11, .18); object-fit: cover; }
 .quote-title h1 { margin: 0; font-size: 24px; letter-spacing: -.035em; }
-.quote-title p { margin: 6px 0 0; color: var(--muted); font-size: 11px; }
+.quote-title p { margin: 6px 0 0; color: var(--muted); font-size: 11px; white-space: nowrap; }
 .quote-price { min-width: 0; text-align: right; }
 .quote-price-line { display: flex; align-items: baseline; justify-content: flex-end; gap: 9px; }
 .quote-price strong { font-size: clamp(28px, 3vw, 42px); line-height: 1; letter-spacing: -.045em; font-variant-numeric: tabular-nums; }
 .quote-price em { font-size: 13px; font-style: normal; font-weight: 800; }
-.quote-price p { margin: 8px 0 0; color: var(--muted); font-size: 11px; }
+.quote-price p { margin: 8px 0 0; overflow: hidden; color: var(--muted); font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
 .quote-price.flash-up strong { animation: flash-up .45s ease; }
 .quote-price.flash-down strong { animation: flash-down .45s ease; }
 .quote-stats { display: grid; grid-template-columns: repeat(4, minmax(86px, 1fr)); overflow: hidden; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-soft); }

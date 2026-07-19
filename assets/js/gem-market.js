@@ -244,7 +244,7 @@
     const priceTone = tone(gem.dayChange);
     const latestPoint = gem.points.at(-1);
     const quoteNote = state.side === "sell"
-      ? `${shortDate(latestPoint?.date)}挂售价 ${goldAmountForUnit(latestPoint?.marketValue, latestPoint?.rate)} · 上架手续费 ${goldAmountForUnit(latestPoint?.fee, latestPoint?.rate)} · 当前显示卖出实收`
+      ? `挂价 ${goldAmountForUnit(latestPoint?.marketValue, latestPoint?.rate)} · 手续费 ${goldAmountForUnit(latestPoint?.fee, latestPoint?.rate)}`
       : state.unit === "rmb"
       ? `${shortDate(latestPoint?.date)}拍卖最高比例 ${fmt(latestPoint?.rate)} 金/元 · 较前一日 ${signedPrice(gem.current - gem.previous)}`
       : `较前一日 ${signedPrice(gem.current - gem.previous)} · 当前价格单位：金币`;
@@ -271,7 +271,7 @@
         <section class="center-column">
           <section class="panel quote-panel" aria-live="polite">
             <div class="quote-main">
-              <div class="quote-identity"><img class="quote-gem" src="${gemIconSrc(gem.id)}" alt=""><div class="quote-title"><h1>${gem.name}</h1><p>${gem.symbol} · ${state.side === "sell" ? "SELL 卖出实收 · 已扣上架手续费" : state.unit === "rmb" ? "BUY 人民币估值 · 拍卖金价折算" : "BUY 游戏内金币市场 · 公开快照"}</p></div></div>
+              <div class="quote-identity"><img class="quote-gem" src="${gemIconSrc(gem.id)}" alt=""><div class="quote-title"><h1>${gem.name}</h1><p>${gem.symbol} · ${state.side === "sell" ? "SELL · 扣费实收" : state.unit === "rmb" ? "BUY · RMB 估值" : "BUY · 金币报价"}</p></div></div>
               <div class="quote-stats"><div class="quote-stat"><span>前一日</span><strong>${priceFull(gem.previous)}</strong></div><div class="quote-stat"><span>近 7 日</span><strong class="${tone(gem.weekChange)}">${pct(gem.weekChange)}</strong></div><div class="quote-stat"><span>30 日最高</span><strong>${priceFull(gem.high30)}</strong></div><div class="quote-stat"><span>30 日最低</span><strong>${priceFull(gem.low30)}</strong></div></div>
               <div class="quote-price ${priceTone === "up" ? "flash-up" : priceTone === "down" ? "flash-down" : ""}"><div class="quote-price-line"><strong>${priceFull(gem.current)}</strong><em class="${priceTone}">${gem.dayChange >= 0 ? "↑" : "↓"} ${pct(gem.dayChange)}</em></div><p>${quoteNote}</p></div>
             </div>
