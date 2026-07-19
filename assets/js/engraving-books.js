@@ -12,12 +12,22 @@
   let chartRange = "30";
   let chartSeries = "all";
   let priceUnit = new URLSearchParams(location.search).get("unit") === "rmb" ? "rmb" : "gold";
+  let tradeSide = new URLSearchParams(location.search).get("side") === "sell" ? "sell" : "buy";
   let auctionRates = [];
 
   const CHART_SERIES = [
     { key: "prevAvg", color: "#94a3b8", label: "昨日均价", shortLabel: "昨均" },
     { key: "recentDeal", color: "#f59e0b", label: "最近成交", shortLabel: "成交" },
     { key: "lowest", color: "#2563eb", label: "当前最低", shortLabel: "最低" }
+  ];
+  const LISTING_FEES = [
+    [1, 0], [2, 1], [20, 2], [40, 3], [60, 4], [80, 5],
+    [100, 8], [200, 13], [300, 18], [400, 23], [500, 28], [600, 33], [700, 38], [800, 43], [900, 48],
+    [1000, 75], [2000, 125], [3000, 175], [4000, 225], [5000, 275], [6000, 325], [7000, 375], [8000, 425], [9000, 475],
+    [10000, 750], [20000, 1250], [30000, 1750], [40000, 2250], [50000, 2750], [60000, 3250], [70000, 3750], [80000, 4250], [90000, 4750],
+    [100000, 7500], [200000, 12500], [300000, 17500], [400000, 22500], [500000, 27500], [600000, 32500], [700000, 37500], [800000, 42500], [900000, 47500],
+    [1000000, 75000], [2000000, 125000], [3000000, 175000], [4000000, 225000], [5000000, 275000], [6000000, 325000], [7000000, 375000], [8000000, 425000], [9000000, 475000],
+    [10000000, 500000]
   ];
 
   const escapeHtml = (value) => String(value ?? "")
@@ -46,6 +56,12 @@
   const fmtUnitValue = (value) => priceUnit === "rmb" ? fmtRmb(value) : fmt(value);
   const ratio = (value, base) => Number.isFinite(value) && Number.isFinite(base) && base !== 0 ? (value - base) / base : null;
   const deltaClass = (value) => !Number.isFinite(value) || Math.abs(value) < .0005 ? "flat" : value > 0 ? "up" : "down";
+  const listingFee = (value) => {
+    for (let index = LISTING_FEES.length - 1; index >= 0; index -= 1) {
+      if (value >= LISTING_FEES[index][0]) return LISTING_FEES[index][1];
+    }
+    return 0;
+  };
 
   const rateInfoForDate = (date) => {
     if (!auctionRates.length) return null;
@@ -57,12 +73,14 @@
     return matched || auctionRates[0];
   };
 
-  const priceForUnit = (value, date) => {
+  const goldForUnit = (value, date) => {
     if (!Number.isFinite(value)) return null;
     if (priceUnit === "gold") return value;
     const rate = rateInfoForDate(date)?.rate;
     return Number.isFinite(rate) && rate > 0 ? value / rate : null;
   };
+  const priceForUnit = (value, date) => goldForUnit(tradeSide === "sell" ? Math.max(0, value - listingFee(value)) : value, date);
+  const fmtGoldForUnit = (value, date) => fmtUnitValue(goldForUnit(value, date));
 
   const fmtPrice = (value, date) => fmtUnitValue(priceForUnit(value, date));
 
@@ -123,8 +141,8 @@
   const enrich = (row) => {
     const history = historyFor(keyOf(row));
     const historicLow = history.reduce((best, item) => !best || item.lowest < best.lowest ? item : best, null);
-    const lowVsPrevAvg = ratio(row.lowest, row.prevAvg);
-    const lowVsRecentDeal = ratio(row.lowest, row.recentDeal);
+    const lowVsPrevAvg = ratio(priceForUnit(row.lowest, row.date), priceForUnit(row.prevAvg, row.date));
+    const lowVsRecentDeal = ratio(priceForUnit(row.lowest, row.date), priceForUnit(row.recentDeal, row.date));
     let status = { text: "价格平稳", className: "" };
     if (Number.isFinite(lowVsPrevAvg) && lowVsPrevAvg <= -.08) status = { text: "明显低于昨均", className: "deep" };
     else if (Number.isFinite(lowVsPrevAvg) && lowVsPrevAvg <= -.03) status = { text: "低于昨均", className: "low" };
@@ -194,6 +212,11 @@
             <div class="chart-head">
               <div><h2 id="chartTitle">历史价格走势</h2><p id="chartSubtitle">昨日均价、最近成交与当前最低</p></div>
               <div class="chart-tools">
+                <div class="trade-switch" role="group" aria-label="交易方向">
+                  <button class="trade-button ${tradeSide === "buy" ? "active" : ""}" type="button" data-trade-side="buy">BUY</button>
+                  <button class="trade-button ${tradeSide === "sell" ? "active" : ""}" type="button" data-trade-side="sell">SELL</button>
+                </div>
+                <span class="tool-divider"></span>
                 <div class="unit-switch" role="group" aria-label="价格单位">
                   <button class="unit-button ${priceUnit === "gold" ? "active" : ""}" type="button" data-price-unit="gold">金币</button>
                   <button class="unit-button ${priceUnit === "rmb" ? "active" : ""}" type="button" data-price-unit="rmb">¥ RMB</button>
@@ -256,7 +279,7 @@
     terminal.querySelector("#watchList").innerHTML = visible.length ? visible.map((row) => `
       <button class="watch-row ${keyOf(row) === activeBookKey ? "active" : ""}" type="button" data-book-key="${encodeKey(row)}">
         <span class="watch-name"><span class="book-symbol"><img src="${BOOK_ICON}" alt=""></span><span><strong>${escapeHtml(row.name)}</strong><small>${escapeHtml(row.grade)} · 顺序 ${row.pageOrder}</small></span></span>
-        <span class="watch-price"><strong>${fmtPrice(row.lowest, row.date)}</strong><small>${priceUnit === "rmb" ? "人民币" : "金币"}</small></span>
+        <span class="watch-price"><strong>${fmtPrice(row.lowest, row.date)}</strong><small>${tradeSide === "sell" ? "SELL · " : ""}${priceUnit === "rmb" ? "RMB" : "金币"}</small></span>
         <span class="watch-change ${deltaClass(row.lowVsPrevAvg)}">${fmtPercent(row.lowVsPrevAvg)}</span>
       </button>`).join("") : `<div class="terminal-empty">没有符合当前筛选条件的刻印书</div>`;
     requestAnimationFrame(syncWatchScrollHint);
@@ -285,11 +308,13 @@
     const dailyChange = ratio(currentValue, previousValue);
     const dailyPriceChange = Number.isFinite(currentValue) && Number.isFinite(previousValue) ? currentValue - previousValue : null;
     const rateInfo = rateInfoForDate(row.date);
-    const quoteNote = priceUnit === "rmb"
+    const quoteNote = tradeSide === "sell"
+      ? `挂价 ${fmtGoldForUnit(row.lowest, row.date)} · 手续费 ${fmtGoldForUnit(listingFee(row.lowest), row.date)}`
+      : priceUnit === "rmb"
       ? `拍卖最高比例 ${fmt(rateInfo?.rate)} 金/元 · 较前日 ${fmtSignedPrice(dailyPriceChange)}`
       : `较前一日 ${fmtSignedPrice(dailyPriceChange)} · 当前价格单位：金币`;
     panel.innerHTML = `<div class="quote-main">
-      <div class="quote-identity"><span class="quote-book"><img src="${BOOK_ICON}" alt="刻印书"></span><div class="quote-title"><h1>${escapeHtml(row.name)}</h1><p>${escapeHtml(row.grade)}刻印书 · ${escapeHtml(row.date)}${priceUnit === "rmb" ? " · RMB估值" : ""}</p></div></div>
+      <div class="quote-identity"><span class="quote-book"><img src="${BOOK_ICON}" alt="刻印书"></span><div class="quote-title"><h1>${escapeHtml(row.name)}</h1><p>${escapeHtml(row.grade)}刻印书 · ${escapeHtml(row.date)} · ${tradeSide === "sell" ? "SELL 扣费实收" : priceUnit === "rmb" ? "BUY RMB估值" : "BUY 金币报价"}</p></div></div>
       <div class="quote-stats">
         <div class="quote-stat stat-previous"><span>前一日</span><strong>${fmtUnitValue(previousValue)}</strong></div>
         <div class="quote-stat stat-seven ${deltaClass(sevenDayChange)}"><span>近 7 日</span><strong>${fmtPercent(sevenDayChange)}</strong></div>
@@ -419,9 +444,9 @@
     if (!row) return;
     const history = row.history;
     const shown = chartRows(history);
-    terminal.querySelector("#chartTitle").textContent = `${row.name} · 历史价格走势`;
+    terminal.querySelector("#chartTitle").textContent = `${row.name} · ${tradeSide === "sell" ? "SELL 实收" : "历史价格"}走势`;
     terminal.querySelector("#chartSubtitle").textContent = shown.length
-      ? `${shown[0].date} - ${shown[shown.length - 1].date} · ${shown.length} 日记录${priceUnit === "rmb" ? " · 按每日拍卖金价折算" : ""}`
+      ? `${shown[0].date} - ${shown[shown.length - 1].date} · ${shown.length} 日记录${tradeSide === "sell" ? " · 已扣上架手续费" : ""}${priceUnit === "rmb" ? " · 按每日拍卖金价折算" : ""}`
       : "暂无历史数据";
     terminal.querySelector("#chartStage").innerHTML = buildChart(history);
     const lows = shown.map((item) => priceForUnit(item.lowest, item.date)).filter(Number.isFinite);
@@ -457,7 +482,7 @@
     const point = shown[index];
     if (!point) return;
     const series = [...visibleChartSeries()].sort((a, b) => ["lowest", "recentDeal", "prevAvg"].indexOf(a.key) - ["lowest", "recentDeal", "prevAvg"].indexOf(b.key));
-    tooltip.innerHTML = `<time>${escapeHtml(point.date)}</time>${series.map((item) => `<div class="chart-tooltip-row"><span><i style="--series:${item.color}"></i>${escapeHtml(item.label)}</span><strong>${fmtUnitValue(chartValue(point, item.key))}</strong></div>`).join("")}`;
+    tooltip.innerHTML = `<time>${escapeHtml(point.date)} · ${tradeSide === "sell" ? "SELL 实收" : "BUY 报价"}</time>${series.map((item) => `<div class="chart-tooltip-row"><span><i style="--series:${item.color}"></i>${escapeHtml(item.label)}</span><strong>${fmtUnitValue(chartValue(point, item.key))}</strong></div>`).join("")}`;
     tooltip.classList.add("visible");
     guide.setAttribute("x1", hitArea.dataset.chartX);
     guide.setAttribute("x2", hitArea.dataset.chartX);
@@ -511,7 +536,7 @@
   };
 
   const renderRanking = () => {
-    const ranked = [...dayRows()].sort((a, b) => b.lowest - a.lowest).slice(0, 5);
+    const ranked = [...dayRows()].sort((a, b) => (priceForUnit(b.lowest, b.date) ?? -Infinity) - (priceForUnit(a.lowest, a.date) ?? -Infinity)).slice(0, 5);
     terminal.querySelector("#rankingDate").textContent = selectedDate || "—";
     terminal.querySelector("#rankingList").innerHTML = ranked.map((row, index) => `<div class="ranking-row"><b>${String(index + 1).padStart(2, "0")}</b><button type="button" data-book-key="${encodeKey(row)}"><img src="${BOOK_ICON}" alt="">${escapeHtml(row.name)}</button><strong>${fmtPrice(row.lowest, row.date)}</strong></div>`).join("");
   };
@@ -520,6 +545,11 @@
     ensureActiveBook();
     terminal.querySelectorAll("[data-price-unit]").forEach((button) => {
       const active = button.dataset.priceUnit === priceUnit;
+      button.classList.toggle("active", active);
+      button.setAttribute("aria-pressed", String(active));
+    });
+    terminal.querySelectorAll("[data-trade-side]").forEach((button) => {
+      const active = button.dataset.tradeSide === tradeSide;
       button.classList.toggle("active", active);
       button.setAttribute("aria-pressed", String(active));
     });
@@ -562,6 +592,16 @@
     });
     chartStage.addEventListener("focusout", hideChartTooltip);
     terminal.addEventListener("click", (event) => {
+      const tradeButton = event.target.closest("[data-trade-side]");
+      if (tradeButton) {
+        tradeSide = tradeButton.dataset.tradeSide === "sell" ? "sell" : "buy";
+        const url = new URL(location.href);
+        if (tradeSide === "sell") url.searchParams.set("side", "sell");
+        else url.searchParams.delete("side");
+        history.replaceState({}, "", url);
+        renderAll();
+        return;
+      }
       const unitButton = event.target.closest("[data-price-unit]");
       if (unitButton) {
         priceUnit = unitButton.dataset.priceUnit === "rmb" ? "rmb" : "gold";

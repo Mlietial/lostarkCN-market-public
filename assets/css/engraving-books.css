@@ -367,6 +367,9 @@
 .book-chart-empty { display: grid; place-items: center; height: 100%; color: var(--muted); font-size: 12px; }
 
 .chart-tools { flex-wrap: wrap; justify-content: flex-end; }
+.trade-button.active,
+.unit-button.active { background: var(--book); }
+.trade-button[data-trade-side="sell"].active { background: var(--book-deep); }
 .chart-series-controls { display: flex; align-items: center; gap: 4px; }
 .chart-series-button {
   display: inline-flex;
