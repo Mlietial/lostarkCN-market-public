@@ -117,11 +117,12 @@ button { cursor: pointer; }
 .chart-head h2 { margin: 0; font-size: 16px; }
 .chart-head p { margin: 4px 0 0; color: var(--muted); font-size: 11px; }
 .chart-tools { display: flex; align-items: center; gap: 5px; }
-.unit-switch { display: inline-flex; overflow: hidden; border: 1px solid var(--line-strong); border-radius: 7px; background: var(--surface-soft); }
-.unit-button { min-width: 52px; height: 30px; padding: 0 9px; border: 0; border-right: 1px solid var(--line-strong); background: transparent; color: var(--muted); font-size: 11px; font-weight: 800; }
-.unit-button:last-child { border-right: 0; }
-.unit-button:hover { color: var(--blue); }
-.unit-button.active { background: var(--blue); color: #fff; }
+.trade-switch, .unit-switch { display: inline-flex; overflow: hidden; border: 1px solid var(--line-strong); border-radius: 7px; background: var(--surface-soft); }
+.trade-button, .unit-button { min-width: 52px; height: 30px; padding: 0 9px; border: 0; border-right: 1px solid var(--line-strong); background: transparent; color: var(--muted); font-size: 11px; font-weight: 800; }
+.trade-button:last-child, .unit-button:last-child { border-right: 0; }
+.trade-button:hover, .unit-button:hover { color: var(--blue); }
+.trade-button.active, .unit-button.active { background: var(--blue); color: #fff; }
+.trade-button[data-side="sell"].active { background: var(--amber); }
 .tool-divider { width: 1px; height: 24px; margin: 0 3px; background: var(--line); }
 .range-button { min-width: 44px; height: 32px; padding: 0 10px; border: 1px solid var(--line-strong); border-radius: 7px; background: #fff; color: var(--muted); font-size: 11px; font-weight: 750; }
 .range-button:hover { border-color: #7aa9f8; color: var(--blue); }
@@ -210,7 +211,7 @@ button { cursor: pointer; }
   .quote-stat, .chart-metric { border-top: 1px solid var(--line); }
   .quote-stat:nth-child(even), .chart-metric:nth-child(even) { border-right: 0; }
   .chart-head { align-items: flex-start; flex-direction: column; }
-  .chart-tools { justify-content: space-between; width: 100%; }
+  .chart-tools { flex-wrap: wrap; justify-content: flex-start; width: 100%; }
   .chart-stage { height: 390px; }
 }
 

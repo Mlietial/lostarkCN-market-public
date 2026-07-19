@@ -6,6 +6,15 @@
   const levels = ["5级", "6级", "7级", "8级", "9级", "10级"];
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const gemIconSrc = id => `../assets/images/gems/fate-ember-gem-${id}.jpg`;
+  const listingFees = [
+    [1, 0], [2, 1], [20, 2], [40, 3], [60, 4], [80, 5],
+    [100, 8], [200, 13], [300, 18], [400, 23], [500, 28], [600, 33], [700, 38], [800, 43], [900, 48],
+    [1000, 75], [2000, 125], [3000, 175], [4000, 225], [5000, 275], [6000, 325], [7000, 375], [8000, 425], [9000, 475],
+    [10000, 750], [20000, 1250], [30000, 1750], [40000, 2250], [50000, 2750], [60000, 3250], [70000, 3750], [80000, 4250], [90000, 4750],
+    [100000, 7500], [200000, 12500], [300000, 17500], [400000, 22500], [500000, 27500], [600000, 32500], [700000, 37500], [800000, 42500], [900000, 47500],
+    [1000000, 75000], [2000000, 125000], [3000000, 175000], [4000000, 225000], [5000000, 275000], [6000000, 325000], [7000000, 375000], [8000000, 425000], [9000000, 475000],
+    [10000000, 500000]
+  ];
 
   const html = value => String(value ?? "")
     .replaceAll("&", "&amp;")
@@ -14,6 +23,13 @@
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
   const finite = value => value !== null && value !== undefined && value !== "" && Number.isFinite(Number(value));
+  const listingFee = value => {
+    const price = Number(value);
+    for (let index = listingFees.length - 1; index >= 0; index -= 1) {
+      if (price >= listingFees[index][0]) return listingFees[index][1];
+    }
+    return 0;
+  };
   const fmt = (value, digits = 0) => finite(value)
     ? new Intl.NumberFormat("zh-CN", { minimumFractionDigits: digits, maximumFractionDigits: digits }).format(Number(value))
     : "—";
@@ -89,6 +105,7 @@
     gemId: gems.some(gem => gem.id === requestedGem) ? requestedGem : "10",
     range: validRange(params.get("range")),
     unit: params.get("unit") === "rmb" ? "rmb" : "gold",
+    side: params.get("side") === "sell" ? "sell" : "buy",
     animationToken: 0
   };
 
@@ -96,13 +113,17 @@
   const priceFull = value => state.unit === "rmb" ? rmb(value) : fmt(value);
   const priceShort = value => state.unit === "rmb" ? rmb(value) : compact(value);
   const signedPrice = value => finite(value) ? `${Number(value) >= 0 ? "+" : "−"}${state.unit === "rmb" ? rmb(Math.abs(Number(value))) : `${fmt(Math.abs(Number(value)))} 金`}` : "—";
+  const goldAmountForUnit = (value, rate) => state.unit === "rmb" ? rmb(Number(value) / Number(rate)) : `${fmt(value)} 金`;
 
   function pointsForUnit(gem) {
-    if (state.unit === "gold") return gem.points.map(point => ({ ...point, goldValue: point.value, rate: auctionRateByDate.get(point.date) || null }));
-    return gem.points.flatMap(point => {
-      const rate = auctionRateByDate.get(point.date);
-      return rate > 0 ? [{ ...point, goldValue: point.value, rate, value: point.value / rate }] : [];
+    const pricedPoints = gem.points.map(point => {
+      const marketValue = Number(point.value);
+      const fee = state.side === "sell" ? listingFee(marketValue) : 0;
+      const goldValue = Math.max(0, marketValue - fee);
+      return { ...point, marketValue, fee, goldValue, rate: auctionRateByDate.get(point.date) || null };
     });
+    if (state.unit === "gold") return pricedPoints.map(point => ({ ...point, value: point.goldValue }));
+    return pricedPoints.flatMap(point => point.rate > 0 ? [{ ...point, value: point.goldValue / point.rate }] : []);
   }
 
   function gemForUnit(gem) {
@@ -146,6 +167,7 @@
     state.gemId === "10" ? url.searchParams.delete("gem") : url.searchParams.set("gem", state.gemId);
     state.range === "30" ? url.searchParams.delete("range") : url.searchParams.set("range", state.range);
     state.unit === "gold" ? url.searchParams.delete("unit") : url.searchParams.set("unit", state.unit);
+    state.side === "buy" ? url.searchParams.delete("side") : url.searchParams.set("side", state.side);
     history.replaceState({}, "", url);
   }
 
@@ -221,7 +243,9 @@
     const rangeAverage = mean(rangeValues);
     const priceTone = tone(gem.dayChange);
     const latestPoint = gem.points.at(-1);
-    const quoteNote = state.unit === "rmb"
+    const quoteNote = state.side === "sell"
+      ? `${shortDate(latestPoint?.date)}挂售价 ${goldAmountForUnit(latestPoint?.marketValue, latestPoint?.rate)} · 上架手续费 ${goldAmountForUnit(latestPoint?.fee, latestPoint?.rate)} · 当前显示卖出实收`
+      : state.unit === "rmb"
       ? `${shortDate(latestPoint?.date)}拍卖最高比例 ${fmt(latestPoint?.rate)} 金/元 · 较前一日 ${signedPrice(gem.current - gem.previous)}`
       : `较前一日 ${signedPrice(gem.current - gem.previous)} · 当前价格单位：金币`;
     terminal.className = "terminal-shell";
@@ -247,15 +271,15 @@
         <section class="center-column">
           <section class="panel quote-panel" aria-live="polite">
             <div class="quote-main">
-              <div class="quote-identity"><img class="quote-gem" src="${gemIconSrc(gem.id)}" alt=""><div class="quote-title"><h1>${gem.name}</h1><p>${gem.symbol} · ${state.unit === "rmb" ? "人民币估值 · 拍卖金价折算" : "游戏内金币市场 · 公开快照"}</p></div></div>
+              <div class="quote-identity"><img class="quote-gem" src="${gemIconSrc(gem.id)}" alt=""><div class="quote-title"><h1>${gem.name}</h1><p>${gem.symbol} · ${state.side === "sell" ? "SELL 卖出实收 · 已扣上架手续费" : state.unit === "rmb" ? "BUY 人民币估值 · 拍卖金价折算" : "BUY 游戏内金币市场 · 公开快照"}</p></div></div>
               <div class="quote-stats"><div class="quote-stat"><span>前一日</span><strong>${priceFull(gem.previous)}</strong></div><div class="quote-stat"><span>近 7 日</span><strong class="${tone(gem.weekChange)}">${pct(gem.weekChange)}</strong></div><div class="quote-stat"><span>30 日最高</span><strong>${priceFull(gem.high30)}</strong></div><div class="quote-stat"><span>30 日最低</span><strong>${priceFull(gem.low30)}</strong></div></div>
               <div class="quote-price ${priceTone === "up" ? "flash-up" : priceTone === "down" ? "flash-down" : ""}"><div class="quote-price-line"><strong>${priceFull(gem.current)}</strong><em class="${priceTone}">${gem.dayChange >= 0 ? "↑" : "↓"} ${pct(gem.dayChange)}</em></div><p>${quoteNote}</p></div>
             </div>
           </section>
 
           <section class="panel chart-panel">
-            <header class="chart-head"><div><h2>${gem.name}价格走势</h2><p>${state.unit === "rmb" ? "每日按当日拍卖最高比例折算 · " : "价格与日波动合并显示 · "}0% 中线上涨向上、下跌向下</p></div><div class="chart-tools"><div class="unit-switch" role="group" aria-label="价格单位"><button class="unit-button ${state.unit === "gold" ? "active" : ""}" type="button" data-unit="gold">金币</button><button class="unit-button ${state.unit === "rmb" ? "active" : ""}" type="button" data-unit="rmb">¥ RMB</button></div><span class="tool-divider" aria-hidden="true"></span>${[{ id: "7", label: "7日" }, { id: "30", label: "30日" }, { id: "all", label: "全部" }].map(range => `<button class="range-button ${state.range === range.id ? "active" : ""}" type="button" data-range="${range.id}">${range.label}</button>`).join("")}</div></header>
-            <div class="chart-stage"><canvas class="market-chart" data-gem-chart aria-label="${gem.name}价格走势图"></canvas><div class="chart-tooltip" data-chart-tooltip></div></div>
+            <header class="chart-head"><div><h2>${gem.name}${state.side === "sell" ? "卖出实收" : "价格"}走势</h2><p>${state.side === "sell" ? "已按售价区间扣除游戏上架手续费 · " : state.unit === "rmb" ? "每日按当日拍卖最高比例折算 · " : "价格与日波动合并显示 · "}0% 中线上涨向上、下跌向下</p></div><div class="chart-tools"><div class="trade-switch" role="group" aria-label="交易方向"><button class="trade-button ${state.side === "buy" ? "active" : ""}" type="button" data-side="buy">BUY</button><button class="trade-button ${state.side === "sell" ? "active" : ""}" type="button" data-side="sell">SELL</button></div><span class="tool-divider" aria-hidden="true"></span><div class="unit-switch" role="group" aria-label="价格单位"><button class="unit-button ${state.unit === "gold" ? "active" : ""}" type="button" data-unit="gold">金币</button><button class="unit-button ${state.unit === "rmb" ? "active" : ""}" type="button" data-unit="rmb">¥ RMB</button></div><span class="tool-divider" aria-hidden="true"></span>${[{ id: "7", label: "7日" }, { id: "30", label: "30日" }, { id: "all", label: "全部" }].map(range => `<button class="range-button ${state.range === range.id ? "active" : ""}" type="button" data-range="${range.id}">${range.label}</button>`).join("")}</div></header>
+            <div class="chart-stage"><canvas class="market-chart" data-gem-chart aria-label="${gem.name}${state.side === "sell" ? "卖出实收" : "价格"}走势图"></canvas><div class="chart-tooltip" data-chart-tooltip></div></div>
             <div class="chart-summary"><div class="chart-metric"><span>区间最高</span><strong>${priceFull(rangeHigh)}</strong></div><div class="chart-metric"><span>区间最低</span><strong>${priceFull(rangeLow)}</strong></div><div class="chart-metric"><span>区间均价</span><strong>${priceFull(rangeAverage)}</strong></div><div class="chart-metric"><span>距区间低位</span><strong>${pct((gem.current - rangeLow) / rangeLow)}</strong></div><div class="chart-metric"><span>数据点</span><strong>${rangePoints.length} 日</strong></div></div>
           </section>
 
@@ -437,7 +461,7 @@
         context.lineWidth = 1.5;
         context.strokeRect(xx - barWidth / 2 - 1, barY - 1, barWidth + 2, barHeight + 2);
       }
-      tooltip.innerHTML = `<span>${html(point.date)}</span><strong>${priceFull(point.value)}${state.unit === "gold" ? " 金" : ""}</strong>${state.unit === "rmb" ? `<span>拍卖最高比例 ${fmt(point.rate)} 金/元</span>` : ""}<span class="${tone(change)}">较前一点 ${pct(change)}</span>`;
+      tooltip.innerHTML = `<span>${html(point.date)}</span><strong>${priceFull(point.value)}${state.unit === "gold" ? " 金" : ""}</strong>${state.side === "sell" ? `<span>挂售价 ${goldAmountForUnit(point.marketValue, point.rate)} · 手续费 ${goldAmountForUnit(point.fee, point.rate)}</span>` : ""}${state.unit === "rmb" ? `<span>拍卖最高比例 ${fmt(point.rate)} 金/元</span>` : ""}<span class="${tone(change)}">较前一点 ${pct(change)}</span>`;
       tooltip.style.display = "block";
       tooltip.style.left = `${Math.max(8, Math.min(width - 154, xx + 11))}px`;
       tooltip.style.top = `${Math.max(8, Math.min(height - 78, yy - 68))}px`;
@@ -479,6 +503,15 @@
   }
 
   document.addEventListener("click", event => {
+    const sideTarget = event.target.closest("[data-side]");
+    if (sideTarget) {
+      const nextSide = sideTarget.dataset.side === "sell" ? "sell" : "buy";
+      if (nextSide !== state.side) {
+        state.side = nextSide;
+        render();
+      }
+      return;
+    }
     const unitTarget = event.target.closest("[data-unit]");
     if (unitTarget) {
       const nextUnit = unitTarget.dataset.unit === "rmb" ? "rmb" : "gold";
