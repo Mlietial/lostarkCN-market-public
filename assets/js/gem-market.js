@@ -5,6 +5,7 @@
   const terminal = document.getElementById("gemTerminal");
   const levels = ["5级", "6级", "7级", "8级", "9级", "10级"];
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const gemIconSrc = id => `../assets/images/gems/fate-ember-gem-${id}.jpg`;
 
   const html = value => String(value ?? "")
     .replaceAll("&", "&amp;")
@@ -187,7 +188,7 @@
   function watchMarkup() {
     return gems.map(gem => {
       const view = gemForUnit(gem);
-      return `<button class="watch-row ${view.id === state.gemId ? "active" : ""}" type="button" data-gem="${view.id}" aria-pressed="${view.id === state.gemId}"><span class="watch-name"><span class="gem-symbol"><span>${view.id}</span></span><span><strong>${view.name}</strong><small>${view.symbol}</small></span></span><span class="watch-price"><strong>${priceShort(view.current)}</strong><small>7日 ${pct(view.weekChange)}</small></span><span class="watch-change ${tone(view.dayChange)}">${pct(view.dayChange)}</span></button>`;
+      return `<button class="watch-row ${view.id === state.gemId ? "active" : ""}" type="button" data-gem="${view.id}" aria-pressed="${view.id === state.gemId}"><span class="watch-name"><img class="gem-symbol" src="${gemIconSrc(view.id)}" alt=""><span><strong>${view.name}</strong><small>${view.symbol}</small></span></span><span class="watch-price"><strong>${priceShort(view.current)}</strong><small>7日 ${pct(view.weekChange)}</small></span><span class="watch-change ${tone(view.dayChange)}">${pct(view.dayChange)}</span></button>`;
     }).join("");
   }
 
@@ -227,7 +228,7 @@
     if (!terminal.querySelector(".ticker-window")) {
       terminal.innerHTML = `
         <header class="terminal-topbar">
-          <div class="terminal-brand"><span class="terminal-logo"><span>◆</span></span><div><strong>方舟宝石行情终端</strong><small>Gem Market Terminal</small></div></div>
+          <div class="terminal-brand"><img class="terminal-logo" src="${gemIconSrc("10")}" alt="10级劫火宝石"><div><strong>方舟宝石行情终端</strong><small>Gem Market Terminal</small></div></div>
           <div class="terminal-session"><span class="live-dot"></span><span>公开行情已接入 · 日价格快照</span></div>
           <div class="terminal-actions"><div class="snapshot"><strong>${html(dashboard.publishedAt || "—")}</strong>数据更新时间</div><a class="back-link" href="./gem-dashboard.html">← 返回宝石仪表盘</a></div>
         </header>
@@ -246,7 +247,7 @@
         <section class="center-column">
           <section class="panel quote-panel" aria-live="polite">
             <div class="quote-main">
-              <div class="quote-identity"><span class="quote-gem"><span>${gem.id}</span></span><div class="quote-title"><h1>${gem.name}</h1><p>${gem.symbol} · ${state.unit === "rmb" ? "人民币估值 · 拍卖金价折算" : "游戏内金币市场 · 公开快照"}</p></div></div>
+              <div class="quote-identity"><img class="quote-gem" src="${gemIconSrc(gem.id)}" alt=""><div class="quote-title"><h1>${gem.name}</h1><p>${gem.symbol} · ${state.unit === "rmb" ? "人民币估值 · 拍卖金价折算" : "游戏内金币市场 · 公开快照"}</p></div></div>
               <div class="quote-stats"><div class="quote-stat"><span>前一日</span><strong>${priceFull(gem.previous)}</strong></div><div class="quote-stat"><span>近 7 日</span><strong class="${tone(gem.weekChange)}">${pct(gem.weekChange)}</strong></div><div class="quote-stat"><span>30 日最高</span><strong>${priceFull(gem.high30)}</strong></div><div class="quote-stat"><span>30 日最低</span><strong>${priceFull(gem.low30)}</strong></div></div>
               <div class="quote-price ${priceTone === "up" ? "flash-up" : priceTone === "down" ? "flash-down" : ""}"><div class="quote-price-line"><strong>${priceFull(gem.current)}</strong><em class="${priceTone}">${gem.dayChange >= 0 ? "↑" : "↓"} ${pct(gem.dayChange)}</em></div><p>${quoteNote}</p></div>
             </div>

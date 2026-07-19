@@ -45,8 +45,7 @@ button { cursor: pointer; }
   backdrop-filter: blur(16px);
 }
 .terminal-brand { display: flex; align-items: center; gap: 11px; min-width: 265px; }
-.terminal-logo { position: relative; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 10px; background: linear-gradient(145deg, #4b92ff, #1257d2); box-shadow: 0 8px 18px rgba(18, 97, 232, .22); color: #fff; font-size: 17px; transform: rotate(45deg); }
-.terminal-logo span { transform: rotate(-45deg); }
+.terminal-logo { display: block; width: 42px; height: 42px; border: 1px solid #c9a968; border-radius: 7px; box-shadow: 0 8px 18px rgba(93, 55, 11, .18); object-fit: cover; }
 .terminal-brand strong { display: block; font-size: 17px; letter-spacing: -.02em; }
 .terminal-brand small { display: block; margin-top: 3px; color: var(--muted); font-size: 11px; letter-spacing: .11em; text-transform: uppercase; }
 .terminal-session { display: flex; align-items: center; justify-content: center; gap: 8px; color: var(--muted); font-size: 12px; }
@@ -83,8 +82,7 @@ button { cursor: pointer; }
 .watch-row.active { background: var(--blue-soft); }
 .watch-row.active::before { content: ""; position: absolute; top: 8px; bottom: 8px; left: 0; width: 3px; border-radius: 0 3px 3px 0; background: var(--blue); }
 .watch-name { display: flex; align-items: center; gap: 9px; min-width: 0; }
-.gem-symbol { display: grid; place-items: center; flex: 0 0 auto; width: 31px; height: 31px; border: 1px solid #b7cdf6; border-radius: 8px; background: linear-gradient(145deg, #f5f9ff, #d9e8ff); color: var(--blue); font-size: 11px; font-weight: 900; transform: rotate(45deg); }
-.gem-symbol span { transform: rotate(-45deg); }
+.gem-symbol { display: block; flex: 0 0 auto; width: 36px; height: 36px; border: 1px solid #d4b777; border-radius: 6px; box-shadow: 0 4px 10px rgba(89, 53, 13, .12); object-fit: cover; }
 .watch-name strong { display: block; overflow: hidden; font-size: 13px; text-overflow: ellipsis; white-space: nowrap; }
 .watch-name small { display: block; margin-top: 3px; color: var(--muted); font-size: 10px; }
 .watch-price { text-align: right; }
@@ -98,8 +96,7 @@ button { cursor: pointer; }
 .quote-panel { overflow: hidden; }
 .quote-main { display: grid; grid-template-columns: minmax(220px, .75fr) minmax(420px, 1.4fr) minmax(260px, .85fr); gap: 16px; align-items: center; padding: 18px; }
 .quote-identity { display: flex; align-items: center; gap: 15px; min-width: 0; }
-.quote-gem { display: grid; place-items: center; flex: 0 0 auto; width: 54px; height: 54px; border: 1px solid #9cbcf4; border-radius: 14px; background: linear-gradient(145deg, #f8fbff, #cddfff); box-shadow: inset 0 0 18px rgba(18, 97, 232, .13), 0 9px 20px rgba(18, 97, 232, .12); color: var(--blue); font-size: 17px; font-weight: 900; transform: rotate(45deg); }
-.quote-gem span { transform: rotate(-45deg); }
+.quote-gem { display: block; flex: 0 0 auto; width: 64px; height: 64px; border: 1px solid #c9a968; border-radius: 9px; box-shadow: 0 9px 20px rgba(93, 55, 11, .18); object-fit: cover; }
 .quote-title h1 { margin: 0; font-size: 24px; letter-spacing: -.035em; }
 .quote-title p { margin: 6px 0 0; color: var(--muted); font-size: 11px; }
 .quote-price { min-width: 0; text-align: right; }
