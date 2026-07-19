@@ -64,8 +64,8 @@
     .latest-guide{stroke-width:1;stroke-dasharray:4 4;opacity:.55;pointer-events:none}
     .chart-guide{stroke:#64748b;stroke-width:1;stroke-dasharray:4 4;opacity:0;pointer-events:none}
     .chart-guide.visible{opacity:.7}
-    .chart-point{fill:#fff;stroke:var(--series);stroke-width:2;pointer-events:none;transition:fill .12s ease,stroke-width .12s ease}
-    .chart-point.is-hovered{fill:var(--series);stroke-width:3}
+    .chart-point{fill:var(--series);stroke:#fff;stroke-width:2;opacity:0;pointer-events:none;transition:opacity .12s ease,stroke-width .12s ease}
+    .chart-point.is-hovered{opacity:1;stroke-width:3}
     .chart-hit{fill:transparent;cursor:crosshair}
     .chart-hit:focus{outline:none}
     .latest-label{pointer-events:none}
