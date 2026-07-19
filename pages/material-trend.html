@@ -26,11 +26,10 @@
     .summary-head{display:flex;align-items:center;flex:0 0 auto;margin:0;padding-right:10px;border-right:1px solid var(--line)}
     .summary-head h2{margin:0;font-size:13px;line-height:1.2;font-weight:900;white-space:nowrap}
     .summary-list{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;min-width:0;flex:1 1 auto}
-    .kpi{min-width:0;min-height:50px;padding:7px 9px;background:var(--surface-soft);transition:border-color .16s ease,background .16s ease}
-    .kpi:hover{border-color:#c5d4e5;background:#fff}
-    .kpi span{display:block;margin-bottom:2px;overflow:hidden;color:var(--muted);font-size:9px;font-weight:850;text-overflow:ellipsis;white-space:nowrap}
-    .kpi b{display:block;overflow:hidden;font-size:15px;line-height:1.12;font-weight:950;text-overflow:ellipsis;white-space:nowrap}
-    .kpi em{display:block;margin-top:2px;overflow:hidden;color:var(--muted);font-size:9px;line-height:1.25;font-style:normal;text-overflow:ellipsis;white-space:nowrap}
+    .kpi{display:grid;grid-template-columns:minmax(64px,.8fr) minmax(0,1.2fr);grid-template-rows:auto auto;column-gap:14px;align-items:center;min-width:0;min-height:50px;padding:5px 14px;border:0;border-radius:0;background:transparent}
+    .kpi span{grid-row:1 / 3;align-self:center;overflow:hidden;color:var(--muted);font-size:10px;font-weight:850;text-overflow:ellipsis;white-space:nowrap}
+    .kpi b{grid-column:2;align-self:end;overflow:hidden;font-size:15px;line-height:1.12;font-weight:950;text-overflow:ellipsis;white-space:nowrap}
+    .kpi em{grid-column:2;align-self:start;overflow:hidden;color:var(--muted);font-size:9px;line-height:1.25;font-style:normal;text-overflow:ellipsis;white-space:nowrap}
     .toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:14px;padding:12px 14px}
     .toolbar h2{margin:0;font-size:20px;line-height:1.2;font-weight:900}
     .filter-panel{display:grid;gap:8px}
