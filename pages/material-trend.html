@@ -10,7 +10,8 @@
     html{min-width:320px;background:var(--bg)}
     body{margin:0;font-family:Inter,"Segoe UI","Microsoft YaHei UI","Microsoft YaHei",sans-serif;color:var(--text);background:radial-gradient(circle at 78% 0%,rgba(36,112,235,.08),transparent 27%),var(--bg)}
     .app{max-width:1820px;margin:0 auto;padding:16px 18px 36px}
-    .topbar{position:sticky;z-index:40;top:0;display:flex;align-items:center;justify-content:space-between;gap:18px;min-height:76px;margin-bottom:14px;padding:14px 18px;border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.95);backdrop-filter:blur(16px)}
+    .topbar{position:sticky;z-index:40;top:0;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:18px;min-height:76px;margin-bottom:14px;padding:10px 18px;border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.95);backdrop-filter:blur(16px)}
+    .page-title{min-width:208px}
     h1{margin:0;font-size:26px;line-height:1.15;font-weight:900;letter-spacing:-.025em}
     .subtitle{margin-top:6px;color:var(--muted);font-size:12px}
     .actions,.tools{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
@@ -18,24 +19,18 @@
     .btn{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:0 13px;border:1px solid var(--line-strong);border-radius:8px;background:#fff;color:#34445a;font-size:12px;font-weight:800;text-decoration:none;cursor:pointer;transition:border-color .16s ease,background .16s ease,color .16s ease,box-shadow .16s ease,transform .16s ease}
     .btn:hover{border-color:var(--book-line);background:var(--book-soft);color:var(--book-deep);box-shadow:0 7px 16px rgba(120,53,15,.12);transform:translateY(-1px)}
     .btn:active{box-shadow:none;transform:translateY(0)}
-    .btn:focus-visible,.filter-btn:focus-visible,.summary-toggle:focus-visible,.segmented button:focus-visible{outline:2px solid #d59a47;outline-offset:2px}
+    .btn:focus-visible,.filter-btn:focus-visible,.segmented button:focus-visible{outline:2px solid #d59a47;outline-offset:2px}
     .grid{display:grid;gap:14px}
     .card{background:rgba(255,255,255,.97);border:1px solid var(--line);border-radius:13px;box-shadow:none}
-    .summary-sidebar{position:fixed;left:18px;top:104px;z-index:25;width:260px;max-height:calc(100vh - 128px);padding:12px;overflow:auto}
-    .summary-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
-    .summary-head h2{margin:0;font-size:16px;line-height:1.2;font-weight:950}
-    .summary-toggle{width:30px;height:30px;border:1px solid var(--line-strong);border-radius:7px;background:#fff;color:var(--book);font-size:16px;font-weight:950;line-height:1;cursor:pointer;transition:border-color .16s ease,background .16s ease,box-shadow .16s ease,transform .16s ease}
-    .summary-toggle:hover{border-color:var(--book-line);background:var(--book-soft);box-shadow:0 6px 14px rgba(120,53,15,.12);transform:translateY(-1px)}
-    .summary-toggle:active{box-shadow:none;transform:none}
-    .summary-list{display:grid;gap:8px}
-    .summary-sidebar.collapsed{width:46px;padding:8px;overflow:hidden}
-    .summary-sidebar.collapsed .summary-head h2,.summary-sidebar.collapsed .summary-list{display:none}
-    .summary-sidebar.collapsed .summary-head{justify-content:center;margin:0}
-    .kpi{min-height:98px;padding:12px;background:var(--surface-soft);transition:border-color .16s ease,background .16s ease}
+    .summary-sidebar{position:static;display:flex;align-items:center;gap:10px;width:auto;min-width:0;max-height:none;padding:0;overflow:visible;border:0;border-radius:0;background:transparent}
+    .summary-head{display:flex;align-items:center;flex:0 0 auto;margin:0;padding-right:10px;border-right:1px solid var(--line)}
+    .summary-head h2{margin:0;font-size:13px;line-height:1.2;font-weight:900;white-space:nowrap}
+    .summary-list{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;min-width:0;flex:1 1 auto}
+    .kpi{min-width:0;min-height:50px;padding:7px 9px;background:var(--surface-soft);transition:border-color .16s ease,background .16s ease}
     .kpi:hover{border-color:#c5d4e5;background:#fff}
-    .kpi span{display:block;color:var(--muted);font-size:12px;font-weight:850;margin-bottom:8px}
-    .kpi b{display:block;font-size:23px;line-height:1.14;font-weight:950;word-break:break-word}
-    .kpi em{display:block;margin-top:8px;color:var(--muted);font-size:12px;line-height:1.35;font-style:normal}
+    .kpi span{display:block;margin-bottom:2px;overflow:hidden;color:var(--muted);font-size:9px;font-weight:850;text-overflow:ellipsis;white-space:nowrap}
+    .kpi b{display:block;overflow:hidden;font-size:15px;line-height:1.12;font-weight:950;text-overflow:ellipsis;white-space:nowrap}
+    .kpi em{display:block;margin-top:2px;overflow:hidden;color:var(--muted);font-size:9px;line-height:1.25;font-style:normal;text-overflow:ellipsis;white-space:nowrap}
     .toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:14px;padding:12px 14px}
     .toolbar h2{margin:0;font-size:20px;line-height:1.2;font-weight:900}
     .filter-panel{display:grid;gap:8px}
@@ -109,9 +104,9 @@
       .material-title h3{font-size:clamp(12px,5.4cqw,15px)}
       .price-box b{font-size:clamp(16px,7.4cqw,20px)}
     }
-    @media(max-width:1680px){.summary-sidebar{left:12px;width:230px}.app{max-width:1360px}}
-    @media(max-width:1460px){.summary-sidebar{left:10px;top:88px;width:min(260px,calc(100vw - 20px));max-height:calc(100vh - 110px)}.summary-sidebar.collapsed{width:46px}}
-    @media(max-width:960px){.topbar,.toolbar{display:block}.actions,.tools{justify-content:flex-start;margin-top:12px}.settings-panel{left:0;right:auto}.charts{grid-template-columns:1fr}.summary-sidebar{top:84px}h1{font-size:26px}.material-title h3{white-space:normal}}
+    @media(max-width:1460px){.topbar{gap:12px}.kpi em{display:none}}
+    @media(max-width:960px){.topbar,.toolbar{display:block}.summary-sidebar{margin-top:12px}.summary-list{grid-template-columns:repeat(2,minmax(0,1fr))}.kpi em{display:block}.actions,.tools{justify-content:flex-start;margin-top:12px}.settings-panel{left:0;right:auto}.charts{grid-template-columns:1fr}h1{font-size:26px}.material-title h3{white-space:normal}}
+    @media(max-width:520px){.summary-list{grid-template-columns:1fr}.summary-sidebar{align-items:flex-start}.summary-head{padding-top:3px}}
   </style>
   <script>
     var _hmt = _hmt || [];
@@ -126,10 +121,16 @@
 <body>
   <main class="app">
     <section class="topbar">
-      <div>
+      <div class="page-title">
         <h1>强化材料价格趋势</h1>
         <div id="subtitle" class="subtitle">读取材料价格历史中...</div>
       </div>
+      <aside id="summarySidebar" class="card summary-sidebar">
+        <div class="summary-head">
+          <h2>市场概览</h2>
+        </div>
+        <section id="kpis" class="summary-list"></section>
+      </aside>
       <div class="actions">
         <a class="btn" href="../index.html">返回首页</a>
         <button id="settingsBtn" class="btn" type="button" aria-expanded="false" aria-controls="settingsPanel">设置</button>
@@ -195,14 +196,6 @@
       </div>
     </section>
 
-    <aside id="summarySidebar" class="card summary-sidebar">
-      <div class="summary-head">
-        <h2>市场概览</h2>
-        <button id="summaryToggle" class="summary-toggle" type="button" aria-label="收起市场概览" aria-expanded="true">‹</button>
-      </div>
-      <section id="kpis" class="summary-list"></section>
-    </aside>
-
     <section id="charts" class="grid charts"></section>
   </main>
   <div id="ratioNote" class="ratio-note">按金币显示</div>
@@ -216,12 +209,10 @@
     const dashboardState = window.LOSTARK_PUBLIC_DASHBOARD_STATE || {};
     const colors = ["#2563eb","#d97706","#059669","#dc2626","#7c3aed","#0891b2","#ca8a04","#db2777","#475569","#16a34a"];
     const savedCols = Number(localStorage.getItem("lostarkMaterialTrendColumns") || 3);
-    const savedSummaryRaw = localStorage.getItem("lostarkMaterialTrendSummaryCollapsed");
     const savedSort = localStorage.getItem("lostarkMaterialTrendSort") || "default";
     const savedMainFilter = localStorage.getItem("lostarkMaterialTrendMainFilter") || "enhance";
     const savedLifeFilter = localStorage.getItem("lostarkMaterialTrendLifeFilter") || "all";
     const savedPriceMode = localStorage.getItem("lostarkMaterialTrendPriceMode") || "gold";
-    const isNarrowScreen = () => window.matchMedia("(max-width: 1460px)").matches;
     const LIFE_CATEGORY_KEYWORDS = {
       plant: ["野花"],
       logging: ["木材"],
@@ -238,8 +229,7 @@
       lifeFilter: ["all", ...Object.keys(LIFE_CATEGORY_KEYWORDS)].includes(savedLifeFilter) ? savedLifeFilter : "all",
       priceMode: ["gold", "mail", "auction", "custom"].includes(savedPriceMode) ? savedPriceMode : "gold",
       customRatio: "",
-      cols: [1, 2, 3, 4].includes(savedCols) ? savedCols : 3,
-      summaryCollapsed: savedSummaryRaw == null ? isNarrowScreen() : savedSummaryRaw === "1"
+      cols: [1, 2, 3, 4].includes(savedCols) ? savedCols : 3
     };
 
     const fmt = (n) => n == null ? "—" : Math.round(n).toLocaleString("zh-CN");
@@ -515,15 +505,6 @@
       });
     }
 
-    function applySummarySetting() {
-      const sidebar = document.getElementById("summarySidebar");
-      const button = document.getElementById("summaryToggle");
-      sidebar.classList.toggle("collapsed", state.summaryCollapsed);
-      button.textContent = state.summaryCollapsed ? "›" : "‹";
-      button.setAttribute("aria-expanded", String(!state.summaryCollapsed));
-      button.setAttribute("aria-label", state.summaryCollapsed ? "展开市场概览" : "收起市场概览");
-    }
-
     function applyFilterSetting() {
       document.querySelectorAll("[data-main-filter]").forEach((button) => {
         button.classList.toggle("active", button.dataset.mainFilter === state.mainFilter);
@@ -595,7 +576,6 @@
       applyFilterSetting();
       applyPriceModeSetting();
       applyColumnSetting();
-      applySummarySetting();
       document.getElementById("sort").value = state.sort;
       document.getElementById("range").value = state.range;
       renderCharts();
@@ -659,12 +639,6 @@
       if (state.range === "auto") renderCharts();
       else requestAnimationFrame(renderChartSvgs);
     });
-    document.getElementById("summaryToggle").addEventListener("click", () => {
-      state.summaryCollapsed = !state.summaryCollapsed;
-      localStorage.setItem("lostarkMaterialTrendSummaryCollapsed", state.summaryCollapsed ? "1" : "0");
-      applySummarySetting();
-      requestAnimationFrame(renderChartSvgs);
-    });
     document.addEventListener("click", (event) => {
       const panel = document.getElementById("settingsPanel");
       const button = document.getElementById("settingsBtn");
@@ -676,10 +650,6 @@
     window.addEventListener("resize", () => {
       window.clearTimeout(window.__materialTrendResizeTimer);
       window.__materialTrendResizeTimer = window.setTimeout(() => {
-        if (localStorage.getItem("lostarkMaterialTrendSummaryCollapsed") == null) {
-          state.summaryCollapsed = isNarrowScreen();
-          applySummarySetting();
-        }
         renderChartSvgs();
       }, 120);
     });
