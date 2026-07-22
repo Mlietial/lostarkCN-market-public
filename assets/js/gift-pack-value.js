@@ -711,52 +711,6 @@ function resetEditableDataInMemory() {
   packHistoryLinks = {};
 }
 
-function parseBackupStorageArray(storage, key) {
-  if (!Object.prototype.hasOwnProperty.call(storage, key)) return [];
-  try {
-    const value = JSON.parse(storage[key]);
-    return Array.isArray(value) ? value : [];
-  } catch (error) {
-    return [];
-  }
-}
-
-function authorCustomPacksFromBackup(backup, storage) {
-  const defaultIds = new Set(giftPacks.map(pack => pack.id));
-  const packs = [];
-  parseBackupStorageArray(storage, EDITABLE_STORAGE_KEYS.customPacks).forEach(pack => {
-    if (pack?.id) packs.push(sanitizePack(pack));
-  });
-  if (Array.isArray(backup.snapshot?.packs)) {
-    backup.snapshot.packs.forEach(pack => {
-      if (pack?.id && !defaultIds.has(pack.id)) packs.push(sanitizePack(pack));
-    });
-  }
-  const seen = new Set();
-  return packs.filter(pack => {
-    if (!pack?.id || seen.has(pack.id)) return false;
-    seen.add(pack.id);
-    return true;
-  });
-}
-
-function mergeLocalAndAuthorCustomPacks(localPacks, authorPacks, deletedPackIds = []) {
-  const deleted = new Set(deletedPackIds || []);
-  const seen = new Set();
-  const next = [];
-  (Array.isArray(localPacks) ? localPacks : []).forEach(pack => {
-    if (!pack?.id || seen.has(pack.id)) return;
-    seen.add(pack.id);
-    next.push(pack);
-  });
-  (Array.isArray(authorPacks) ? authorPacks : []).forEach(pack => {
-    if (!pack?.id || seen.has(pack.id) || deleted.has(pack.id)) return;
-    seen.add(pack.id);
-    next.push(pack);
-  });
-  return next;
-}
-
 async function fetchPublicGiftPackBackup() {
   const readEmbeddedBackup = () => {
     try {
@@ -860,7 +814,6 @@ function applyPublicGiftPackSnapshot(backup, storage, options = {}) {
   const localPackOverrides = preserveLocalData ? editablePackOverrides : {};
   const localCustomPacks = preserveLocalData ? editableCustomPacks : [];
   const localDeletedPacks = preserveLocalData ? editableDeletedPacks : [];
-  const authorCustomPacks = authorCustomPacksFromBackup(backup, storage);
   if (forceAuthorPacks) {
     resetEditableDataInMemory();
   }
@@ -899,7 +852,7 @@ function applyPublicGiftPackSnapshot(backup, storage, options = {}) {
     }
   } else if (preserveLocalData && hadLocalGiftPackEdits) {
     editablePackOverrides = localPackOverrides;
-    editableCustomPacks = mergeLocalAndAuthorCustomPacks(localCustomPacks, authorCustomPacks, localDeletedPacks);
+    editableCustomPacks = localCustomPacks;
     editableDeletedPacks = localDeletedPacks;
   }
   if (backup.exportedAt) {
@@ -996,7 +949,7 @@ async function importGiftPackData(file) {
 async function loadPublicGiftPackData() {
   try {
     const { backup, storage } = await fetchPublicGiftPackBackup();
-    applyPublicGiftPackSnapshot(backup, storage, { forceAuthorPacks: true });
+    applyPublicGiftPackSnapshot(backup, storage, { preserveLocalData: true });
   } catch (error) {
     console.warn("礼包公开数据加载失败：", error);
     throw new Error(`gift-pack-data.json 加载失败：${error.message || error}`);
