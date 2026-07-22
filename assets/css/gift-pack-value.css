@@ -1386,6 +1386,10 @@ textarea {
   background: linear-gradient(135deg, rgba(37, 99, 235, .12), rgba(6, 169, 232, .12));
 }
 
+.item-icon-empty {
+  visibility: hidden;
+}
+
 .self-select-box,
 .choice-groups-box,
 .need-select-box {

@@ -142,12 +142,8 @@ const itemIcons = {
   "命运破坏石（绑定）": icon("命运破坏石.jpg"),
   "命运守护石（绑定）": icon("命运守护石.jpg"),
   "命运突破石": icon("命运突破石.jpg"),
-  "灿烂荣誉突破石（绑定）": icon("新突破石.png"),
   "命运突破石（绑定）": icon("命运突破石.jpg"),
-  "精炼破坏强石（绑定）": icon("新红石头.png"),
-  "精炼守护强石（绑定）": icon("新守护石.png"),
   "阿比多斯融合材料": icon("阿比多斯融合材料.jpg"),
-  "顶级奥莱赫融合材料（绑定）": icon("新的融合材料.png"),
   "高级阿比多斯融合材料（绑定）": icon("新的融合材料.png"),
   "阿比多斯融合材料（绑定）": icon("阿比多斯融合材料.jpg"),
   "匠人的裁缝术：第3阶段": icon("匠人的裁缝术：第3阶段.jpg"),
@@ -186,6 +182,13 @@ const itemIcons = {
   "英雄星石箱子": icon("英雄星石箱子.jpg"),
   "英雄星石自选箱子": icon("英雄星石箱子.jpg")
 };
+
+const EMPTY_ITEM_ICON_NAMES = new Set([
+  "灿烂荣誉突破石（绑定）",
+  "精炼破坏强石（绑定）",
+  "精炼守护强石（绑定）",
+  "顶级奥莱赫融合材料（绑定）"
+]);
 
 const inferredItemIconFiles = [
   ["破坏石", "破坏石箱子.jpg"],
@@ -3406,6 +3409,9 @@ function modalDisplayItems(pack) {
 }
 
 function itemIconHtml(name) {
+  if (EMPTY_ITEM_ICON_NAMES.has(name)) {
+    return '<span class="item-icon item-icon-empty" aria-hidden="true"></span>';
+  }
   const path = resolveItemIconPath(name);
   const label = displayItemName(name);
   if (!path) return `<span class="item-icon item-icon-fallback">${escapeHtml(label.slice(0, 1))}</span>`;
