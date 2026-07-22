@@ -2879,6 +2879,7 @@ function choiceGroupsHtml(pack) {
                 return `
                   <label class="option-card">
                     <input type="radio" name="choice-${escapeAttr(pack.id)}-${escapeAttr(group.id)}" data-choice-group-id="${escapeAttr(group.id)}" data-choice-option-name="${escapeAttr(option.name)}" ${checked ? "checked" : ""}>
+                    <span class="option-card-icon">${itemIconHtml(option.name)}</span>
                     <span>
                       <strong>${escapeHtml(displayItemName(option.name))}×${fmtNum(optionQty, 0)}</strong>
                       <span class="subnote">${escapeHtml(source)}</span>
@@ -2935,6 +2936,7 @@ function includedContentsHtml(pack) {
           return `
             <label class="option-card ${checked ? "" : "option-disabled"}">
               <input type="checkbox" data-included-content-key="${escapeAttr(key)}" ${checked ? "checked" : ""}>
+              <span class="option-card-icon">${itemIconHtml(content.name)}</span>
               <span>
                 <strong>${displayItemWithQty(content.name, content.qty)}</strong>
                 <span class="subnote">${escapeHtml(valued.source)}</span>

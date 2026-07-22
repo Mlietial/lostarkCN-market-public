@@ -1416,7 +1416,7 @@ textarea {
 
 .option-card {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto auto minmax(0, 1fr) auto;
   gap: 9px;
   align-items: center;
   border: 1px solid rgba(68, 137, 205, .14);
@@ -1448,6 +1448,18 @@ textarea {
 
 .option-card > span {
   min-width: 0;
+}
+
+.option-card-icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+}
+
+.option-card-icon .item-icon {
+  width: 34px;
+  height: 34px;
 }
 
 .option-card > span > strong {
