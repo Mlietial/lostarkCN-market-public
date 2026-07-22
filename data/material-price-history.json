@@ -1,7 +1,7 @@
 {
   "app": "lostark-material-price-history",
   "version": 1,
-  "generatedAt": "2026-07-21T00:10:31.567Z",
+  "generatedAt": "2026-07-22T05:00:00.000Z",
   "source": "Daily item-price-data exports",
   "items": [
     "命运破坏石",
@@ -44,7 +44,15 @@
     "稀有遗物",
     "考古结晶",
     "古代遗物",
-    "珍贵的遗物"
+    "珍贵的遗物",
+    "命运守护石结晶",
+    "伟大的命运突破石",
+    "高级阿比多斯融合材料",
+    "命运破坏石结晶",
+    "匠人的裁缝术：第3阶段",
+    "匠人的冶金术：第3阶段",
+    "匠人的裁缝术：第4阶段",
+    "匠人的冶金术：第4阶段"
   ],
   "rows": [
     {
@@ -11218,6 +11226,445 @@
           "recentDeal": 12.0,
           "lowest": 10.0,
           "stackSize": 100,
+          "unit": "gold"
+        }
+      }
+    },
+    {
+      "date": "2026-07-22",
+      "exportedAt": "2026-07-22T05:00:00.000Z",
+      "commit": "",
+      "values": {
+        "命运破坏石": {
+          "value": 244,
+          "raw": "244",
+          "prevAvg": 344.2,
+          "recentDeal": 250,
+          "lowest": 244,
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "熔岩之息": {
+          "value": 238,
+          "raw": "238",
+          "prevAvg": 314.7,
+          "recentDeal": 255,
+          "lowest": 238,
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "命运碎片袋子（大）": {
+          "value": 188,
+          "raw": "188",
+          "prevAvg": 194.7,
+          "recentDeal": 190,
+          "lowest": 188,
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "冰川之息": {
+          "value": 166,
+          "raw": "166",
+          "prevAvg": 168.4,
+          "recentDeal": 169,
+          "lowest": 166,
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "命运碎片袋子（小）": {
+          "value": 120,
+          "raw": "120",
+          "prevAvg": 67.5,
+          "recentDeal": 120,
+          "lowest": 120,
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "阿比多斯融合材料": {
+          "value": 98,
+          "raw": "98",
+          "prevAvg": 89.1,
+          "recentDeal": 98,
+          "lowest": 98,
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "命运突破石": {
+          "value": 9,
+          "raw": "9",
+          "prevAvg": 8.1,
+          "recentDeal": 9,
+          "lowest": 9,
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "命运守护石": {
+          "value": 7,
+          "raw": "7",
+          "prevAvg": 10.5,
+          "recentDeal": 7,
+          "lowest": 7,
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "命运碎片袋子（中）": {
+          "value": 152,
+          "raw": "152",
+          "prevAvg": 145.5,
+          "recentDeal": 155,
+          "lowest": 152,
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "神选英雄气息": {
+          "value": 4277777,
+          "raw": "4277777",
+          "prevAvg": 4181708.2,
+          "recentDeal": 4297444,
+          "lowest": 4277777,
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "冶金术：业火[19-20]": {
+          "value": 3075,
+          "raw": "3075",
+          "prevAvg": 2296,
+          "recentDeal": 3075,
+          "lowest": 3075,
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "裁缝术：业火[19-20]": {
+          "value": 3583,
+          "raw": "3583",
+          "prevAvg": 2286.2,
+          "recentDeal": 3583,
+          "lowest": 3583,
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "绚丽的野花": {
+          "value": 1200,
+          "raw": "1200",
+          "prevAvg": 1182.8,
+          "recentDeal": 1202,
+          "lowest": 1200,
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "阿比多斯野花": {
+          "value": 1270,
+          "raw": "1270",
+          "prevAvg": 1286.6,
+          "recentDeal": 1270,
+          "lowest": 1270,
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "害羞的野花": {
+          "value": 190,
+          "raw": "190",
+          "prevAvg": 179,
+          "recentDeal": 195,
+          "lowest": 190,
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "野花": {
+          "value": 84,
+          "raw": "84",
+          "prevAvg": 88,
+          "recentDeal": 86,
+          "lowest": 84,
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "阿比多斯木材": {
+          "value": 1039,
+          "raw": "1039",
+          "prevAvg": 1051,
+          "recentDeal": 1039,
+          "lowest": 1039,
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "结实的木材": {
+          "value": 808,
+          "raw": "808",
+          "prevAvg": 820.5,
+          "recentDeal": 809,
+          "lowest": 808,
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "松软木材": {
+          "value": 163,
+          "raw": "163",
+          "prevAvg": 164.3,
+          "recentDeal": 163,
+          "lowest": 163,
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "木材": {
+          "value": 81,
+          "raw": "81",
+          "prevAvg": 81.7,
+          "recentDeal": 81,
+          "lowest": 81,
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "阿比多斯矿石": {
+          "value": 1296,
+          "raw": "1296",
+          "prevAvg": 1297.3,
+          "recentDeal": 1300,
+          "lowest": 1296,
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "坚固的矿石": {
+          "value": 1057,
+          "raw": "1057",
+          "prevAvg": 1053.6,
+          "recentDeal": 1061,
+          "lowest": 1057,
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "沉重的矿石": {
+          "value": 175,
+          "raw": "175",
+          "prevAvg": 173.8,
+          "recentDeal": 180,
+          "lowest": 175,
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "矿石": {
+          "value": 95,
+          "raw": "95",
+          "prevAvg": 87.9,
+          "recentDeal": 95,
+          "lowest": 95,
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "奥莱赫厚实的生肉": {
+          "value": 1895,
+          "raw": "1895",
+          "prevAvg": 1745.5,
+          "recentDeal": 1895,
+          "lowest": 1895,
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "阿比多斯厚实的生肉": {
+          "value": 1621,
+          "raw": "1621",
+          "prevAvg": 1545.2,
+          "recentDeal": 1621,
+          "lowest": 1621,
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "瘦实的生肉": {
+          "value": 248,
+          "raw": "248",
+          "prevAvg": 233.5,
+          "recentDeal": 249,
+          "lowest": 248,
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "狩猎结晶": {
+          "value": 150,
+          "raw": "150",
+          "prevAvg": 142.3,
+          "recentDeal": 150,
+          "lowest": 150,
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "厚实的生肉": {
+          "value": 122,
+          "raw": "122",
+          "prevAvg": 119.9,
+          "recentDeal": 122,
+          "lowest": 122,
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "珍贵的皮革": {
+          "value": 8,
+          "raw": "8",
+          "prevAvg": 10,
+          "recentDeal": 10,
+          "lowest": 8,
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "奥莱赫太阳鲤": {
+          "value": 1995,
+          "raw": "1995",
+          "prevAvg": 1348,
+          "recentDeal": 1997,
+          "lowest": 1995,
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "阿比多斯太阳鲤鱼": {
+          "value": 1287,
+          "raw": "1287",
+          "prevAvg": 1141.9,
+          "recentDeal": 1288,
+          "lowest": 1287,
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "钓鱼结晶": {
+          "value": 220,
+          "raw": "220",
+          "prevAvg": 124.1,
+          "recentDeal": 128,
+          "lowest": 220,
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "红肉海鲜": {
+          "value": 182,
+          "raw": "182",
+          "prevAvg": 175.2,
+          "recentDeal": 190,
+          "lowest": 182,
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "鲜鱼": {
+          "value": 88,
+          "raw": "88",
+          "prevAvg": 86.1,
+          "recentDeal": 94,
+          "lowest": 88,
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "阿比多斯遗物": {
+          "value": 1048,
+          "raw": "1048",
+          "prevAvg": 1043.3,
+          "recentDeal": 1049,
+          "lowest": 1048,
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "稀有遗物": {
+          "value": 165,
+          "raw": "165",
+          "prevAvg": 163.8,
+          "recentDeal": 165,
+          "lowest": 165,
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "考古结晶": {
+          "value": 99,
+          "raw": "99",
+          "prevAvg": null,
+          "recentDeal": 1,
+          "lowest": 99,
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "古代遗物": {
+          "value": 82,
+          "raw": "82",
+          "prevAvg": 81.8,
+          "recentDeal": 82,
+          "lowest": 82,
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "珍贵的遗物": {
+          "value": 3,
+          "raw": "3",
+          "prevAvg": 9.3,
+          "recentDeal": 9,
+          "lowest": 3,
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "命运守护石结晶": {
+          "value": 25,
+          "raw": "25",
+          "prevAvg": null,
+          "recentDeal": 25,
+          "lowest": 25,
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "伟大的命运突破石": {
+          "value": 38,
+          "raw": "38",
+          "prevAvg": null,
+          "recentDeal": 47,
+          "lowest": 38,
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "高级阿比多斯融合材料": {
+          "value": 128,
+          "raw": "128",
+          "prevAvg": null,
+          "recentDeal": 129,
+          "lowest": 128,
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "命运破坏石结晶": {
+          "value": 1099,
+          "raw": "1099",
+          "prevAvg": null,
+          "recentDeal": 1100,
+          "lowest": 1099,
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "匠人的裁缝术：第3阶段": {
+          "value": 4221,
+          "raw": "4221",
+          "prevAvg": null,
+          "recentDeal": 4222,
+          "lowest": 4221,
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "匠人的冶金术：第3阶段": {
+          "value": 5655,
+          "raw": "5655",
+          "prevAvg": null,
+          "recentDeal": 5665,
+          "lowest": 5655,
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "匠人的裁缝术：第4阶段": {
+          "value": 7880,
+          "raw": "7880",
+          "prevAvg": null,
+          "recentDeal": 7800,
+          "lowest": 7880,
+          "stackSize": null,
+          "unit": "gold"
+        },
+        "匠人的冶金术：第4阶段": {
+          "value": 9288,
+          "raw": "9288",
+          "prevAvg": null,
+          "recentDeal": 9999,
+          "lowest": 9288,
+          "stackSize": null,
           "unit": "gold"
         }
       }

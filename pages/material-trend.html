@@ -241,7 +241,13 @@
     };
     const esc = (value) => String(value).replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
     const shortDate = (s) => String(s || "").replace(/^[0-9]{4}-/, "");
-    const iconUrl = (name) => `../assets/${encodeURIComponent(name)}.jpg`;
+    const MATERIAL_ICON_FILES = {
+      "命运守护石结晶": "新守护石.png",
+      "伟大的命运突破石": "新突破石.png",
+      "高级阿比多斯融合材料": "新的融合材料.png",
+      "命运破坏石结晶": "新红石头.png"
+    };
+    const iconUrl = (name) => `../assets/${encodeURIComponent(MATERIAL_ICON_FILES[name] || `${name}.jpg`)}`;
     const entryValue = (entry) => {
       if (!entry) return null;
       const value = entry.lowest ?? entry.value;
