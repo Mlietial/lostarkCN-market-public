@@ -90,6 +90,10 @@ const itemPrices = {
   "熔岩之息": { gold: 240, note: "拍卖单价" },
   "命运破坏石": { gold: 332 / 100, note: "332金/100个" },
   "命运守护石": { gold: 6 / 100, note: "6金/100个" },
+  "命运破坏石结晶（绑定）": { note: "手动填拍卖单价" },
+  "命运守护石结晶（绑定）": { note: "手动填拍卖单价" },
+  "命运破坏石（绑定）": { components: [{ name: "命运破坏石", qty: 1 }], note: "按命运破坏石单价" },
+  "命运守护石（绑定）": { components: [{ name: "命运守护石", qty: 1 }], note: "按命运守护石单价" },
   "命运突破石": { gold: 7, note: "拍卖单价" },
   "阿比多斯融合材料": { gold: 82, note: "拍卖单价" },
   "高级-英雄星石箱子": { gold: 2500, note: "拍卖/市场估值" },
@@ -126,6 +130,10 @@ const itemIcons = {
   "熔岩之息": icon("熔岩之息.jpg"),
   "命运破坏石": icon("命运破坏石.jpg"),
   "命运守护石": icon("命运守护石.jpg"),
+  "命运破坏石结晶（绑定）": icon("新红石头.png"),
+  "命运守护石结晶（绑定）": icon("新守护石.png"),
+  "命运破坏石（绑定）": icon("命运破坏石.jpg"),
+  "命运守护石（绑定）": icon("命运守护石.jpg"),
   "命运突破石": icon("命运突破石.jpg"),
   "阿比多斯融合材料": icon("阿比多斯融合材料.jpg"),
   "匠人的裁缝术：第3阶段": icon("匠人的裁缝术：第3阶段.jpg"),
@@ -158,6 +166,8 @@ const itemIcons = {
   "4阶精炼辅助材料自选箱子": icon("精炼辅助材料自选箱子.jpg"),
   "4阶守护石自选箱子": icon("守护石箱子.jpg"),
   "4阶破坏石自选箱子": icon("破坏石箱子.jpg"),
+  "4阶守护石自选袋子2": icon("守护石箱子.jpg"),
+  "4阶破坏石自选袋子2": icon("破坏石箱子.jpg"),
   "英雄星石箱子": icon("英雄星石箱子.jpg"),
   "英雄星石自选箱子": icon("英雄星石箱子.jpg")
 };
@@ -1104,7 +1114,7 @@ function sanitizePack(raw, fallback = {}) {
 }
 
 function migratePackRules(pack) {
-  return migrateRefineSupportChoiceGroups(pack);
+  return migrateStoneChoiceGroups(migrateRefineSupportChoiceGroups(pack));
 }
 
 function migrateRefineSupportChoiceGroups(pack) {
@@ -1149,6 +1159,60 @@ function refineSupportChoiceGroup(packId, qty, defaultSelected = "熔岩之息")
       { name: "熔岩之息", qty: 3 }
     ]
   };
+}
+
+const STONE_CHOICE_GROUP_DEFINITIONS = [
+  {
+    sourceName: "4阶守护石自选袋子2",
+    idSuffix: "guardian-stone-choice-2",
+    defaultSelected: "命运守护石结晶（绑定）",
+    options: [
+      { name: "命运守护石结晶（绑定）", qty: 50 },
+      { name: "命运守护石（绑定）", qty: 250 }
+    ]
+  },
+  {
+    sourceName: "4阶破坏石自选袋子2",
+    idSuffix: "destruction-stone-choice-2",
+    defaultSelected: "命运破坏石结晶（绑定）",
+    options: [
+      { name: "命运破坏石结晶（绑定）", qty: 50 },
+      { name: "命运破坏石（绑定）", qty: 250 }
+    ]
+  }
+];
+
+function migrateStoneChoiceGroups(pack) {
+  return STONE_CHOICE_GROUP_DEFINITIONS.reduce((current, definition) => {
+    const legacyContent = (current.contents || []).find(content => content.name === definition.sourceName);
+    const isMatchingGroup = group => {
+      const id = String(group?.id || "");
+      const name = choiceGroupBoxName(group);
+      return id.includes(definition.idSuffix) || name === definition.sourceName;
+    };
+    const matchingGroups = (current.choiceGroups || []).filter(isMatchingGroup);
+    const existingGroup = matchingGroups[0];
+    const groupQty = Number(legacyContent?.qty || existingGroup?.qty) || 0;
+    if (!groupQty && !matchingGroups.length) return current;
+    const optionNames = definition.options.map(option => option.name);
+    const defaultSelected = optionNames.includes(existingGroup?.defaultSelected)
+      ? existingGroup.defaultSelected
+      : definition.defaultSelected;
+    return {
+      ...current,
+      contents: (current.contents || []).filter(content => content.name !== definition.sourceName),
+      choiceGroups: [
+        ...(current.choiceGroups || []).filter(group => !isMatchingGroup(group)),
+        {
+          id: `${current.id || "pack"}-${definition.idSuffix}`,
+          name: `${definition.sourceName} ×${groupQty || 1}`,
+          qty: groupQty || 1,
+          defaultSelected,
+          options: definition.options.map(option => ({ ...option }))
+        }
+      ]
+    };
+  }, pack);
 }
 
 function getGiftPacks() {
