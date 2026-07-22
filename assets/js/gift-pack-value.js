@@ -96,6 +96,8 @@ const itemPrices = {
   "命运守护石（绑定）": { components: [{ name: "命运守护石", qty: 1 }], note: "按命运守护石单价" },
   "命运突破石": { gold: 7, note: "拍卖单价" },
   "阿比多斯融合材料": { gold: 82, note: "拍卖单价" },
+  "高级阿比多斯融合材料（绑定）": { note: "手动填拍卖单价" },
+  "阿比多斯融合材料（绑定）": { components: [{ name: "阿比多斯融合材料", qty: 1 }], note: "按阿比多斯融合材料单价" },
   "高级-英雄星石箱子": { gold: 2500, note: "拍卖/市场估值" },
   "稀有-英雄星石箱子": { gold: 7000, note: "拍卖/市场估值" },
   "星石加工初始化券": { blue: 1600, note: "1600蓝钻折算" },
@@ -136,6 +138,8 @@ const itemIcons = {
   "命运守护石（绑定）": icon("命运守护石.jpg"),
   "命运突破石": icon("命运突破石.jpg"),
   "阿比多斯融合材料": icon("阿比多斯融合材料.jpg"),
+  "高级阿比多斯融合材料（绑定）": icon("新的融合材料.png"),
+  "阿比多斯融合材料（绑定）": icon("阿比多斯融合材料.jpg"),
   "匠人的裁缝术：第3阶段": icon("匠人的裁缝术：第3阶段.jpg"),
   "匠人的裁缝术：第4阶段": icon("匠人的裁缝术：第4阶段.jpg"),
   "匠人的冶金术：第3阶段": icon("匠人的冶金术：第3阶段.jpg"),
@@ -162,6 +166,7 @@ const itemIcons = {
   "星石加工初始化/重置券": icon("星石加工初始化券.jpg"),
   "星石加工重置券": icon("星石加工初始化券.jpg"),
   "4阶融合材料自选箱子": icon("融合材料箱子.jpg"),
+  "4阶融合材料自选箱子2": icon("融合材料箱子.jpg"),
   "4阶碎片自选箱子": icon("碎片箱子.jpg"),
   "4阶精炼辅助材料自选箱子": icon("精炼辅助材料自选箱子.jpg"),
   "4阶守护石自选箱子": icon("守护石箱子.jpg"),
@@ -456,7 +461,7 @@ const giftPacks = [
   }
 ];
 
-const STONE_CHOICE_GROUP_DEFINITIONS = [
+const HONING_CHOICE_GROUP_DEFINITIONS = [
   {
     sourceName: "4阶守护石自选袋子2",
     idSuffix: "guardian-stone-choice-2",
@@ -473,6 +478,15 @@ const STONE_CHOICE_GROUP_DEFINITIONS = [
     options: [
       { name: "命运破坏石结晶（绑定）", qty: 50 },
       { name: "命运破坏石（绑定）", qty: 250 }
+    ]
+  },
+  {
+    sourceName: "4阶融合材料自选箱子2",
+    idSuffix: "fusion-material-choice-2",
+    defaultSelected: "高级阿比多斯融合材料（绑定）",
+    options: [
+      { name: "高级阿比多斯融合材料（绑定）", qty: 5 },
+      { name: "阿比多斯融合材料（绑定）", qty: 7 }
     ]
   }
 ];
@@ -1088,7 +1102,7 @@ function sanitizePack(raw, fallback = {}) {
 }
 
 function migratePackRules(pack) {
-  return migrateStoneChoiceGroups(migrateRefineSupportChoiceGroups(pack));
+  return migrateHoningChoiceGroups(migrateRefineSupportChoiceGroups(pack));
 }
 
 function migrateRefineSupportChoiceGroups(pack) {
@@ -1135,8 +1149,8 @@ function refineSupportChoiceGroup(packId, qty, defaultSelected = "熔岩之息")
   };
 }
 
-function migrateStoneChoiceGroups(pack) {
-  return STONE_CHOICE_GROUP_DEFINITIONS.reduce((current, definition) => {
+function migrateHoningChoiceGroups(pack) {
+  return HONING_CHOICE_GROUP_DEFINITIONS.reduce((current, definition) => {
     const legacyContent = (current.contents || []).find(content => content.name === definition.sourceName);
     const isMatchingGroup = group => {
       const id = String(group?.id || "");
