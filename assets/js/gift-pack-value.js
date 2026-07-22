@@ -1016,6 +1016,14 @@ async function importGiftPackData(file) {
 async function loadPublicGiftPackData() {
   try {
     const { backup, storage } = await fetchPublicGiftPackBackup();
+    if (location.protocol !== "file:") {
+      localStorage.removeItem(EDITABLE_STORAGE_KEYS.packOverrides);
+      localStorage.removeItem(EDITABLE_STORAGE_KEYS.customPacks);
+      localStorage.removeItem(EDITABLE_STORAGE_KEYS.deletedPacks);
+      editablePackOverrides = {};
+      editableCustomPacks = [];
+      editableDeletedPacks = [];
+    }
     applyPublicGiftPackSnapshot(backup, storage, { preserveLocalData: true });
   } catch (error) {
     console.warn("礼包公开数据加载失败：", error);
