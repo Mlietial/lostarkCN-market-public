@@ -95,6 +95,7 @@ const itemPrices = {
   "命运破坏石（绑定）": { components: [{ name: "命运破坏石", qty: 1 }], note: "按命运破坏石单价" },
   "命运守护石（绑定）": { components: [{ name: "命运守护石", qty: 1 }], note: "按命运守护石单价" },
   "命运突破石": { gold: 7, note: "拍卖单价" },
+  "伟大的命运突破石（绑定）": { components: [{ name: "伟大的命运突破石", qty: 1 }], note: "按伟大的命运突破石单价" },
   "灿烂荣誉突破石（绑定）": { note: "手动填拍卖单价" },
   "命运突破石（绑定）": { components: [{ name: "命运突破石", qty: 1 }], note: "按命运突破石单价" },
   "精炼破坏强石（绑定）": { note: "手动填拍卖单价" },
@@ -121,6 +122,7 @@ const itemPrices = {
   "4阶守护石自选箱子": { components: [{ name: "命运守护石", qty: 50 }], note: "命运守护石×50" },
   "4阶碎片自选箱子": { components: [{ name: "命运碎片袋子（中）", qty: 1 }], note: "命运碎片袋子（中）×1" },
   "4阶突破石自选箱子": { components: [{ name: "命运突破石", qty: 5 }], note: "命运突破石×5" },
+  "4阶突破石自选箱子2": { components: [{ name: "伟大的命运突破石", qty: 5 }], note: "伟大的命运突破石×5" },
   "冰川之息箱子": { components: [{ name: "冰川之息", qty: 5 }], note: "冰川之息×5" },
   "熔岩之息箱子": { components: [{ name: "熔岩之息", qty: 5 }], note: "熔岩之息×5" }
 };
@@ -145,6 +147,7 @@ const itemIcons = {
   "命运守护石（绑定）": icon("命运守护石.jpg"),
   "命运突破石": icon("命运突破石.jpg"),
   "伟大的命运突破石": icon("新突破石.png"),
+  "伟大的命运突破石（绑定）": icon("新突破石.png"),
   "命运突破石（绑定）": icon("命运突破石.jpg"),
   "阿比多斯融合材料": icon("阿比多斯融合材料.jpg"),
   "高级阿比多斯融合材料": icon("新的融合材料.png"),
@@ -540,6 +543,15 @@ const HONING_CHOICE_GROUP_DEFINITIONS = [
     options: [
       { name: "高级阿比多斯融合材料（绑定）", qty: 5 },
       { name: "阿比多斯融合材料（绑定）", qty: 7 }
+    ]
+  },
+  {
+    sourceName: "4阶突破石自选箱子2",
+    idSuffix: "breakthrough-stone-choice-2",
+    defaultSelected: "伟大的命运突破石（绑定）",
+    options: [
+      { name: "伟大的命运突破石（绑定）", qty: 5 },
+      { name: "命运突破石（绑定）", qty: 25 }
     ]
   }
 ];
