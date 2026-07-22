@@ -2875,14 +2875,13 @@ function choiceGroupsHtml(pack) {
                 const minTotal = unit.minValue === undefined || unit.minValue === null ? total : unit.minValue * totalQty;
                 const maxTotal = unit.maxValue === undefined || unit.maxValue === null ? total : unit.maxValue * totalQty;
                 const checked = selected?.name === option.name;
-                const source = `${group.name}：每箱${option.name}×${optionQty}`;
                 return `
                   <label class="option-card">
                     <input type="radio" name="choice-${escapeAttr(pack.id)}-${escapeAttr(group.id)}" data-choice-group-id="${escapeAttr(group.id)}" data-choice-option-name="${escapeAttr(option.name)}" ${checked ? "checked" : ""}>
                     <span class="option-card-icon">${itemIconHtml(option.name)}</span>
                     <span>
                       <strong>${escapeHtml(displayItemName(option.name))}×${fmtNum(optionQty, 0)}</strong>
-                      <span class="subnote">${escapeHtml(source)}</span>
+                      <span class="subnote">总计 ×${fmtNum(totalQty, 0)}</span>
                     </span>
                     <strong>${total === null ? "未计入" : formatGoldRange(minTotal, maxTotal, total)}</strong>
                   </label>
