@@ -95,7 +95,12 @@ const itemPrices = {
   "命运破坏石（绑定）": { components: [{ name: "命运破坏石", qty: 1 }], note: "按命运破坏石单价" },
   "命运守护石（绑定）": { components: [{ name: "命运守护石", qty: 1 }], note: "按命运守护石单价" },
   "命运突破石": { gold: 7, note: "拍卖单价" },
+  "灿烂荣誉突破石（绑定）": { note: "手动填拍卖单价" },
+  "命运突破石（绑定）": { components: [{ name: "命运突破石", qty: 1 }], note: "按命运突破石单价" },
+  "精炼破坏强石（绑定）": { note: "手动填拍卖单价" },
+  "精炼守护强石（绑定）": { note: "手动填拍卖单价" },
   "阿比多斯融合材料": { gold: 82, note: "拍卖单价" },
+  "顶级奥莱赫融合材料（绑定）": { note: "手动填拍卖单价" },
   "高级阿比多斯融合材料（绑定）": { note: "手动填拍卖单价" },
   "阿比多斯融合材料（绑定）": { components: [{ name: "阿比多斯融合材料", qty: 1 }], note: "按阿比多斯融合材料单价" },
   "高级-英雄星石箱子": { gold: 2500, note: "拍卖/市场估值" },
@@ -137,7 +142,12 @@ const itemIcons = {
   "命运破坏石（绑定）": icon("命运破坏石.jpg"),
   "命运守护石（绑定）": icon("命运守护石.jpg"),
   "命运突破石": icon("命运突破石.jpg"),
+  "灿烂荣誉突破石（绑定）": icon("新突破石.png"),
+  "命运突破石（绑定）": icon("命运突破石.jpg"),
+  "精炼破坏强石（绑定）": icon("新红石头.png"),
+  "精炼守护强石（绑定）": icon("新守护石.png"),
   "阿比多斯融合材料": icon("阿比多斯融合材料.jpg"),
+  "顶级奥莱赫融合材料（绑定）": icon("新的融合材料.png"),
   "高级阿比多斯融合材料（绑定）": icon("新的融合材料.png"),
   "阿比多斯融合材料（绑定）": icon("阿比多斯融合材料.jpg"),
   "匠人的裁缝术：第3阶段": icon("匠人的裁缝术：第3阶段.jpg"),
@@ -462,6 +472,42 @@ const giftPacks = [
 ];
 
 const HONING_CHOICE_GROUP_DEFINITIONS = [
+  {
+    sourceName: "4阶突破石自选箱子",
+    idSuffix: "t4-breakthrough-choice",
+    defaultSelected: "灿烂荣誉突破石（绑定）",
+    options: [
+      { name: "灿烂荣誉突破石（绑定）", qty: 25 },
+      { name: "命运突破石（绑定）", qty: 5 }
+    ]
+  },
+  {
+    sourceName: "4阶破坏石自选箱子",
+    idSuffix: "t4-destruction-choice",
+    defaultSelected: "精炼破坏强石（绑定）",
+    options: [
+      { name: "精炼破坏强石（绑定）", qty: 250 },
+      { name: "命运破坏石（绑定）", qty: 50 }
+    ]
+  },
+  {
+    sourceName: "4阶守护石自选箱子",
+    idSuffix: "t4-guardian-choice",
+    defaultSelected: "精炼守护强石（绑定）",
+    options: [
+      { name: "精炼守护强石（绑定）", qty: 250 },
+      { name: "命运守护石（绑定）", qty: 50 }
+    ]
+  },
+  {
+    sourceName: "4阶融合材料自选箱子",
+    idSuffix: "t4-fusion-choice",
+    defaultSelected: "顶级奥莱赫融合材料（绑定）",
+    options: [
+      { name: "顶级奥莱赫融合材料（绑定）", qty: 6 },
+      { name: "阿比多斯融合材料（绑定）", qty: 5 }
+    ]
+  },
   {
     sourceName: "4阶守护石自选袋子2",
     idSuffix: "guardian-stone-choice-2",
