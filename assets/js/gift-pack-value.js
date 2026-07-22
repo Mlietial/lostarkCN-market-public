@@ -1964,7 +1964,14 @@ function normalizeManualEntry(raw) {
   }
   const range = parseManualValueRange(raw.value);
   const unit = MANUAL_VALUE_UNITS[raw.unit] ? raw.unit : "gold";
-  if (range) return { ...range, unit };
+  const storedStackSize = Number(raw.stackSize);
+  if (range) {
+    return {
+      ...range,
+      stackSize: range.stackSize || (Number.isFinite(storedStackSize) && storedStackSize > 1 ? storedStackSize : null),
+      unit
+    };
+  }
   return null;
 }
 
