@@ -2040,6 +2040,8 @@ function manualEntryText(entry) {
 }
 
 function valuationName(name) {
+  const unboundName = unboundItemName(name);
+  if (unboundName !== name && (state.manualValues[unboundName] || itemPrices[unboundName])) return unboundName;
   if (state.manualValues[name] || itemPrices[name]) return name;
   const alias = String(name || "").replace("选择箱子", "自选箱子");
   return state.manualValues[alias] || itemPrices[alias] ? alias : name;
@@ -2255,8 +2257,10 @@ function filterPacks(packs) {
 function allPackItems() {
   const byName = new Map();
   const add = content => {
-    if (!content || !content.name || byName.has(content.name)) return;
-    byName.set(content.name, content.name);
+    if (!content || !content.name) return;
+    const name = unboundItemName(content.name);
+    if (byName.has(name)) return;
+    byName.set(name, name);
   };
   getGiftPacks().forEach(pack => {
     (pack.contents || []).forEach(add);
@@ -2267,7 +2271,10 @@ function allPackItems() {
       (group.options || []).forEach(add);
     });
   });
-  Object.keys(itemPrices).forEach(name => byName.set(name, name));
+  Object.keys(itemPrices).forEach(name => {
+    const unboundName = unboundItemName(name);
+    byName.set(unboundName, unboundName);
+  });
   Object.values(itemPrices).forEach(def => {
     (def.components || []).forEach(component => byName.set(component.name, component.name));
   });
@@ -2313,7 +2320,11 @@ function defaultItemSource(name) {
 }
 
 function displayItemName(name) {
-  return editableItemLabels[name] || name;
+  return unboundItemName(editableItemLabels[name] || name);
+}
+
+function unboundItemName(name) {
+  return String(name || "").replace(/\s*[（(]\s*绑定\s*[）)]/g, "").trim();
 }
 
 function choiceBoxDefinition(name) {
