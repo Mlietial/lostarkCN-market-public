@@ -456,6 +456,27 @@ const giftPacks = [
   }
 ];
 
+const STONE_CHOICE_GROUP_DEFINITIONS = [
+  {
+    sourceName: "4阶守护石自选袋子2",
+    idSuffix: "guardian-stone-choice-2",
+    defaultSelected: "命运守护石结晶（绑定）",
+    options: [
+      { name: "命运守护石结晶（绑定）", qty: 50 },
+      { name: "命运守护石（绑定）", qty: 250 }
+    ]
+  },
+  {
+    sourceName: "4阶破坏石自选袋子2",
+    idSuffix: "destruction-stone-choice-2",
+    defaultSelected: "命运破坏石结晶（绑定）",
+    options: [
+      { name: "命运破坏石结晶（绑定）", qty: 50 },
+      { name: "命运破坏石（绑定）", qty: 250 }
+    ]
+  }
+];
+
 const state = {
   ...loadSettings(),
   filter: "inStock",
@@ -1160,27 +1181,6 @@ function refineSupportChoiceGroup(packId, qty, defaultSelected = "熔岩之息")
     ]
   };
 }
-
-const STONE_CHOICE_GROUP_DEFINITIONS = [
-  {
-    sourceName: "4阶守护石自选袋子2",
-    idSuffix: "guardian-stone-choice-2",
-    defaultSelected: "命运守护石结晶（绑定）",
-    options: [
-      { name: "命运守护石结晶（绑定）", qty: 50 },
-      { name: "命运守护石（绑定）", qty: 250 }
-    ]
-  },
-  {
-    sourceName: "4阶破坏石自选袋子2",
-    idSuffix: "destruction-stone-choice-2",
-    defaultSelected: "命运破坏石结晶（绑定）",
-    options: [
-      { name: "命运破坏石结晶（绑定）", qty: 50 },
-      { name: "命运破坏石（绑定）", qty: 250 }
-    ]
-  }
-];
 
 function migrateStoneChoiceGroups(pack) {
   return STONE_CHOICE_GROUP_DEFINITIONS.reduce((current, definition) => {
