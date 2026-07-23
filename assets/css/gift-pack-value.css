@@ -768,6 +768,15 @@ textarea {
   text-overflow: ellipsis;
 }
 
+.hero-star-value-setting {
+  width: min(280px, 100%);
+  flex: 0 0 auto;
+}
+
+.hero-star-value-setting select {
+  min-height: 36px;
+}
+
 .manual-create-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 82px 72px;

@@ -35,6 +35,7 @@ const GOLD_RATE_MANUAL_OVERRIDE_KEY = "giftPackGoldRateManualOverride";
 const ITEM_SOURCE_STORAGE_KEY = "giftPackItemSources";
 const GIFT_PACK_EXTRA_STORAGE_KEYS = [
   "giftPackSettings",
+  "heroStarBoxValuationMode",
   PUBLIC_DATA_EXPORTED_AT_KEY
 ];
 const ITEM_PRICE_STORAGE_KEYS = [
@@ -104,7 +105,8 @@ const itemPrices = {
   "顶级奥莱赫融合材料（绑定）": { note: "手动填拍卖单价" },
   "高级阿比多斯融合材料（绑定）": { components: [{ name: "高级阿比多斯融合材料", qty: 1 }], note: "按高级阿比多斯融合材料单价" },
   "阿比多斯融合材料（绑定）": { components: [{ name: "阿比多斯融合材料", qty: 1 }], note: "按阿比多斯融合材料单价" },
-  "高级-英雄星石箱子": { gold: 2500, note: "拍卖/市场估值" },
+  "英雄星石箱子": { starcoin: 560, merchantGold: 43000, note: "默认按560星脉币折算，可切换商人售价43000金" },
+  "高级-英雄星石箱子": { gold: 2500, merchantGold: 1185, note: "默认拍卖/市场估值，可切换商人售价1185金" },
   "稀有-英雄星石箱子": { gold: 7000, note: "拍卖/市场估值" },
   "星石加工初始化券": { blue: 1600, note: "1600蓝钻折算" },
   "星石加工初始化/重置券": { blue: 1600, note: "1600蓝钻折算" },
@@ -558,6 +560,7 @@ const HONING_CHOICE_GROUP_DEFINITIONS = [
 
 const state = {
   ...loadSettings(),
+  heroStarBoxValueMode: window.LOSTARK_STAR_STONE_VALUES.getMode(),
   filter: "inStock",
   sortDesc: true,
   manualValues: loadManualValues(),
@@ -622,6 +625,7 @@ function renderRateControls() {
   const blueSourceInput = document.getElementById("blueSourceInput");
   const customBlueRateInput = document.getElementById("customBlueRateInput");
   const blueExchangePriceInput = document.getElementById("blueExchangePriceInput");
+  const heroStarBoxValueModeInput = document.getElementById("heroStarBoxValueModeInput");
   const hasCustomBlueRate = !!parseBlueRateText(state.customBlueRateText);
   const hasBlueExchange = Number(state.blueExchangePricePerThousand) > 0;
   if (goldRateInput) goldRateInput.value = state.goldPerRmb;
@@ -631,6 +635,7 @@ function renderRateControls() {
   if (blueSourceInput) blueSourceInput.disabled = hasCustomBlueRate || hasBlueExchange;
   if (customBlueRateInput) customBlueRateInput.disabled = hasBlueExchange;
   if (blueExchangePriceInput) blueExchangePriceInput.disabled = hasCustomBlueRate;
+  if (heroStarBoxValueModeInput) heroStarBoxValueModeInput.value = state.heroStarBoxValueMode;
 }
 
 function loadJson(key, fallback) {
@@ -1696,6 +1701,13 @@ function manualValuesDialogHtml() {
           <h2 id="editDialogTitle">手动改写估值</h2>
           <p>左侧选择物品，右侧编辑估值和图标；留空则使用默认估值。</p>
         </div>
+        <label class="hero-star-value-setting">
+          英雄星石箱子估值
+          <select id="heroStarBoxValueModeInput">
+            <option value="starcoin">星脉币估值（默认）</option>
+            <option value="merchant">商人售价 43,000 金</option>
+          </select>
+        </label>
       </div>
       <div id="manualValuesGrid" class="manual-groups"></div>
     </section>
@@ -1724,7 +1736,16 @@ function bindPageEditDialogControls() {
   });
 }
 
-function bindManualDialogControls() {}
+function bindManualDialogControls() {
+  const input = document.getElementById("heroStarBoxValueModeInput");
+  if (!input) return;
+  input.value = state.heroStarBoxValueMode;
+  input.addEventListener("change", event => {
+    state.heroStarBoxValueMode = window.LOSTARK_STAR_STONE_VALUES.setMode(event.target.value);
+    renderManualValues();
+    renderTable();
+  });
+}
 
 function loadManualValues() {
   try {
@@ -1883,6 +1904,15 @@ function royalToValuationGold(royal) {
   return (Number(royal) / state.royalPerRmb) * state.valuationGoldPerRmb * state.royalDiscount;
 }
 
+function currentStarVeinCoinsPerRmb() {
+  const saved = Number(localStorage.getItem("starVeinExpectedCoinsPerRmb"));
+  return Number.isFinite(saved) && saved > 0 ? saved : 27.77;
+}
+
+function starcoinToValuationGold(starcoin) {
+  return Number(starcoin) / currentStarVeinCoinsPerRmb() * state.valuationGoldPerRmb;
+}
+
 function parseBlueRateText(text) {
   const nums = String(text || "").match(/\d+(?:\.\d+)?/g)?.map(Number).filter(value => Number.isFinite(value) && value > 0) || [];
   if (nums.length >= 1) return { blue: nums[0], royal: state.royalPerRmb, label: "自定义" };
@@ -1890,23 +1920,11 @@ function parseBlueRateText(text) {
 }
 
 function blueExchangeServiceFee(totalBlue) {
-  const blue = Number(totalBlue);
-  if (!Number.isFinite(blue) || blue < 1000) return 0;
-  return Math.round(blue * 0.05);
+  return window.LOSTARK_BLUE_EXCHANGE_FEES.serviceFee(totalBlue);
 }
 
 function blueExchangeLots(neededBlue) {
-  const needed = Number(neededBlue);
-  if (!Number.isFinite(needed) || needed <= 0) return { grossBlue: 0, feeBlue: 0, netBlue: 0 };
-  let grossBlue = Math.max(1000, Math.ceil(needed / 1000) * 1000);
-  for (let i = 0; i < 100; i++) {
-    const feeBlue = blueExchangeServiceFee(grossBlue);
-    const netBlue = grossBlue - feeBlue;
-    if (netBlue >= needed) return { grossBlue, feeBlue, netBlue };
-    grossBlue += grossBlue < 20000 ? 1000 : grossBlue < 50000 ? 3000 : 5000;
-  }
-  const feeBlue = blueExchangeServiceFee(grossBlue);
-  return { grossBlue, feeBlue, netBlue: grossBlue - feeBlue };
+  return window.LOSTARK_BLUE_EXCHANGE_FEES.purchaseForNet(neededBlue);
 }
 
 function blueExchangeGold(blue) {
@@ -1928,7 +1946,7 @@ function blueToRoyal(blue) {
 }
 
 function blueSourceText() {
-  if (Number(state.blueExchangePricePerThousand) > 0) return `交易所：${fmtNum(state.blueExchangePricePerThousand, 0)}金/千蓝，含服务费`;
+  if (Number(state.blueExchangePricePerThousand) > 0) return `交易所：${fmtNum(state.blueExchangePricePerThousand, 0)}金/千蓝，含分档服务费`;
   const custom = parseBlueRateText(state.customBlueRateText);
   if (custom) return `自定义：${fmtNum(custom.blue, 2)}蓝钻=1元`;
   const source = currentBlueSource();
@@ -2069,6 +2087,12 @@ function itemUnitGold(content) {
   }
   const def = itemPrices[name];
   if (!def) return { value: null, source: "未计入估值" };
+  if (state.heroStarBoxValueMode === "merchant" && typeof def.merchantGold === "number") {
+    return { value: def.merchantGold, source: `商人金币售价 ${fmtGold(def.merchantGold)} 金/个` };
+  }
+  if (typeof def.starcoin === "number") {
+    return { value: starcoinToValuationGold(def.starcoin), source: `${fmtNum(def.starcoin, 0)}星脉币折算（${currentStarVeinCoinsPerRmb().toFixed(2)}星脉币/元）` };
+  }
   if (typeof def.gold === "number") return { value: def.gold, source: itemSources[name] || def.note || "金币单价" };
   if (typeof def.royal === "number") return { value: royalToValuationGold(def.royal), source: `${itemSources[name] || def.note || "彩钻折金币"}（估值基准比例 ${fmtGold(state.valuationGoldPerRmb)} 金/元）` };
   if (typeof def.blue === "number") return { value: blueToValuationGold(def.blue), source: `${itemSources[name] || def.note || "蓝钻折金币"}（${blueSourceText()}，估值基准比例 ${fmtGold(state.valuationGoldPerRmb)} 金/元）` };
@@ -2106,7 +2130,7 @@ function valueContents(contents) {
     const maxTotal = exchangeTotal !== null ? exchangeTotal : unit.maxValue === undefined || unit.maxValue === null ? total : unit.maxValue * content.qty;
     const unitGold = exchangeTotal !== null ? exchangeTotal / content.qty : unit.value;
     const source = exchangeTotal !== null
-      ? `${fmtNum(exchangeBlue, 0)}蓝钻合并折算（交易所：${fmtNum(state.blueExchangePricePerThousand, 0)}金/千蓝，含服务费）`
+      ? `${fmtNum(exchangeBlue, 0)}蓝钻合并折算（交易所：${fmtNum(state.blueExchangePricePerThousand, 0)}金/千蓝，含分档服务费）`
       : content.choiceGroupSource || unit.source;
     return { ...content, unitGold, minUnitGold: exchangeTotal !== null ? unitGold : unit.minValue, maxUnitGold: exchangeTotal !== null ? unitGold : unit.maxValue, totalGold: total, minTotalGold: minTotal, maxTotalGold: maxTotal, source, isRange: exchangeTotal !== null ? false : unit.isRange };
   });
@@ -2300,6 +2324,8 @@ function defaultItemGold(name) {
     }, 0);
     return total > 0 ? total : null;
   }
+  if (state.heroStarBoxValueMode === "merchant" && typeof def.merchantGold === "number") return def.merchantGold;
+  if (typeof def.starcoin === "number") return starcoinToValuationGold(def.starcoin);
   if (typeof def.gold === "number") return def.gold;
   if (typeof def.royal === "number") return royalToValuationGold(def.royal);
   if (typeof def.blue === "number") return blueToValuationGold(def.blue);
@@ -2323,6 +2349,9 @@ function defaultManualValue(name, defaultGold) {
 }
 
 function defaultItemSource(name) {
+  const def = itemPrices[name];
+  if (state.heroStarBoxValueMode === "merchant" && typeof def?.merchantGold === "number") return `商人金币售价 ${fmtGold(def.merchantGold)} 金/个`;
+  if (typeof def?.starcoin === "number") return `${fmtNum(def.starcoin, 0)}星脉币折算`;
   return itemSources[name] || itemPrices[name]?.note || "默认估值";
 }
 
