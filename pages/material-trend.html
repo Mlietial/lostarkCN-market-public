@@ -220,6 +220,7 @@
       fishing: ["太阳鲤", "太阳鲤鱼", "鲜鱼", "海鲜", "钓鱼结晶"],
       archaeology: ["遗物", "考古结晶"]
     };
+    const HIDDEN_MATERIALS = new Set(["奥莱赫融合材料"]);
     const state = {
       range: localStorage.getItem("lostarkMaterialTrendRange") || "auto",
       search: "",
@@ -345,6 +346,7 @@
     }
 
     function itemMatchesCategory(name) {
+      if (HIDDEN_MATERIALS.has(name)) return false;
       const category = lifeCategoryOf(name);
       if (state.mainFilter === "enhance") return !category;
       if (!category) return false;
@@ -388,7 +390,7 @@
     }
 
     function renderKpis() {
-      const items = history.items || [];
+      const items = (history.items || []).filter((item) => !HIDDEN_MATERIALS.has(item));
       const infos = items.map((item) => ({ item, ...latestInfo(item) })).filter((info) => info.latest);
       const rising = infos.filter((info) => info.change > 0).length;
       const falling = infos.filter((info) => info.change < 0).length;
