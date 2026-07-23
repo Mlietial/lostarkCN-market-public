@@ -3,7 +3,7 @@ const ITEM_ICON_BASE = "../assets/";
 const DEFAULTS = {
   goldPerRmb: 4189.67,
   royalPerRmb: 100,
-  blueSource: "normal",
+  blueSource: "monthly",
   customBlueRateText: "",
   blueExchangePricePerThousand: null,
   royalDiscount: 1,
