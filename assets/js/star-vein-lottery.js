@@ -88,11 +88,8 @@ function simulationStatsMarkup(){const average=simulationState.runs?simulationSt
 function simulationResultMarkup(result){return result?`<span>本次推进 ${selectedRooms} 房完成</span><strong>实际获得 ${money(result.coins)} 星脉币</strong><small>本次花费 ${money(10*selectedMultiplier)} 元 / ${money(100*selectedMultiplier)} 彩钻，已计入全部奖励与税收</small>`:"";}
 function animatedHistoryMarkup(){const result=simulationState.lastResult;if(!simulationState.runs||!result)return "";return `<section class="animated-history" aria-label="历史探索数据"><p class="animated-history-title">历史探索数据</p><div class="simulation-stats">${simulationStatsMarkup()}</div><div class="simulation-result">${simulationResultMarkup(result)}</div></section>`;}
 function renderSimulation(){document.querySelector("#simulationTitle").textContent=`探索模拟 · ${selectedMultiplier}倍 / ${selectedRooms}房`;document.querySelector("#simulationStats").innerHTML=simulationStatsMarkup();const result=simulationState.lastResult;document.querySelector("#simulationRoomGrid").innerHTML=result?result.rooms.map(room=>`<article class="simulation-room"><h4>房间 ${room.room}</h4><span class="simulation-quality ${simulationQualityClasses[room.qualityIndex]}">${room.quality}</span><strong>+${money(room.reward)}</strong><small>${room.taxed?`进入时 ${money(room.beforeTax)} · <span class="tax-hit">税后 ${money(room.afterTax)}（-${money(room.taxLoss)}）</span>`:taxRates[room.room-1]>0?`进入时 ${money(room.beforeTax)} · 税收未触发`:`进入时 ${money(room.beforeTax)} · 无税收事件`}<br>本房奖励 +${money(room.reward)} · 实得 ${money(room.cumulative)}</small></article>`).join(""):`<div class="simulation-empty">等待首次模拟</div>`;const finalResult=document.querySelector("#simulationResult");finalResult.hidden=!result;finalResult.innerHTML=simulationResultMarkup(result);updateAnimatedActionState();}
-function renderSimulationProbabilities(){const qualityNames=qualities.map(quality=>quality[0]);document.querySelector("#simulationProbabilities").innerHTML=`<strong>概率公示</strong><div class="simulation-probability-grid">${roomRates.map((rates,index)=>`<small>房间 ${index+1}：${rates.map((rate,qualityIndex)=>`${qualityNames[qualityIndex]} ${money(rate*100)}%`).join(" / ")} · 税收 ${money(taxRates[index]*100)}%</small>`).join("")}</div><p>基础奖励：大红 400、金色 160、蓝色 60、绿色 20、白色 6 星脉币；奖励按探索倍率放大。税收触发时先扣除当前累计星脉币的 50%（向下取整），再获得本房奖励。</p>`;}
-function animatedQualityRows(currentRoom){
-  const rates=roomRates[Math.max(0,currentRoom-1)];
-  return qualities.map((quality,index)=>`<span class="quality-line spe-td${index+1}"><i class="icon-xx icon-xx${index+1}"></i><strong>${quality[0]}</strong><b>${money(rates[index]*100)}%</b><small>基础 ${money(quality[3])} · 当前 ${money(quality[3]*selectedMultiplier)}</small></span>`).join("");
-}
+function simulationProbabilitiesMarkup(includeTitle=true){const qualityNames=qualities.map(quality=>quality[0]);return `${includeTitle?"<strong>概率公示</strong>":""}<div class="simulation-probability-grid">${roomRates.map((rates,index)=>`<small>房间 ${index+1}：${rates.map((rate,qualityIndex)=>`${qualityNames[qualityIndex]} ${money(rate*100)}%`).join(" / ")} · 税收 ${money(taxRates[index]*100)}%</small>`).join("")}</div><p>基础奖励：大红 400、金色 160、蓝色 60、绿色 20、白色 6 星脉币；奖励按探索倍率放大。税收触发时先扣除当前累计星脉币的 50%（向下取整），再获得本房奖励。</p>`;}
+function renderSimulationProbabilities(){document.querySelector("#simulationProbabilities").innerHTML=simulationProbabilitiesMarkup();}
 function animatedBags(room,state){
   return Array.from({length:3},(_,index)=>{
     const selected=!!room&&state?.selectedBag===index;
@@ -140,7 +137,7 @@ function renderAnimatedSimulation(){
     ${animatedHistoryMarkup()}
     <div class="gl-info-box ${animatedInfoOpen?"":"is-collapsed"}">
       <div class="top-box"><p>| 概率信息板</p><button type="button" class="btn-djsq" id="animatedToggleInfo" aria-expanded="${animatedInfoOpen}"><i class="p3-icon-jt"></i><span class="pc-msg">${animatedInfoOpen?"点击收起":"点击展开"}</span><span class="h5-msg">${animatedInfoOpen?"点击收起":"点击展开"}</span></button></div>
-      <div class="center-box"><div class="center-inner"><div class="center-content"><div class="probability-lines">${animatedQualityRows(currentRoom)}</div></div></div></div>
+      <div class="center-box"><div class="center-inner"><div class="center-content"><div class="simulation-probabilities">${simulationProbabilitiesMarkup(false)}</div></div></div></div>
     </div>
     ${animatedPopup(state,room)}
   </div>`;
