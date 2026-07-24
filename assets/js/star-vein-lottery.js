@@ -85,12 +85,6 @@ function setSimulationMode(mode){
 function updateAnimatedActionState(){const active=!!animatedSimulationState?.active;["#simulateOnce","#simulateTen","#simulateHundred"].forEach(selector=>{const button=document.querySelector(selector);if(button)button.disabled=active;});}
 function renderSimulation(){document.querySelector("#simulationTitle").textContent=`探索模拟 · ${selectedMultiplier}倍 / ${selectedRooms}房`;const average=simulationState.runs?simulationState.totalCoins/simulationState.runs:0;document.querySelector("#simulationStats").innerHTML=`<div class="simulation-stat"><span>模拟次数</span><strong>${money(simulationState.runs)}</strong></div><div class="simulation-stat"><span>累计获得</span><strong>${money(simulationState.totalCoins)} 星脉币</strong></div><div class="simulation-stat"><span>平均获得</span><strong>${money(average)} 星脉币</strong></div><div class="simulation-stat"><span>累计花费</span><strong>${money(simulationState.totalRmb)} 元</strong><small>${money(simulationState.totalCrystal)} 彩钻</small></div><div class="simulation-stat"><span>大红次数</span><strong>${money(simulationState.bigReds)}</strong></div><div class="simulation-stat"><span>税收触发</span><strong>${money(simulationState.taxHits)}</strong></div>`;const result=simulationState.lastResult;document.querySelector("#simulationRoomGrid").innerHTML=result?result.rooms.map(room=>`<article class="simulation-room"><h4>房间 ${room.room}</h4><span class="simulation-quality ${simulationQualityClasses[room.qualityIndex]}">${room.quality}</span><strong>+${money(room.reward)}</strong><small>${room.taxed?`进入时 ${money(room.beforeTax)} · <span class="tax-hit">税后 ${money(room.afterTax)}（-${money(room.taxLoss)}）</span>`:taxRates[room.room-1]>0?`进入时 ${money(room.beforeTax)} · 税收未触发`:`进入时 ${money(room.beforeTax)} · 无税收事件`}<br>本房奖励 +${money(room.reward)} · 实得 ${money(room.cumulative)}</small></article>`).join(""):`<div class="simulation-empty">等待首次模拟</div>`;const finalResult=document.querySelector("#simulationResult");finalResult.hidden=!result;finalResult.innerHTML=result?`<span>本次推进 ${selectedRooms} 房完成</span><strong>实际获得 ${money(result.coins)} 星脉币</strong><small>本次花费 ${money(10*selectedMultiplier)} 元 / ${money(100*selectedMultiplier)} 彩钻，已计入全部奖励与税收</small>`:"";updateAnimatedActionState();}
 function renderSimulationProbabilities(){const qualityNames=qualities.map(quality=>quality[0]);document.querySelector("#simulationProbabilities").innerHTML=`<strong>概率公示</strong><div class="simulation-probability-grid">${roomRates.map((rates,index)=>`<small>房间 ${index+1}：${rates.map((rate,qualityIndex)=>`${qualityNames[qualityIndex]} ${money(rate*100)}%`).join(" / ")} · 税收 ${money(taxRates[index]*100)}%</small>`).join("")}</div><p>基础奖励：大红 400、金色 160、蓝色 60、绿色 20、白色 6 星脉币；奖励按探索倍率放大。税收触发时先扣除当前累计星脉币的 50%（向下取整），再获得本房奖励。</p>`;}
-function animatedTaxCopy(room){
-  if(!room)return {danger:false,title:"等待开始翻牌",copy:"开始后会显示本房间的税收状态。"};
-  if(room.taxed)return {danger:true,title:"遭遇圣光税收队",copy:`进入时 ${money(room.beforeTax)}，税后 ${money(room.afterTax)}（-${money(room.taxLoss)}）星脉币`};
-  if(room.room===1)return {danger:false,title:"安全-本房间无税收队",copy:"房间 1 不会出现圣光税收队。"};
-  return {danger:false,title:"安全-本房税收队未触发",copy:`本房出现概率 ${money(taxRates[room.room-1]*100)}%，本次未触发。`};
-}
 function animatedQualityRows(currentRoom){
   const rates=roomRates[Math.max(0,currentRoom-1)];
   return qualities.map((quality,index)=>`<span class="quality-line spe-td${index+1}"><i class="icon-xx icon-xx${index+1}"></i><strong>${quality[0]}</strong><b>${money(rates[index]*100)}%</b><small>基础 ${money(quality[3])} · 当前 ${money(quality[3]*selectedMultiplier)}</small></span>`).join("");
@@ -105,9 +99,11 @@ function animatedBags(room,state){
   }).join("");
 }
 function animatedPopup(state,room){
+  if(state?.showTaxNotice&&room?.taxed){
+    return `<div class="animated-pop-backdrop"><section class="animated-pop tax-pop" role="dialog" aria-modal="true" aria-labelledby="animatedPopTitle"><p class="pop-kicker">进入第 ${room.room} 房</p><h5 id="animatedPopTitle">遭遇圣光税收队</h5><strong class="pop-tax-loss">-${money(room.taxLoss)} 星脉币</strong><p>进入时 ${money(room.beforeTax)} 星脉币，税后剩余 ${money(room.afterTax)} 星脉币。</p><button type="button" id="animatedConfirmTax">确认并继续</button></section></div>`;
+  }
   if(state?.awaitingNext&&room){
-    const taxText=room.taxed?`税收队扣除 ${money(room.taxLoss)} 星脉币后，本房累计为 ${money(room.cumulative)}。`:`本房未损失星脉币，当前累计 ${money(room.cumulative)}。`;
-    return `<div class="animated-pop-backdrop"><section class="animated-pop pop8 ${simulationQualityClasses[room.qualityIndex]}" role="dialog" aria-modal="true" aria-labelledby="animatedPopTitle"><p class="pop-kicker">第 ${room.room} 房奖励</p><h5 id="animatedPopTitle">翻牌成功</h5><span class="pop-quality">${room.quality}</span><strong class="pop-reward">+${money(room.reward)} 星脉币</strong><p>${taxText}</p><button type="button" id="animatedNextRoom">${state.roomIndex>=selectedRooms?"完成本轮结算":"继续前进"}</button></section></div>`;
+    return `<div class="animated-pop-backdrop"><section class="animated-pop pop8 ${simulationQualityClasses[room.qualityIndex]}" role="dialog" aria-modal="true" aria-labelledby="animatedPopTitle"><p class="pop-kicker">第 ${room.room} 房奖励</p><h5 id="animatedPopTitle">翻牌成功</h5><span class="pop-quality">${room.quality}</span><strong class="pop-reward">+${money(room.reward)} 星脉币</strong><p>本房奖励已计入，当前累计 ${money(room.cumulative)} 星脉币。</p><button type="button" id="animatedNextRoom">${state.roomIndex>=selectedRooms?"完成本轮结算":"继续前进"}</button></section></div>`;
   }
   if(state?.finished){
     return `<div class="animated-pop-backdrop"><section class="animated-pop pop8" role="dialog" aria-modal="true" aria-labelledby="animatedPopTitle"><p class="pop-kicker">星脉迷宫结算</p><h5 id="animatedPopTitle">本轮探索完成</h5><strong class="pop-reward">${money(state.coins)} 星脉币</strong><p>${selectedRooms} 房全部结算 · 大红 ${money(state.bigReds)} 次 · 税收 ${money(state.taxHits)} 次</p><div class="animated-official-actions"><button type="button" id="animatedRestart">再来一局</button><button type="button" class="secondary" id="animatedCloseResult">关闭</button></div></section></div>`;
@@ -130,23 +126,23 @@ function renderAnimatedSimulation(){
   const state=animatedSimulationState;
   const room=state?.pending||state?.lastReveal||null;
   const currentRoom=room?.room||Math.min((state?.roomIndex||0)+1,selectedRooms);
-  const tax=animatedTaxCopy(room);
   const stageTitle=state?.finished?"本轮探索已完成":state?.active?`当前房间 ${currentRoom} / ${selectedRooms}`:`${selectedMultiplier} 倍 · 推进 ${selectedRooms} 房`;
   const message=room?"点击袋子翻牌，选取后获得星脉币（按当前倍率结算）":"点击开始动画模拟，进入星脉迷宫选择袋子";
-  const coins=state?.coins||0;
+  const coins=state?.pending?state.pending.afterTax:state?.coins||0;
   const startAction=!state?`<button type="button" id="animatedStart">开始探索</button>`:"";
   const exitAction=state?.active&&!state.awaitingNext?`<button type="button" class="secondary" id="animatedExit">结束本局</button>`:"";
   container.innerHTML=`<div class="p3-gl-box ${state?.active?"show-ani":""}">
     <div class="base-box"><div class="title p3-small-tit4"><span>星脉迷宫探险</span></div><p class="room-progress">${stageTitle}</p><p class="msg">${message}</p><div class="dz-box">${animatedBags(room,state)}</div><p class="carry-coins">随身星脉币：<strong>${money(coins)}</strong></p><div class="animated-official-actions">${startAction}${exitAction}</div></div>
     <div class="gl-info-box ${animatedInfoOpen?"":"is-collapsed"}">
       <div class="top-box"><p>| 概率信息板</p><button type="button" class="btn-djsq" id="animatedToggleInfo" aria-expanded="${animatedInfoOpen}"><i class="p3-icon-jt"></i><span class="pc-msg">${animatedInfoOpen?"点击收起":"点击展开"}</span><span class="h5-msg">${animatedInfoOpen?"点击收起":"点击展开"}</span></button></div>
-      <div class="center-box"><div class="center-inner"><div class="center-content"><div class="probability-lines">${animatedQualityRows(currentRoom)}</div><div class="room-status"><div class="room-green ${tax.danger?"":"on"}"><p>${tax.title}<small>${tax.copy}</small></p></div><div class="room-red ${tax.danger?"on":""}"><p>${tax.title}<small>${tax.copy}</small></p></div></div></div></div></div>
+      <div class="center-box"><div class="center-inner"><div class="center-content"><div class="probability-lines">${animatedQualityRows(currentRoom)}</div></div></div></div>
     </div>
     ${animatedPopup(state,room)}
   </div>`;
   container.querySelector("#animatedToggleInfo")?.addEventListener("click",toggleAnimatedInfo);
   container.querySelectorAll("[data-animated-bag]").forEach(button=>button.addEventListener("click",()=>chooseAnimatedBag(button)));
   container.querySelector("#animatedStart")?.addEventListener("click",startAnimatedSimulation);
+  container.querySelector("#animatedConfirmTax")?.addEventListener("click",confirmAnimatedTax);
   container.querySelector("#animatedNextRoom")?.addEventListener("click",advanceAnimatedRoom);
   container.querySelector("#animatedExit")?.addEventListener("click",resetAnimatedSimulation);
   container.querySelector("#animatedRestart")?.addEventListener("click",startAnimatedSimulation);
@@ -219,7 +215,7 @@ function playAnimatedResultEntrance(){
 function startAnimatedSimulation(){
   if(animatedSimulationState?.active)return;
   setSimulationMode("animated");
-  animatedSimulationState={active:true,finished:false,roomIndex:0,coins:0,bigReds:0,taxHits:0,rooms:[],pending:null,lastReveal:null,selectedBag:null,awaitingNext:false,locked:false};
+  animatedSimulationState={active:true,finished:false,roomIndex:0,coins:0,bigReds:0,taxHits:0,rooms:[],pending:null,lastReveal:null,selectedBag:null,awaitingNext:false,showTaxNotice:false,locked:false};
   openAnimatedRoom();
   document.querySelector("#animatedSimulation")?.scrollIntoView({behavior:prefersReducedMotion()?"auto":"smooth",block:"center"});
 }
@@ -230,6 +226,15 @@ function openAnimatedRoom(){
   state.lastReveal=null;
   state.selectedBag=null;
   state.awaitingNext=false;
+  state.showTaxNotice=state.pending.taxed;
+  state.locked=state.showTaxNotice;
+  renderAnimatedSimulation();
+  window.requestAnimationFrame(state.showTaxNotice?playAnimatedResultEntrance:playAnimatedRoomEntrance);
+}
+function confirmAnimatedTax(){
+  const state=animatedSimulationState;
+  if(!state?.active||!state.showTaxNotice)return;
+  state.showTaxNotice=false;
   state.locked=false;
   renderAnimatedSimulation();
   window.requestAnimationFrame(playAnimatedRoomEntrance);
