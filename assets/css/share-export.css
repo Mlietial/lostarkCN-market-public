@@ -40,14 +40,100 @@
   transform: translate(-50%, 0);
 }
 
+.share-cache-dialog-backdrop {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(224, 236, 247, .72);
+}
+
+.share-cache-dialog {
+  width: min(430px, 100%);
+  padding: 25px;
+  border: 1px solid #a9cae7;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 22px 60px rgba(15, 39, 59, .22);
+  color: #17324d;
+}
+
+.share-cache-dialog-kicker {
+  color: #1769aa;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .14em;
+}
+
+.share-cache-dialog h2 {
+  margin: 7px 0 8px;
+  font-size: 21px;
+}
+
+.share-cache-dialog p {
+  margin: 0;
+  color: #60758d;
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.share-cache-dialog small {
+  display: block;
+  margin-top: 8px;
+  color: #8192a5;
+  font-size: 11px;
+}
+
+.share-cache-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 9px;
+  margin-top: 20px;
+}
+
+.share-cache-dialog-actions button {
+  min-height: 38px;
+  padding: 8px 14px;
+  border: 1px solid #c6d9e9;
+  border-radius: 6px;
+  background: #fff;
+  color: #17324d;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.share-cache-dialog-actions .share-cache-continue {
+  border-color: #1769aa;
+  background: #1769aa;
+  color: #fff;
+}
+
+.share-cache-dialog-actions button:focus-visible {
+  outline: 3px solid rgba(23, 105, 170, .24);
+  outline-offset: 2px;
+}
+
 .share-exporting [data-share-export-ignore],
 .share-exporting .floating-edit,
 .share-exporting .value-drawer-toggle,
 .share-exporting .value-drawer,
 .share-exporting .value-drawer-backdrop,
 .share-exporting .modal-backdrop,
-.share-exporting .pack-modal-backdrop {
+.share-exporting .pack-modal-backdrop,
+.share-exporting .share-cache-dialog-backdrop {
   display: none !important;
+}
+
+@media (max-width: 480px) {
+  .share-cache-dialog-actions {
+    flex-direction: column-reverse;
+  }
+
+  .share-cache-dialog-actions button {
+    width: 100%;
+  }
 }
 
 [data-page-editable][contenteditable="true"] {

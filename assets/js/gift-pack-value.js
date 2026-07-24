@@ -685,9 +685,12 @@ function hasCachedGiftPackState() {
     || !!localStorage.getItem("giftPackSettings");
 }
 
-function chooseCachedGiftPackState() {
+async function chooseCachedGiftPackState() {
   if (!hasCachedGiftPackState()) return false;
-  return window.confirm("检测到当前浏览器保存的礼包编辑缓存。\n\n点击“确定”继续使用缓存查看；点击“取消”载入作者最新默认数据。");
+  return window.LOSTARK_SHARE_EXPORT.confirmCache({
+    title: "发现礼包编辑缓存",
+    message: "检测到当前浏览器保存的礼包编辑内容，可以继续使用缓存查看，或载入作者最新默认数据。"
+  });
 }
 
 function giftPackStorageKeys() {
@@ -3815,7 +3818,7 @@ async function initGiftPackPage() {
   try {
     const loaderStartedAt = Date.now();
     initPageContentDefaults();
-    const useCachedState = chooseCachedGiftPackState();
+    const useCachedState = await chooseCachedGiftPackState();
     setGiftPageLoadState("loading", "正在加载 gift-pack-data.json...");
     await loadPublicGiftPackData({ preserveLocalData: useCachedState });
     setGiftPageLoadState("loading", "正在加载 item-price-data.json...");

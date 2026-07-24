@@ -30,6 +30,40 @@
     showToast.timer = window.setTimeout(() => toast.classList.remove("is-visible"), 2800);
   }
 
+  function confirmCache(options = {}) {
+    return new Promise(resolve => {
+      document.querySelector(".share-cache-dialog-backdrop")?.remove();
+      const activeElement = document.activeElement;
+      const backdrop = document.createElement("div");
+      backdrop.className = "share-cache-dialog-backdrop";
+      backdrop.innerHTML = `
+        <section class="share-cache-dialog" role="dialog" aria-modal="true" aria-labelledby="shareCacheDialogTitle">
+          <span class="share-cache-dialog-kicker">LOCAL CACHE</span>
+          <h2 id="shareCacheDialogTitle">${options.title || "发现上次编辑"}</h2>
+          <p>${options.message || "检测到当前浏览器保存的编辑内容，可以继续使用缓存查看。"}</p>
+          ${options.detail ? `<small>${options.detail}</small>` : ""}
+          <div class="share-cache-dialog-actions">
+            <button type="button" class="share-cache-default">${options.defaultText || "载入默认数据"}</button>
+            <button type="button" class="share-cache-continue">${options.continueText || "继续使用缓存"}</button>
+          </div>
+        </section>`;
+      const finish = useCache => {
+        document.removeEventListener("keydown", onKeydown);
+        backdrop.remove();
+        activeElement?.focus?.();
+        resolve(useCache);
+      };
+      const onKeydown = event => {
+        if (event.key === "Escape") finish(false);
+      };
+      backdrop.querySelector(".share-cache-default").addEventListener("click", () => finish(false));
+      backdrop.querySelector(".share-cache-continue").addEventListener("click", () => finish(true));
+      document.addEventListener("keydown", onKeydown);
+      document.body.appendChild(backdrop);
+      backdrop.querySelector(".share-cache-continue").focus();
+    });
+  }
+
   function safeFilename(value) {
     return String(value || "分享图片")
       .replace(/[\\/:*?"<>|]+/g, "-")
@@ -217,5 +251,5 @@
     }
   }
 
-  window.LOSTARK_SHARE_EXPORT = { exportPng, showToast };
+  window.LOSTARK_SHARE_EXPORT = { exportPng, showToast, confirmCache };
 })();

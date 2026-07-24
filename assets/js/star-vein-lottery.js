@@ -2,14 +2,7 @@ const base = "../assets/star-vein/";
 const STAR_VEIN_DRAFT_KEY="starVeinLotteryEditableDraftV1";
 const STAR_VEIN_TEXT_SELECTORS=[".hero h1",".hero .lead",".rules .section-title h2",".shop .section-title h2",".price-note"];
 const cachedStarVeinDraft=(()=>{try{return JSON.parse(localStorage.getItem(STAR_VEIN_DRAFT_KEY)||"null");}catch{return null;}})();
-const restoredStarVeinDraft=(()=>{
-  if(!cachedStarVeinDraft)return null;
-  const savedAt=cachedStarVeinDraft.savedAt?new Date(cachedStarVeinDraft.savedAt).toLocaleString("zh-CN"):"上次访问";
-  const useCache=window.confirm(`检测到浏览器保存的星脉探索编辑缓存（${savedAt}）。\n\n点击“确定”继续使用缓存查看；点击“取消”恢复默认数据。`);
-  if(useCache)return cachedStarVeinDraft;
-  localStorage.removeItem(STAR_VEIN_DRAFT_KEY);
-  return null;
-})();
+let restoredStarVeinDraft=null;
 const starStoneValuation = window.LOSTARK_STAR_STONE_VALUES;
 const starStoneValues = starStoneValuation.values;
 const qualities = [["大红",1,.01,400],["金色",2,.04,160],["蓝色",3,.15,60],["绿色",4,.35,20],["白色",5,.45,6]];
@@ -186,7 +179,6 @@ function exportStarVeinImage(){
     afterExport:()=>collage.remove()
   });
 }
-applyStarVeinDraft(restoredStarVeinDraft);
 function drawSimulationQuality(roomIndex){const roll=Math.random();let cumulative=0;for(let index=0;index<roomRates[roomIndex].length;index++){cumulative+=roomRates[roomIndex][index];if(roll<cumulative)return index;}return roomRates[roomIndex].length-1;}
 function createSimulationRoom(roomIndex,beforeTax){const taxed=Math.random()<taxRates[roomIndex];const afterTax=taxed?Math.floor(beforeTax*.5):beforeTax;const qualityIndex=drawSimulationQuality(roomIndex);const reward=qualities[qualityIndex][3]*selectedMultiplier;return {room:roomIndex+1,quality:qualities[qualityIndex][0],qualityIndex,reward,taxed,beforeTax,afterTax,taxLoss:beforeTax-afterTax,cumulative:afterTax+reward};}
 function simulateExplorationOnce(){let coins=0;let bigReds=0;let taxHits=0;const rooms=[];for(let roomIndex=0;roomIndex<selectedRooms;roomIndex++){const room=createSimulationRoom(roomIndex,coins);coins=room.cumulative;if(room.qualityIndex===0)bigReds++;if(room.taxed)taxHits++;rooms.push(room);}return {coins,bigReds,taxHits,rooms,multiplier:selectedMultiplier,roomCount:selectedRooms,costRmb:10*selectedMultiplier,costCrystal:100*selectedMultiplier};}
@@ -503,6 +495,20 @@ function init(){
   document.querySelector("#closePackModal").addEventListener("click",closePackModal);
   document.querySelector("#packModalBackdrop").addEventListener("click",event=>{if(event.target.id==="packModalBackdrop")closePackModal();});
 }
-init();
-initSimulation();
-if(restoredStarVeinDraft)window.LOSTARK_SHARE_EXPORT?.showToast("已继续使用浏览器缓存中的星脉探索状态");
+async function initStarVeinPage(){
+  if(cachedStarVeinDraft){
+    const savedAt=cachedStarVeinDraft.savedAt?new Date(cachedStarVeinDraft.savedAt).toLocaleString("zh-CN"):"上次访问";
+    const useCache=await window.LOSTARK_SHARE_EXPORT.confirmCache({
+      title:"发现星脉探索缓存",
+      message:"检测到当前浏览器保存的星脉探索编辑状态，可以继续上次的内容，或恢复默认数据。",
+      detail:`保存时间：${savedAt}`
+    });
+    if(useCache)restoredStarVeinDraft=cachedStarVeinDraft;
+    else localStorage.removeItem(STAR_VEIN_DRAFT_KEY);
+  }
+  applyStarVeinDraft(restoredStarVeinDraft);
+  init();
+  initSimulation();
+  if(restoredStarVeinDraft)window.LOSTARK_SHARE_EXPORT.showToast("已继续使用浏览器缓存中的星脉探索状态");
+}
+initStarVeinPage();
