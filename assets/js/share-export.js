@@ -53,6 +53,50 @@
     });
   }
 
+  function blobToDataUrl(blob) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = () => reject(reader.error || new Error("图片读取失败"));
+      reader.readAsDataURL(blob);
+    });
+  }
+
+  async function prepareImagesForExport(target) {
+    const records = [...target.querySelectorAll("img")].map(image => ({
+      image,
+      src: image.getAttribute("src"),
+      srcset: image.getAttribute("srcset"),
+      visibility: image.style.visibility
+    }));
+    await Promise.all(records.map(async record => {
+      const { image } = record;
+      const source = image.currentSrc || image.src;
+      if (!source || source.startsWith("data:") || source.startsWith("blob:")) return;
+      try {
+        const response = await fetch(source, {
+          mode: "cors",
+          credentials: new URL(source, location.href).origin === location.origin ? "same-origin" : "omit",
+          cache: "force-cache"
+        });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        image.removeAttribute("srcset");
+        image.src = await blobToDataUrl(await response.blob());
+        await image.decode?.();
+      } catch (error) {
+        console.warn("导出时跳过无法安全读取的图片：", source, error);
+        image.style.visibility = "hidden";
+      }
+    }));
+    return () => records.forEach(({ image, src, srcset, visibility }) => {
+      if (src === null) image.removeAttribute("src");
+      else image.setAttribute("src", src);
+      if (srcset === null) image.removeAttribute("srcset");
+      else image.setAttribute("srcset", srcset);
+      image.style.visibility = visibility;
+    });
+  }
+
   function createFooter(title) {
     const footer = document.createElement("footer");
     footer.className = "share-export-footer";
@@ -73,6 +117,7 @@
       return;
     }
     const originalText = button?.textContent;
+    let restoreImages = () => {};
     try {
       if (button) {
         button.disabled = true;
@@ -83,6 +128,7 @@
       const footer = createFooter(options.title || document.title);
       target.appendChild(footer);
       await document.fonts?.ready;
+      restoreImages = await prepareImagesForExport(target);
       await new Promise(resolve => window.setTimeout(resolve, 120));
       const html2canvas = await loadHtml2Canvas();
       const canvas = await html2canvas(target, {
@@ -98,12 +144,15 @@
       const date = new Date().toISOString().slice(0, 10);
       downloadBlob(blob, `${safeFilename(options.filename || options.title || document.title)}-${date}.png`);
       showToast("分享图已导出，可以直接发送给其他玩家");
-      footer.remove();
     } catch (error) {
       console.error(error);
-      showToast(error.message || "图片导出失败，请稍后重试");
-      document.querySelectorAll(".share-export-footer").forEach(node => node.remove());
+      const message = /tainted|toBlob/i.test(String(error?.message))
+        ? "图片资源受到浏览器安全限制，已停止导出"
+        : error.message || "图片导出失败，请稍后重试";
+      showToast(message);
     } finally {
+      restoreImages();
+      document.querySelectorAll(".share-export-footer").forEach(node => node.remove());
       document.body.classList.remove("share-exporting");
       options.afterExport?.();
       if (button) {
