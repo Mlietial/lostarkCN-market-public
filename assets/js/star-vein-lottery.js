@@ -94,7 +94,7 @@ function animatedBags(room,state){
   return Array.from({length:3},(_,index)=>{
     const selected=!!room&&state?.selectedBag===index;
     const locked=!room||state?.locked||state?.selectedBag!=null;
-    const className=["dz-item",selected?"revealed":"",selected?simulationQualityClasses[room.qualityIndex]:"",state?.selectedBag!=null&&!selected?"faded":""].filter(Boolean).join(" ");
+    const className=["dz-item",!room?"is-placeholder":"",selected?"revealed":"",selected?simulationQualityClasses[room.qualityIndex]:"",state?.selectedBag!=null&&!selected?"faded":""].filter(Boolean).join(" ");
     const sparks=Array.from({length:4},()=>`<i class="bag-spark"></i>`).join("");
     return `<button type="button" class="${className}" data-animated-bag="${index}" ${locked?"disabled":""} aria-label="翻开袋子 ${index+1}"><div class="icon-dz" data-quality="${selected?room.quality:""}">${sparks}</div><p>袋子${index+1}</p><div class="wh-text"><span>${selected?`+${money(room.reward)}`:"???"}</span></div></button>`;
   }).join("");
@@ -130,7 +130,7 @@ function renderAnimatedSimulation(){
   const stageTitle=state?.finished?"本轮探索已完成":state?.active?`当前房间 ${currentRoom} / ${selectedRooms}`:`${selectedMultiplier} 倍 · 推进 ${selectedRooms} 房`;
   const message=room?"点击袋子翻牌，选取后获得星脉币（按当前倍率结算）":"点击开始动画模拟，进入星脉迷宫选择袋子";
   const coins=state?.pending?state.pending.afterTax:state?.coins||0;
-  const startAction=!state?`<button type="button" id="animatedStart">开始探索</button>`:"";
+  const startAction=!state?`<div class="animated-start-prompt"><small>点击下方按钮，开始第 1 房动画翻牌</small><button type="button" id="animatedStart">开始探索</button></div>`:"";
   const exitAction=state?.active&&!state.awaitingNext?`<button type="button" class="secondary" id="animatedExit">结束本局</button>`:"";
   container.innerHTML=`<div class="p3-gl-box ${state?.active?"show-ani":""}">
     <div class="base-box"><div class="title p3-small-tit4"><span>星脉迷宫探险</span></div><p class="room-progress">${stageTitle}</p><p class="msg">${message}</p><div class="dz-box">${animatedBags(room,state)}</div><p class="carry-coins">随身星脉币：<strong>${money(coins)}</strong></p><div class="animated-official-actions">${startAction}${exitAction}</div></div>
