@@ -53,8 +53,8 @@
 .animated-official-actions{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:14px}
 .animated-official-actions button,.animated-pop button{min-height:38px;padding:8px 20px;border:1px solid var(--blue);border-radius:6px;background:var(--blue);color:#fff;font-weight:900;box-shadow:none}
 .animated-official-actions .secondary{border-color:#c7d8e8;background:#fff;color:var(--ink);box-shadow:none}
-.carry-coins{margin:12px 0 0;color:var(--muted);font-size:12px;text-align:center}
-.carry-coins strong{color:var(--blue);font-size:15px}
+.carry-coins{margin:12px 0 0;color:var(--muted);font-size:13px;font-weight:700;text-align:center}
+.carry-coins strong{display:inline-block;margin-left:4px;color:var(--blue);font-size:22px;font-weight:900;line-height:1}
 .animated-pop-backdrop{position:absolute;z-index:4;inset:0;display:grid;place-items:center;padding:18px;background:transparent;backdrop-filter:none}
 .animated-pop{width:min(390px,100%);border:1px solid #9fc5eb;border-radius:8px;background:#fff;box-shadow:0 20px 55px rgba(15,39,59,.25);padding:25px;text-align:center}
 .animated-pop .pop-kicker{margin:0 0 7px;color:#6f879c;font-size:10px;font-weight:900;letter-spacing:.12em}
