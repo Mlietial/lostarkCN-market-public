@@ -137,11 +137,11 @@ function renderAnimatedSimulation(){
   const startAction=!state?`<button type="button" id="animatedStart">开始探索</button>`:"";
   const exitAction=state?.active&&!state.awaitingNext?`<button type="button" class="secondary" id="animatedExit">结束本局</button>`:"";
   container.innerHTML=`<div class="p3-gl-box ${state?.active?"show-ani":""}">
+    <div class="base-box"><div class="title p3-small-tit4"><span>星脉迷宫探险</span></div><p class="room-progress">${stageTitle}</p><p class="msg">${message}</p><div class="dz-box">${animatedBags(room,state)}</div><p class="carry-coins">随身星脉币：<strong>${money(coins)}</strong></p><div class="animated-official-actions">${startAction}${exitAction}</div></div>
     <div class="gl-info-box ${animatedInfoOpen?"":"is-collapsed"}">
       <div class="top-box"><p>| 概率信息板</p><button type="button" class="btn-djsq" id="animatedToggleInfo" aria-expanded="${animatedInfoOpen}"><i class="p3-icon-jt"></i><span class="pc-msg">${animatedInfoOpen?"点击收起":"点击展开"}</span><span class="h5-msg">${animatedInfoOpen?"点击收起":"点击展开"}</span></button></div>
       <div class="center-box"><div class="center-inner"><div class="center-content"><div class="table-box"><table><tbody>${animatedQualityRows(currentRoom)}</tbody></table></div><div class="room-status"><div class="room-green ${tax.danger?"":"on"}"><p>${tax.title}<small>${tax.copy}</small></p></div><div class="room-red ${tax.danger?"on":""}"><p>${tax.title}<small>${tax.copy}</small></p></div></div></div></div></div>
     </div>
-    <div class="base-box"><div class="title p3-small-tit4"><span>星脉迷宫探险</span></div><p class="room-progress">${stageTitle}</p><p class="msg">${message}</p><div class="dz-box">${animatedBags(room,state)}</div><p class="carry-coins">随身星脉币：<strong>${money(coins)}</strong></p><div class="animated-official-actions">${startAction}${exitAction}</div></div>
     ${animatedPopup(state,room)}
   </div>`;
   container.querySelector("#animatedToggleInfo")?.addEventListener("click",toggleAnimatedInfo);
