@@ -93,7 +93,7 @@ function animatedTaxCopy(room){
 }
 function animatedQualityRows(currentRoom){
   const rates=roomRates[Math.max(0,currentRoom-1)];
-  return qualities.map((quality,index)=>`<tr><td class="spe-td spe-td${index+1}"><i class="icon-xx icon-xx${index+1}"></i><span>${quality[0]}</span></td><td>${money(rates[index]*100)}%</td><td>${money(quality[3])}</td><td>${money(quality[3]*selectedMultiplier)}</td></tr>`).join("");
+  return qualities.map((quality,index)=>`<span class="quality-line spe-td${index+1}"><i class="icon-xx icon-xx${index+1}"></i><strong>${quality[0]}</strong><b>${money(rates[index]*100)}%</b><small>基础 ${money(quality[3])} · 当前 ${money(quality[3]*selectedMultiplier)}</small></span>`).join("");
 }
 function animatedBags(room,state){
   return Array.from({length:3},(_,index)=>{
@@ -140,7 +140,7 @@ function renderAnimatedSimulation(){
     <div class="base-box"><div class="title p3-small-tit4"><span>星脉迷宫探险</span></div><p class="room-progress">${stageTitle}</p><p class="msg">${message}</p><div class="dz-box">${animatedBags(room,state)}</div><p class="carry-coins">随身星脉币：<strong>${money(coins)}</strong></p><div class="animated-official-actions">${startAction}${exitAction}</div></div>
     <div class="gl-info-box ${animatedInfoOpen?"":"is-collapsed"}">
       <div class="top-box"><p>| 概率信息板</p><button type="button" class="btn-djsq" id="animatedToggleInfo" aria-expanded="${animatedInfoOpen}"><i class="p3-icon-jt"></i><span class="pc-msg">${animatedInfoOpen?"点击收起":"点击展开"}</span><span class="h5-msg">${animatedInfoOpen?"点击收起":"点击展开"}</span></button></div>
-      <div class="center-box"><div class="center-inner"><div class="center-content"><div class="table-box"><table><tbody>${animatedQualityRows(currentRoom)}</tbody></table></div><div class="room-status"><div class="room-green ${tax.danger?"":"on"}"><p>${tax.title}<small>${tax.copy}</small></p></div><div class="room-red ${tax.danger?"on":""}"><p>${tax.title}<small>${tax.copy}</small></p></div></div></div></div></div>
+      <div class="center-box"><div class="center-inner"><div class="center-content"><div class="probability-lines">${animatedQualityRows(currentRoom)}</div><div class="room-status"><div class="room-green ${tax.danger?"":"on"}"><p>${tax.title}<small>${tax.copy}</small></p></div><div class="room-red ${tax.danger?"on":""}"><p>${tax.title}<small>${tax.copy}</small></p></div></div></div></div></div>
     </div>
     ${animatedPopup(state,room)}
   </div>`;
