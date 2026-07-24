@@ -62,40 +62,93 @@
     });
   }
 
+  function waitForImage(image, timeout = 10000) {
+    if (image.complete) {
+      return image.naturalWidth
+        ? Promise.resolve()
+        : Promise.reject(new Error("图片加载失败"));
+    }
+    return new Promise((resolve, reject) => {
+      const timer = window.setTimeout(() => finish(false, new Error("图片加载超时")), timeout);
+      const finish = (loaded, error) => {
+        window.clearTimeout(timer);
+        image.removeEventListener("load", onLoad);
+        image.removeEventListener("error", onError);
+        loaded && image.naturalWidth ? resolve() : reject(error || new Error("图片加载失败"));
+      };
+      const onLoad = () => finish(true);
+      const onError = () => finish(false, new Error("图片加载失败"));
+      image.addEventListener("load", onLoad, { once: true });
+      image.addEventListener("error", onError, { once: true });
+    });
+  }
+
+  function showMissingImage(record) {
+    const placeholder = document.createElement("div");
+    placeholder.className = "share-image-missing";
+    placeholder.textContent = record.image.alt
+      ? `${record.image.alt} · 图片加载失败`
+      : "图片加载失败";
+    record.image.insertAdjacentElement("afterend", placeholder);
+    record.image.style.display = "none";
+    record.placeholder = placeholder;
+  }
+
   async function prepareImagesForExport(target) {
     const records = [...target.querySelectorAll("img")].map(image => ({
       image,
       src: image.getAttribute("src"),
       srcset: image.getAttribute("srcset"),
-      visibility: image.style.visibility
+      display: image.style.display,
+      placeholder: null
     }));
     await Promise.all(records.map(async record => {
       const { image } = record;
       const source = image.currentSrc || image.src;
-      if (!source || source.startsWith("data:") || source.startsWith("blob:")) return;
+      if (!source) {
+        showMissingImage(record);
+        return;
+      }
+      const url = new URL(source, location.href);
+      if (
+        source.startsWith("data:")
+        || source.startsWith("blob:")
+        || url.origin === location.origin
+      ) {
+        try {
+          await waitForImage(image);
+        } catch (error) {
+          console.warn("导出图片加载失败：", source, error);
+          showMissingImage(record);
+        }
+        return;
+      }
       try {
         const response = await fetch(source, {
           mode: "cors",
-          credentials: new URL(source, location.href).origin === location.origin ? "same-origin" : "omit",
+          credentials: "omit",
           cache: "force-cache"
         });
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const dataUrl = await blobToDataUrl(await response.blob());
+        const probe = new Image();
+        probe.src = dataUrl;
+        await waitForImage(probe);
         image.removeAttribute("srcset");
-        image.src = await blobToDataUrl(await response.blob());
-        await image.decode?.();
+        image.src = dataUrl;
+        await waitForImage(image);
       } catch (error) {
-        console.warn("导出时跳过无法安全读取的图片：", source, error);
-        const url = new URL(source, location.href);
-        if (location.protocol !== "file:" && url.origin === location.origin) return;
-        image.style.visibility = "hidden";
+        console.warn("导出时无法安全读取图片：", source, error);
+        showMissingImage(record);
       }
     }));
-    return () => records.forEach(({ image, src, srcset, visibility }) => {
+    return () => records.forEach(({ image, src, srcset, display, placeholder }) => {
       if (src === null) image.removeAttribute("src");
       else image.setAttribute("src", src);
       if (srcset === null) image.removeAttribute("srcset");
       else image.setAttribute("srcset", srcset);
-      image.style.visibility = visibility;
+      image.style.display = display;
+      placeholder?.remove();
     });
   }
 

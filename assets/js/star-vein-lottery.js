@@ -158,7 +158,7 @@ function buildStarVeinPackCollage(){
   const cards=packs.map(pack=>{
     const calc=packMetrics(pack);
     const display=packDisplay(pack,calc);
-    const images=[pack.cover,pack.detail].filter(Boolean).map((path,index)=>`<img src="${base}${escapeShareText(path)}" alt="${escapeShareText(pack.name)}${index?"详情":"封面"}">`).join("");
+    const images=[pack.cover,pack.detail].filter(Boolean).map((path,index)=>`<img src="${base}${escapeShareText(path)}" alt="${escapeShareText(pack.name)}${index?"详情":"封面"}" loading="eager" decoding="sync">`).join("");
     const roiClass=calc.roi>=100?"is-good":"is-bad";
     return `<article class="share-collage-card"><header class="share-collage-card-head"><h2>${escapeShareText(pack.name)}</h2><strong>${pack.cost.toLocaleString()} 星脉币</strong></header><div class="share-collage-media">${images||'<div class="share-collage-placeholder">暂无礼包图片</div>'}</div><div class="share-collage-metrics"><div><span>单份内容估值</span><strong>${display.singleGold}</strong></div><div><span>折合人民币</span><strong>${display.singleRmb}</strong></div><div><span>性价比</span><strong class="${roiClass}">${display.roi}</strong></div></div></article>`;
   }).join("");
