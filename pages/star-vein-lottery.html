@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>星脉探索抽奖｜性价比分析</title>
   <link rel="stylesheet" href="../assets/css/star-vein-lottery.css">
+  <link rel="stylesheet" href="../assets/css/share-export.css">
   <style>
     .choice-buttons{border:0;margin:0;padding:0;min-width:0}.choice-buttons legend{font-size:13px;font-weight:800;margin-bottom:7px}.choice-buttons>div{display:flex;gap:6px}.choice-btn,.room-btn{min-height:40px;border:1px solid #cbd9e8;border-radius:6px;background:#fff;color:var(--ink);padding:7px 12px;font-weight:700}.choice-btn.active,.room-btn.active{border-color:var(--blue);background:#e7f2fc;color:var(--blue)}.control-note{color:var(--muted);font-size:11px;font-weight:600}.explore-summary{display:grid;grid-template-columns:1.3fr repeat(3,1fr);gap:8px;align-items:center;margin:0 0 14px;padding:12px 14px;border:1px solid #cfe0f0;border-radius:8px;background:#edf6ff;font-size:13px}.explore-summary strong{color:var(--blue);font-size:15px}.explore-summary span{color:var(--muted)}.explore-summary b{display:block;margin-top:3px;color:var(--ink);font-size:14px}.room.selected{border-color:var(--blue);box-shadow:inset 0 0 0 1px var(--blue);background:#f0f7fd}.room.beyond{opacity:.48}.stat small{display:block;margin-top:4px;color:var(--muted);font-size:10px;line-height:1.35}@media(max-width:900px){.controls{grid-template-columns:1fr 1fr}.controls>label:last-child{grid-column:span 2}.explore-summary{grid-template-columns:1fr 1fr}}@media(max-width:520px){.controls,.explore-summary{grid-template-columns:1fr}.controls>label:last-child{grid-column:auto}}
     .material-choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}.choice-group{border:1px solid #d9e3ef;border-radius:8px;background:#f4f8fc;padding:12px}.choice-group h3{margin:0 0 4px;font-size:14px}.choice-group p{margin:0 0 9px;color:var(--muted);font-size:11px}.choice-group>div{display:grid;grid-template-columns:1fr 1fr;gap:7px}.material-option{display:grid;grid-template-columns:34px minmax(0,1fr) auto;align-items:center;gap:8px;min-height:52px;padding:8px 10px;border:1px solid #d4e0ec;border-radius:6px;background:#fff;color:var(--ink);text-align:left}.material-option img{width:32px;height:32px;object-fit:cover;border-radius:4px}.material-option span{overflow-wrap:anywhere}.material-option strong{white-space:nowrap;font-size:12px}.material-option.active{border-color:var(--blue);box-shadow:inset 0 0 0 1px var(--blue);background:#edf6ff}.contents{align-items:flex-start}.contents>.zoom{flex:0 0 72px}.value-table{min-width:0;flex:1;display:grid;gap:5px}.value-table>div{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px;align-items:center;padding:6px 7px;border-bottom:1px solid #e5edf4;font-size:11px}.value-table span:first-child{min-width:0}.value-table b{display:block;overflow-wrap:anywhere}.value-table small{display:block;margin-top:2px;color:var(--muted)}.value-table>div>span:nth-child(2){color:var(--muted);white-space:nowrap}.value-table>div>strong{white-space:nowrap;text-align:right}.unknown-row{color:var(--muted);font-size:12px}.pack-card{grid-column:span 1}.pack-grid{grid-template-columns:repeat(2,minmax(0,1fr))}@media(max-width:850px){.material-choices,.pack-grid{grid-template-columns:1fr}}@media(max-width:580px){.choice-group>div{grid-template-columns:1fr}.value-table>div{grid-template-columns:1fr auto}.value-table>div>span:nth-child(2){display:none}.material-option{grid-template-columns:30px minmax(0,1fr)}.material-option strong{grid-column:2}}
@@ -27,7 +28,7 @@
         <h1>星脉探索抽奖</h1>
         <p class="lead">把房间概率、税收队和兑换礼包放在同一张分析桌上。礼包单价可直接调整，封面与内容物均来自活动素材。</p>
       </div>
-      <a class="home" href="../index.html">返回首页</a>
+      <div class="hero-actions" data-share-export-ignore><button class="home" id="editStarVeinPageBtn" type="button">编辑文案</button><button class="home" id="exportStarVeinImageBtn" type="button">导出分享图</button><a class="home" href="../index.html">返回首页</a></div>
     </header>
 
     <section class="panel rules">
@@ -87,6 +88,7 @@
   <script src="../data/dashboard-state.js"></script>
   <script src="../assets/js/blue-exchange-fee.js"></script>
   <script src="../assets/js/star-stone-valuation.js"></script>
+  <script src="../assets/js/share-export.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
   <script src="../assets/js/star-vein-lottery.js"></script>
 </body>

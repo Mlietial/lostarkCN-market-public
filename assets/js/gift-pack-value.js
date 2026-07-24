@@ -666,6 +666,30 @@ function hasLocalGiftPackEdits() {
     || deletedPacks.length > 0;
 }
 
+function hasCachedGiftPackState() {
+  const hasJsonContent = key => {
+    try {
+      const value = JSON.parse(localStorage.getItem(key) || "null");
+      if (Array.isArray(value)) return value.length > 0;
+      return !!value && typeof value === "object" && Object.keys(value).length > 0;
+    } catch (error) {
+      return false;
+    }
+  };
+  return hasLocalGiftPackEdits()
+    || hasJsonContent(EDITABLE_STORAGE_KEYS.pageContent)
+    || hasJsonContent(EDITABLE_STORAGE_KEYS.itemIcons)
+    || hasJsonContent(EDITABLE_STORAGE_KEYS.customManualItems)
+    || hasJsonContent(EDITABLE_STORAGE_KEYS.itemLabels)
+    || hasJsonContent("giftPackManualValues")
+    || !!localStorage.getItem("giftPackSettings");
+}
+
+function chooseCachedGiftPackState() {
+  if (!hasCachedGiftPackState()) return false;
+  return window.confirm("检测到当前浏览器保存的礼包编辑缓存。\n\n点击“确定”继续使用缓存查看；点击“取消”载入作者最新默认数据。");
+}
+
 function giftPackStorageKeys() {
   return [...new Set([
     ...Object.values(EDITABLE_STORAGE_KEYS),
@@ -737,6 +761,25 @@ function exportGiftPackData() {
 function exportItemPriceData() {
   const date = new Date().toISOString().slice(0, 10);
   downloadJsonFile(`item-price-data-${date}.json`, buildItemPriceDataExport());
+}
+
+function exportGiftPackImage() {
+  const button = document.getElementById("exportGiftPackImageBtn");
+  const table = document.querySelector(".pack-table");
+  const hadEditColumn = table?.classList.contains("show-edit-column");
+  closeModal();
+  closeEditDialog();
+  window.LOSTARK_SHARE_EXPORT?.exportPng({
+    button,
+    target: document.querySelector(".app-shell"),
+    title: document.querySelector(".page-head h1")?.textContent || "礼包内容价值分析",
+    filename: "礼包内容价值分析-分享图",
+    backgroundColor: "#eef6ff",
+    beforeExport: () => table?.classList.remove("show-edit-column"),
+    afterExport: () => {
+      if (hadEditColumn) table?.classList.add("show-edit-column");
+    }
+  });
 }
 
 function stringifyBackupValue(value) {
@@ -898,6 +941,14 @@ function applyPublicGiftPackSnapshot(backup, storage, options = {}) {
   const localPackOverrides = preserveLocalData ? editablePackOverrides : {};
   const localCustomPacks = preserveLocalData ? editableCustomPacks : [];
   const localDeletedPacks = preserveLocalData ? editableDeletedPacks : [];
+  const localPageContent = preserveLocalData ? editablePageContent : {};
+  const localItemIcons = preserveLocalData ? editableItemIcons : {};
+  const localCustomManualItems = preserveLocalData ? customManualItems : [];
+  const localHiddenManualItems = preserveLocalData ? hiddenManualItems : [];
+  const localItemLabels = preserveLocalData ? editableItemLabels : {};
+  const localRateHistory = preserveLocalData ? rateHistory : [];
+  const localPackHistory = preserveLocalData ? packHistory : [];
+  const localPackHistoryLinks = preserveLocalData ? packHistoryLinks : {};
   if (forceAuthorPacks) {
     resetEditableDataInMemory();
   }
@@ -908,6 +959,14 @@ function applyPublicGiftPackSnapshot(backup, storage, options = {}) {
   if (preserveLocalData) {
     state.manualValues = { ...state.manualValues, ...userManualValues };
     editableChoiceOptionQuantities = { ...editableChoiceOptionQuantities, ...userChoiceOptionQuantities };
+    editablePageContent = { ...editablePageContent, ...localPageContent };
+    editableItemIcons = { ...editableItemIcons, ...localItemIcons };
+    customManualItems = localCustomManualItems;
+    hiddenManualItems = localHiddenManualItems;
+    editableItemLabels = { ...editableItemLabels, ...localItemLabels };
+    rateHistory = localRateHistory;
+    packHistory = localPackHistory;
+    packHistoryLinks = localPackHistoryLinks;
     if (userGoldRate) {
       applyGoldRate(userGoldRate, { updatedAt: userSettings.settingsUpdatedAt || state.settingsUpdatedAt });
       if (userSettings.valuationGoldBaseLocked && Number(userSettings.valuationGoldPerRmb) > 0) {
@@ -1030,28 +1089,46 @@ async function importGiftPackData(file) {
   }
 }
 
-async function loadPublicGiftPackData() {
+async function loadPublicGiftPackData(options = {}) {
   try {
     const { backup, storage } = await fetchPublicGiftPackBackup();
-    if (location.protocol !== "file:") {
-      localStorage.removeItem(EDITABLE_STORAGE_KEYS.packOverrides);
-      localStorage.removeItem(EDITABLE_STORAGE_KEYS.customPacks);
-      localStorage.removeItem(EDITABLE_STORAGE_KEYS.deletedPacks);
-      editablePackOverrides = {};
-      editableCustomPacks = [];
-      editableDeletedPacks = [];
-    }
-    applyPublicGiftPackSnapshot(backup, storage, { preserveLocalData: true });
+    const preserveLocalData = options.preserveLocalData !== false;
+    applyPublicGiftPackSnapshot(backup, storage, preserveLocalData
+      ? { preserveLocalData: true }
+      : { preserveLocalData: false, forceAuthorPacks: true });
   } catch (error) {
     console.warn("礼包公开数据加载失败：", error);
     throw new Error(`gift-pack-data.json 加载失败：${error.message || error}`);
   }
 }
 
-async function loadPublicItemPriceData() {
+async function loadPublicItemPriceData(options = {}) {
   try {
     const data = await fetchPublicItemPriceData();
+    const preserveLocalData = options.preserveLocalData === true;
+    const localState = preserveLocalData ? {
+      manualValues: { ...state.manualValues },
+      itemSources: { ...itemSources },
+      customManualItems: [...customManualItems],
+      hiddenManualItems: [...hiddenManualItems],
+      itemIcons: { ...editableItemIcons },
+      itemLabels: { ...editableItemLabels }
+    } : null;
     applyItemPriceData(data, true);
+    if (localState) {
+      state.manualValues = { ...state.manualValues, ...localState.manualValues };
+      itemSources = { ...itemSources, ...localState.itemSources };
+      customManualItems = localState.customManualItems;
+      hiddenManualItems = localState.hiddenManualItems;
+      editableItemIcons = { ...editableItemIcons, ...localState.itemIcons };
+      editableItemLabels = { ...editableItemLabels, ...localState.itemLabels };
+      saveManualValues();
+      saveJson(ITEM_SOURCE_STORAGE_KEY, itemSources);
+      saveJson(EDITABLE_STORAGE_KEYS.customManualItems, customManualItems);
+      saveJson(EDITABLE_STORAGE_KEYS.hiddenManualItems, hiddenManualItems);
+      saveJson(EDITABLE_STORAGE_KEYS.itemIcons, editableItemIcons);
+      saveJson(EDITABLE_STORAGE_KEYS.itemLabels, editableItemLabels);
+    }
   } catch (error) {
     console.warn("物品估值公开数据加载失败：", error);
     throw new Error(`item-price-data.json 加载失败：${error.message || error}`);
@@ -1768,7 +1845,8 @@ function loadSettings() {
       goldPerRmb,
       royalPerRmb: Number(saved.royalPerRmb) > 0 ? Number(saved.royalPerRmb) : DEFAULTS.royalPerRmb,
       blueSource: BLUE_SOURCES[saved.blueSource] ? saved.blueSource : DEFAULTS.blueSource,
-      customBlueRateText: DEFAULTS.customBlueRateText,
+      customBlueRateText: String(saved.customBlueRateText || DEFAULTS.customBlueRateText),
+      blueExchangePricePerThousand: Number(saved.blueExchangePricePerThousand) > 0 ? Number(saved.blueExchangePricePerThousand) : null,
       royalDiscount: Number(saved.royalDiscount) > 0 ? Number(saved.royalDiscount) : DEFAULTS.royalDiscount,
       valuationGoldPerRmb: hasValuationBase ? Number(saved.valuationGoldPerRmb) : goldPerRmb,
       valuationGoldBaseLocked: !!saved.valuationGoldBaseLocked,
@@ -1785,12 +1863,14 @@ function saveSettings(options = {}) {
     goldPerRmb: state.goldPerRmb,
     royalPerRmb: state.royalPerRmb,
     blueSource: state.blueSource,
+    customBlueRateText: state.customBlueRateText,
+    blueExchangePricePerThousand: state.blueExchangePricePerThousand,
     royalDiscount: state.royalDiscount,
     valuationGoldPerRmb: state.valuationGoldPerRmb,
     valuationGoldBaseLocked: !!state.valuationGoldBaseLocked,
     settingsUpdatedAt: state.settingsUpdatedAt
   }));
-  rememberRateSnapshot();
+  if (!options.skipHistory) rememberRateSnapshot();
   renderRateTimestamp();
 }
 
@@ -3558,6 +3638,8 @@ function bindControls() {
   const manualToggle = document.getElementById("manualValuesToggleBtn");
   const importInput = document.getElementById("giftPackImportInput");
   document.getElementById("refreshAuthorDataBtn")?.addEventListener("click", refreshAuthorGiftPackData);
+  document.getElementById("editPageContentBtn")?.addEventListener("click", () => openEditDialog("page"));
+  document.getElementById("exportGiftPackImageBtn")?.addEventListener("click", exportGiftPackImage);
   document.getElementById("exportGiftPackDataBtn")?.addEventListener("click", exportGiftPackData);
   document.getElementById("exportItemPriceDataBtn")?.addEventListener("click", exportItemPriceData);
   document.getElementById("importGiftPackDataBtn")?.addEventListener("click", () => {
@@ -3637,6 +3719,7 @@ function bindControls() {
   document.getElementById("customBlueRateInput")?.addEventListener("input", event => {
     state.customBlueRateText = event.target.value.trim();
     if (parseBlueRateText(state.customBlueRateText)) state.blueExchangePricePerThousand = null;
+    saveSettings({ skipHistory: true });
     refreshValuationViews();
   });
   document.getElementById("blueExchangePriceInput")?.addEventListener("input", event => {
@@ -3644,7 +3727,12 @@ function bindControls() {
     const value = Number(raw);
     state.blueExchangePricePerThousand = raw && Number.isFinite(value) && value > 0 ? value : null;
     if (state.blueExchangePricePerThousand) state.customBlueRateText = "";
+    saveSettings({ skipHistory: true });
     refreshValuationViews();
+  });
+  document.getElementById("floatingEditPageBtn")?.addEventListener("click", () => {
+    openEditDialog("page");
+    closeFloatingMenu();
   });
   const preset = document.getElementById("royalDiscountPreset");
   const custom = document.getElementById("royalDiscountCustomInput");
@@ -3703,10 +3791,11 @@ async function initGiftPackPage() {
   try {
     const loaderStartedAt = Date.now();
     initPageContentDefaults();
+    const useCachedState = chooseCachedGiftPackState();
     setGiftPageLoadState("loading", "正在加载 gift-pack-data.json...");
-    await loadPublicGiftPackData();
+    await loadPublicGiftPackData({ preserveLocalData: useCachedState });
     setGiftPageLoadState("loading", "正在加载 item-price-data.json...");
-    await loadPublicItemPriceData();
+    await loadPublicItemPriceData({ preserveLocalData: useCachedState });
     setGiftPageLoadState("loading", "正在加载公开数据...");
     await syncGoldRateFromDashboard();
     setGiftPageLoadState("loading", "正在加载礼包缩略图...");
@@ -3720,6 +3809,7 @@ async function initGiftPackPage() {
     renderManualValues();
     renderTable();
     setGiftPageLoadState("ready");
+    if (useCachedState) window.LOSTARK_SHARE_EXPORT?.showToast("已继续使用浏览器缓存中的编辑状态");
   } catch (error) {
     console.warn("礼包页初始化失败：", error);
     setGiftPageLoadState("error", error.message || "礼包数据加载失败");

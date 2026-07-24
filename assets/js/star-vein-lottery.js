@@ -1,4 +1,15 @@
 const base = "../assets/star-vein/";
+const STAR_VEIN_DRAFT_KEY="starVeinLotteryEditableDraftV1";
+const STAR_VEIN_TEXT_SELECTORS=[".hero h1",".hero .lead",".rules .section-title h2",".shop .section-title h2",".price-note"];
+const cachedStarVeinDraft=(()=>{try{return JSON.parse(localStorage.getItem(STAR_VEIN_DRAFT_KEY)||"null");}catch{return null;}})();
+const restoredStarVeinDraft=(()=>{
+  if(!cachedStarVeinDraft)return null;
+  const savedAt=cachedStarVeinDraft.savedAt?new Date(cachedStarVeinDraft.savedAt).toLocaleString("zh-CN"):"上次访问";
+  const useCache=window.confirm(`检测到浏览器保存的星脉探索编辑缓存（${savedAt}）。\n\n点击“确定”继续使用缓存查看；点击“取消”恢复默认数据。`);
+  if(useCache)return cachedStarVeinDraft;
+  localStorage.removeItem(STAR_VEIN_DRAFT_KEY);
+  return null;
+})();
 const starStoneValuation = window.LOSTARK_STAR_STONE_VALUES;
 const starStoneValues = starStoneValuation.values;
 const qualities = [["大红",1,.01,400],["金色",2,.04,160],["蓝色",3,.15,60],["绿色",4,.35,20],["白色",5,.45,6]];
@@ -60,13 +71,102 @@ let simulationMode="quick";
 let animatedSimulationState=null;
 let animatedInfoOpen=true;
 let animatedTween=null;
+let starVeinTextEditing=false;
+let starVeinDraftTimer=null;
 const money=n=>new Intl.NumberFormat("zh-CN",{maximumFractionDigits:0}).format(Math.round(n));
 const simulationQualityClasses=["quality-red","quality-gold","quality-blue","quality-green","quality-white"];
 const prefersReducedMotion=()=>window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+function applyStarVeinDraft(draft){
+  if(!draft||typeof draft!=="object")return;
+  if([1,10,50].includes(Number(draft.selectedMultiplier)))selectedMultiplier=Number(draft.selectedMultiplier);
+  if(Number(draft.selectedRooms)>=1&&Number(draft.selectedRooms)<=5)selectedRooms=Number(draft.selectedRooms);
+  if(["quick","animated"].includes(draft.simulationMode))simulationMode=draft.simulationMode;
+  if(draft.simulationState&&typeof draft.simulationState==="object"){
+    simulationState={...simulationState,...draft.simulationState};
+  }
+  Object.entries(draft.itemValues||{}).forEach(([name,saved])=>{
+    const row=itemValues[name];
+    if(!row||!saved)return;
+    if(Number.isFinite(Number(saved.value)))row.value=Number(saved.value);
+    if(Number.isFinite(Number(saved.merchantGold)))row.merchantGold=Number(saved.merchantGold);
+  });
+  Object.entries(draft.choiceSelections||{}).forEach(([name,index])=>{
+    const group=choiceGroups[name];
+    if(group&&group.options[Number(index)])group.selected=Number(index);
+  });
+  if(draft.blueSettings&&typeof draft.blueSettings==="object"){
+    const source=draft.blueSettings.source;
+    blueSettings.royalPerRmb=Number(draft.blueSettings.royalPerRmb)||blueSettings.royalPerRmb;
+    blueSettings.source=BLUE_SOURCES[source]?source:blueSettings.source;
+    blueSettings.customRate=Number(draft.blueSettings.customRate)||0;
+    blueSettings.exchangePrice=Number(draft.blueSettings.exchangePrice)||0;
+  }
+  if(["starcoin","merchant"].includes(draft.heroStarBoxValueMode)){
+    heroStarBoxValueMode=starStoneValuation.setMode(draft.heroStarBoxValueMode);
+  }
+}
+function starVeinPageText(){
+  return Object.fromEntries(STAR_VEIN_TEXT_SELECTORS.map(selector=>[selector,document.querySelector(selector)?.textContent?.trim()||""]));
+}
+function applyStarVeinPageText(){
+  const pageText=restoredStarVeinDraft?.pageText||{};
+  STAR_VEIN_TEXT_SELECTORS.forEach(selector=>{
+    const element=document.querySelector(selector);
+    if(!element)return;
+    element.dataset.pageEditable="";
+    if(pageText[selector])element.textContent=pageText[selector];
+  });
+}
+function saveStarVeinDraft(){
+  const savedItemValues=Object.fromEntries(Object.entries(itemValues).map(([name,row])=>[name,{value:row.value,merchantGold:row.merchantGold}]));
+  const choiceSelections=Object.fromEntries(Object.entries(choiceGroups).map(([name,group])=>[name,group.selected]));
+  localStorage.setItem(STAR_VEIN_DRAFT_KEY,JSON.stringify({
+    version:1,
+    savedAt:new Date().toISOString(),
+    selectedMultiplier,
+    selectedRooms,
+    simulationMode,
+    simulationState,
+    itemValues:savedItemValues,
+    choiceSelections,
+    blueSettings:{...blueSettings},
+    heroStarBoxValueMode,
+    pageText:starVeinPageText()
+  }));
+}
+function scheduleStarVeinDraftSave(){
+  window.clearTimeout(starVeinDraftTimer);
+  starVeinDraftTimer=window.setTimeout(saveStarVeinDraft,120);
+}
+function setStarVeinTextEditing(editing,announce=true){
+  starVeinTextEditing=!!editing;
+  STAR_VEIN_TEXT_SELECTORS.forEach(selector=>{
+    const element=document.querySelector(selector);
+    if(element)element.setAttribute("contenteditable",String(starVeinTextEditing));
+  });
+  const button=document.querySelector("#editStarVeinPageBtn");
+  if(button)button.textContent=starVeinTextEditing?"完成编辑":"编辑文案";
+  if(!starVeinTextEditing)saveStarVeinDraft();
+  if(announce)window.LOSTARK_SHARE_EXPORT?.showToast(starVeinTextEditing?"蓝色虚线区域可直接修改文字":"页面文案已保存到浏览器缓存");
+}
+function exportStarVeinImage(){
+  setStarVeinTextEditing(false,false);
+  setValueDrawer(false);
+  closePackModal();
+  saveStarVeinDraft();
+  window.LOSTARK_SHARE_EXPORT?.exportPng({
+    button:document.querySelector("#exportStarVeinImageBtn"),
+    target:document.querySelector(".shell"),
+    title:document.querySelector(".hero h1")?.textContent||"星脉探索抽奖",
+    filename:"星脉探索抽奖-分享图",
+    backgroundColor:"#f4f7fb"
+  });
+}
+applyStarVeinDraft(restoredStarVeinDraft);
 function drawSimulationQuality(roomIndex){const roll=Math.random();let cumulative=0;for(let index=0;index<roomRates[roomIndex].length;index++){cumulative+=roomRates[roomIndex][index];if(roll<cumulative)return index;}return roomRates[roomIndex].length-1;}
 function createSimulationRoom(roomIndex,beforeTax){const taxed=Math.random()<taxRates[roomIndex];const afterTax=taxed?Math.floor(beforeTax*.5):beforeTax;const qualityIndex=drawSimulationQuality(roomIndex);const reward=qualities[qualityIndex][3]*selectedMultiplier;return {room:roomIndex+1,quality:qualities[qualityIndex][0],qualityIndex,reward,taxed,beforeTax,afterTax,taxLoss:beforeTax-afterTax,cumulative:afterTax+reward};}
 function simulateExplorationOnce(){let coins=0;let bigReds=0;let taxHits=0;const rooms=[];for(let roomIndex=0;roomIndex<selectedRooms;roomIndex++){const room=createSimulationRoom(roomIndex,coins);coins=room.cumulative;if(room.qualityIndex===0)bigReds++;if(room.taxed)taxHits++;rooms.push(room);}return {coins,bigReds,taxHits,rooms,multiplier:selectedMultiplier,roomCount:selectedRooms,costRmb:10*selectedMultiplier,costCrystal:100*selectedMultiplier};}
-function commitSimulationResult(result){const costRmb=result.costRmb??10*selectedMultiplier;const costCrystal=result.costCrystal??100*selectedMultiplier;simulationState.runs++;simulationState.totalCoins+=result.coins;simulationState.totalRmb+=costRmb;simulationState.totalCrystal+=costCrystal;simulationState.bigReds+=result.bigReds;simulationState.taxHits+=result.taxHits;simulationState.lastResult={...result,costRmb,costCrystal,roomCount:result.roomCount??result.rooms.length,multiplier:result.multiplier??selectedMultiplier};}
+function commitSimulationResult(result){const costRmb=result.costRmb??10*selectedMultiplier;const costCrystal=result.costCrystal??100*selectedMultiplier;simulationState.runs++;simulationState.totalCoins+=result.coins;simulationState.totalRmb+=costRmb;simulationState.totalCrystal+=costCrystal;simulationState.bigReds+=result.bigReds;simulationState.taxHits+=result.taxHits;simulationState.lastResult={...result,costRmb,costCrystal,roomCount:result.roomCount??result.rooms.length,multiplier:result.multiplier??selectedMultiplier};scheduleStarVeinDraftSave();}
 function setSimulationMode(mode){
   simulationMode=mode==="animated"?"animated":"quick";
   const quickMode=simulationMode==="quick";
@@ -321,4 +421,64 @@ function updateBlueControlState(){document.querySelector("#blueSource").disabled
 async function syncDailyGoldRate(){try{let payload;if(location.protocol==="file:"){payload=window.LOSTARK_PUBLIC_DASHBOARD_STATE;if(!payload)throw new Error("本地金价数据未加载");}else{const response=await fetch(`../data/dashboard-state.json?v=${Date.now()}`,{cache:"no-store"});if(!response.ok)throw new Error(`HTTP ${response.status}`);payload=await response.json();}syncEngravingChoice(payload);const auctions=(payload.goldTxns||[]).map(txn=>({date:String(txn.date||""),rate:Number(txn.gold)/Number(txn.price),type:txn.type})).filter(txn=>txn.type==="拍卖交易"&&txn.date&&Number.isFinite(txn.rate)&&txn.rate>0);if(!auctions.length)throw new Error("没有拍卖交易");const latestDate=auctions.reduce((latest,txn)=>txn.date>latest?txn.date:latest,auctions[0].date);const rate=Math.max(...auctions.filter(txn=>txn.date===latestDate).map(txn=>txn.rate));document.querySelector("#goldRate").value=rate.toFixed(2);document.querySelector("#goldRateNote").textContent=`${latestDate} 当日拍卖交易最高值`;renderPacks();}catch(error){document.querySelector("#goldRateNote").textContent="读取失败，暂用页面默认值";}}
 let valueDrawerCloseTimer=0;
 function setValueDrawer(open){const drawer=document.querySelector("#valueDrawer");const backdrop=document.querySelector("#valueDrawerBackdrop");const toggle=document.querySelector("#valueDrawerToggle");window.clearTimeout(valueDrawerCloseTimer);toggle.setAttribute("aria-expanded",String(open));drawer.setAttribute("aria-hidden",String(!open));if(open){drawer.hidden=false;backdrop.hidden=false;window.requestAnimationFrame(()=>{drawer.classList.add("is-open");backdrop.classList.add("is-open");});return;}drawer.classList.remove("is-open");backdrop.classList.remove("is-open");const finish=()=>{if(toggle.getAttribute("aria-expanded")==="false"){drawer.hidden=true;backdrop.hidden=true;}};if(window.matchMedia("(prefers-reduced-motion: reduce)").matches)finish();else valueDrawerCloseTimer=window.setTimeout(finish,250);}
-function init(){document.querySelector("#royalRate").value=blueSettings.royalPerRmb;document.querySelector("#blueSource").value=blueSettings.source;document.querySelector("#customBlueRate").value=blueSettings.customRate||"";document.querySelector("#blueExchangePrice").value=blueSettings.exchangePrice||"";document.querySelector("#heroStarBoxValueMode").value=heroStarBoxValueMode;syncEngravingChoice(window.LOSTARK_PUBLIC_DASHBOARD_STATE);updateBlueControlState();renderPrices();renderRooms();syncDailyGoldRate();document.querySelectorAll(".choice-btn").forEach(btn=>btn.addEventListener("click",()=>setSimulationMultiplier(Number(btn.dataset.multiplier))));document.querySelectorAll(".room-btn").forEach(btn=>btn.addEventListener("click",()=>{selectedRooms=Number(btn.dataset.rooms);document.querySelectorAll(".room-btn").forEach(item=>item.classList.toggle("active",item===btn));renderRooms();resetAnimatedSimulation();renderSimulation();}));document.querySelector("#royalRate").addEventListener("input",event=>{blueSettings.royalPerRmb=Number(event.target.value)||100;renderPacks();});document.querySelector("#blueSource").addEventListener("change",event=>{blueSettings.source=event.target.value;renderPacks();});document.querySelector("#customBlueRate").addEventListener("input",event=>{blueSettings.customRate=Number(event.target.value)||0;if(blueSettings.customRate){blueSettings.exchangePrice=0;document.querySelector("#blueExchangePrice").value="";}updateBlueControlState();renderPacks();});document.querySelector("#blueExchangePrice").addEventListener("input",event=>{blueSettings.exchangePrice=Number(event.target.value)||0;if(blueSettings.exchangePrice){blueSettings.customRate=0;document.querySelector("#customBlueRate").value="";}updateBlueControlState();renderPacks();});document.querySelector("#heroStarBoxValueMode").addEventListener("change",event=>{heroStarBoxValueMode=starStoneValuation.setMode(event.target.value);renderPrices();renderPacks();});const valueDrawerToggle=document.querySelector("#valueDrawerToggle");valueDrawerToggle.addEventListener("click",()=>setValueDrawer(valueDrawerToggle.getAttribute("aria-expanded")!=="true"));document.querySelector("#valueDrawerBackdrop").addEventListener("click",()=>setValueDrawer(false));document.querySelector("#closeValueDrawer").addEventListener("click",()=>setValueDrawer(false));document.addEventListener("keydown",event=>{if(event.key==="Escape"&&valueDrawerToggle.getAttribute("aria-expanded")==="true")setValueDrawer(false);});document.querySelector("#closePackModal").addEventListener("click",closePackModal);document.querySelector("#packModalBackdrop").addEventListener("click",event=>{if(event.target.id==="packModalBackdrop")closePackModal();});}init();initSimulation();
+function init(){
+  applyStarVeinPageText();
+  document.querySelector("#royalRate").value=blueSettings.royalPerRmb;
+  document.querySelector("#blueSource").value=blueSettings.source;
+  document.querySelector("#customBlueRate").value=blueSettings.customRate||"";
+  document.querySelector("#blueExchangePrice").value=blueSettings.exchangePrice||"";
+  document.querySelector("#heroStarBoxValueMode").value=heroStarBoxValueMode;
+  document.querySelectorAll(".choice-btn").forEach(button=>button.classList.toggle("active",Number(button.dataset.multiplier)===selectedMultiplier));
+  document.querySelectorAll(".simulation-multiplier").forEach(button=>button.classList.toggle("active",Number(button.dataset.simulationMultiplier)===selectedMultiplier));
+  document.querySelectorAll(".room-btn").forEach(button=>button.classList.toggle("active",Number(button.dataset.rooms)===selectedRooms));
+  syncEngravingChoice(window.LOSTARK_PUBLIC_DASHBOARD_STATE);
+  updateBlueControlState();
+  renderPrices();
+  renderRooms();
+  syncDailyGoldRate();
+  document.querySelectorAll(".choice-btn").forEach(btn=>btn.addEventListener("click",()=>setSimulationMultiplier(Number(btn.dataset.multiplier))));
+  document.querySelectorAll(".room-btn").forEach(btn=>btn.addEventListener("click",()=>{
+    selectedRooms=Number(btn.dataset.rooms);
+    document.querySelectorAll(".room-btn").forEach(item=>item.classList.toggle("active",item===btn));
+    renderRooms();
+    resetAnimatedSimulation();
+    renderSimulation();
+  }));
+  document.querySelector("#royalRate").addEventListener("input",event=>{blueSettings.royalPerRmb=Number(event.target.value)||100;renderPacks();});
+  document.querySelector("#blueSource").addEventListener("change",event=>{blueSettings.source=event.target.value;renderPacks();});
+  document.querySelector("#customBlueRate").addEventListener("input",event=>{
+    blueSettings.customRate=Number(event.target.value)||0;
+    if(blueSettings.customRate){blueSettings.exchangePrice=0;document.querySelector("#blueExchangePrice").value="";}
+    updateBlueControlState();
+    renderPacks();
+  });
+  document.querySelector("#blueExchangePrice").addEventListener("input",event=>{
+    blueSettings.exchangePrice=Number(event.target.value)||0;
+    if(blueSettings.exchangePrice){blueSettings.customRate=0;document.querySelector("#customBlueRate").value="";}
+    updateBlueControlState();
+    renderPacks();
+  });
+  document.querySelector("#heroStarBoxValueMode").addEventListener("change",event=>{
+    heroStarBoxValueMode=starStoneValuation.setMode(event.target.value);
+    renderPrices();
+    renderPacks();
+  });
+  document.querySelector("#editStarVeinPageBtn").addEventListener("click",()=>setStarVeinTextEditing(!starVeinTextEditing));
+  document.querySelector("#exportStarVeinImageBtn").addEventListener("click",exportStarVeinImage);
+  const valueDrawerToggle=document.querySelector("#valueDrawerToggle");
+  valueDrawerToggle.addEventListener("click",()=>setValueDrawer(valueDrawerToggle.getAttribute("aria-expanded")!=="true"));
+  document.querySelector("#valueDrawerBackdrop").addEventListener("click",()=>setValueDrawer(false));
+  document.querySelector("#closeValueDrawer").addEventListener("click",()=>setValueDrawer(false));
+  document.addEventListener("input",scheduleStarVeinDraftSave);
+  document.addEventListener("change",scheduleStarVeinDraftSave);
+  document.addEventListener("click",scheduleStarVeinDraftSave);
+  document.addEventListener("keydown",event=>{
+    if(event.key==="Escape"&&valueDrawerToggle.getAttribute("aria-expanded")==="true")setValueDrawer(false);
+    if(event.key==="Escape"&&starVeinTextEditing)setStarVeinTextEditing(false);
+  });
+  document.querySelector("#closePackModal").addEventListener("click",closePackModal);
+  document.querySelector("#packModalBackdrop").addEventListener("click",event=>{if(event.target.id==="packModalBackdrop")closePackModal();});
+}
+init();
+initSimulation();
+if(restoredStarVeinDraft)window.LOSTARK_SHARE_EXPORT?.showToast("已继续使用浏览器缓存中的星脉探索状态");

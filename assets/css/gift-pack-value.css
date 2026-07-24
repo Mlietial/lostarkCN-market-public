@@ -985,6 +985,14 @@ textarea {
   display: none;
 }
 
+.share-exporting .table-scroll {
+  overflow: visible;
+}
+
+.share-exporting .pack-table th {
+  position: static;
+}
+
 .floating-edit {
   position: fixed;
   right: 24px;

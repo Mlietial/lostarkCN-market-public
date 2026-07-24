@@ -6,6 +6,7 @@
   <title>礼包内容价值分析</title>
   <link rel="icon" type="image/jpeg" href="../assets/英雄星石箱子.jpg">
   <link rel="stylesheet" href="../assets/css/gift-pack-value.css?v=20260703-single-modal-scroll">
+  <link rel="stylesheet" href="../assets/css/share-export.css">
   <script>
     var _hmt = _hmt || [];
     (function() {
@@ -88,7 +89,7 @@
         <div>
           <h2>礼包总表</h2>
         </div>
-        <div class="table-actions">
+        <div class="table-actions" data-share-export-ignore>
           <span class="support-author-popover">
             <button type="button" class="ghost-btn support-author-btn" aria-describedby="supportAuthorTip">支持作者</button>
             <span id="supportAuthorTip" class="support-author-tip" role="tooltip" style="display:none">
@@ -97,7 +98,9 @@
             </span>
           </span>
           <button id="manualValuesToggleBtn" type="button" class="ghost-btn">显示估值设置</button>
+          <button id="editPageContentBtn" type="button" class="ghost-btn">编辑页面</button>
           <button id="addCustomPackBtn" type="button" class="ghost-btn">新增礼包</button>
+          <button id="exportGiftPackImageBtn" type="button" class="ghost-btn">导出分享图</button>
           <button id="exportGiftPackDataBtn" type="button" class="ghost-btn">导出数据</button>
           <button id="exportItemPriceDataBtn" type="button" class="ghost-btn">导出估值</button>
           <button id="importGiftPackDataBtn" type="button" class="ghost-btn">导入数据</button>
@@ -157,6 +160,7 @@
   <div class="floating-edit">
     <button id="floatingEditBtn" type="button" class="floating-edit-btn" aria-label="编辑操作">✎</button>
     <div id="floatingEditMenu" class="floating-edit-menu" hidden>
+      <button id="floatingEditPageBtn" type="button">编辑页面文案</button>
       <button id="toggleEditListBtn" type="button">编辑列表</button>
       <button id="openFirstPackEditorBtn" type="button">编辑礼包</button>
       <button id="floatingAddPackBtn" type="button">新增礼包</button>
@@ -172,6 +176,7 @@
   <script src="../data/dashboard-state.js"></script>
   <script src="../assets/js/blue-exchange-fee.js"></script>
   <script src="../assets/js/star-stone-valuation.js"></script>
+  <script src="../assets/js/share-export.js"></script>
   <script src="https://unpkg.com/pinyin-pro"></script>
   <script src="../assets/js/pinyin-search.js"></script>
   <script>

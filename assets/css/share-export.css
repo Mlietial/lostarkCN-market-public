@@ -1,0 +1,67 @@
+.share-export-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 18px;
+  padding: 12px 16px;
+  border-top: 1px solid rgba(84, 125, 165, .22);
+  color: #60758d;
+  font-size: 12px;
+}
+
+.share-export-footer strong {
+  color: #1769aa;
+  font-size: 13px;
+}
+
+.share-export-toast {
+  position: fixed;
+  z-index: 100;
+  left: 50%;
+  bottom: 28px;
+  max-width: min(520px, calc(100vw - 32px));
+  padding: 11px 16px;
+  border: 1px solid rgba(23, 105, 170, .26);
+  border-radius: 8px;
+  background: #fff;
+  color: #17324d;
+  box-shadow: 0 16px 42px rgba(15, 39, 59, .2);
+  font-size: 13px;
+  font-weight: 700;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 10px);
+  transition: opacity .18s ease, transform .18s ease;
+}
+
+.share-export-toast.is-visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.share-exporting [data-share-export-ignore],
+.share-exporting .floating-edit,
+.share-exporting .value-drawer-toggle,
+.share-exporting .value-drawer,
+.share-exporting .value-drawer-backdrop,
+.share-exporting .modal-backdrop,
+.share-exporting .pack-modal-backdrop {
+  display: none !important;
+}
+
+[data-page-editable][contenteditable="true"] {
+  outline: 2px dashed rgba(23, 105, 170, .42);
+  outline-offset: 4px;
+  border-radius: 3px;
+  background: rgba(231, 242, 252, .72);
+  cursor: text;
+}
+
+@media (max-width: 640px) {
+  .share-export-footer {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
+  }
+}
