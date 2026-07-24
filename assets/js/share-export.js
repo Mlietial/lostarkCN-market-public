@@ -85,6 +85,8 @@
         await image.decode?.();
       } catch (error) {
         console.warn("导出时跳过无法安全读取的图片：", source, error);
+        const url = new URL(source, location.href);
+        if (location.protocol !== "file:" && url.origin === location.origin) return;
         image.style.visibility = "hidden";
       }
     }));

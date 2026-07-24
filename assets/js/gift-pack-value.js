@@ -763,22 +763,46 @@ function exportItemPriceData() {
   downloadJsonFile(`item-price-data-${date}.json`, buildItemPriceDataExport());
 }
 
+function buildGiftPackCollage() {
+  const rows = filterPacks(getGiftPacks())
+    .map(pack => ({ pack, calc: calcPack(pack) }))
+    .sort((a, b) => state.sortDesc
+      ? (b.calc.percent ?? -Infinity) - (a.calc.percent ?? -Infinity)
+      : (a.calc.percent ?? -Infinity) - (b.calc.percent ?? -Infinity));
+  const collage = document.createElement("section");
+  collage.className = "share-collage";
+  const cards = rows.map(({ pack, calc }) => {
+    const paths = [pack.image, ...(pack.detailImages || [])].filter(Boolean);
+    const media = paths.length
+      ? paths.map((path, index) => `<img src="${escapeAttr(path)}" alt="${escapeAttr(pack.name)}${index ? `详情${index}` : "封面"}">`).join("")
+      : `<div class="share-collage-placeholder">暂无礼包图片</div>`;
+    const valueText = formatGoldRange(calc.minValueGold, calc.maxValueGold, calc.valueGold);
+    const percentText = formatPercentRange(calc.minPercent, calc.maxPercent, calc.percent);
+    const percentClass = Number(calc.percent) >= 100 ? "is-good" : "is-bad";
+    return `<article class="share-collage-card"><header class="share-collage-card-head"><h2>${escapeHtml(pack.name)}</h2><strong>${fmtNum(pack.price,0)} ${currencyLabel(pack.currency)}</strong></header><div class="share-collage-media">${media}</div><div class="share-collage-metrics"><div><span>购买成本折金币</span><strong>${fmtGold(calc.costGold)}</strong></div><div><span>礼包内容估值</span><strong>${valueText}</strong></div><div><span>性价比</span><strong class="${percentClass}">${percentText}</strong></div></div></article>`;
+  }).join("");
+  collage.innerHTML = `<header class="share-collage-head"><h1>${escapeHtml(document.querySelector(".page-head h1")?.textContent || "礼包详情拼图")}</h1><p>当前筛选：${escapeHtml(document.querySelector("#filterInput")?.selectedOptions?.[0]?.textContent || "全部礼包")} · 共 ${rows.length} 个礼包</p></header><div class="share-collage-grid">${cards}</div>`;
+  document.body.appendChild(collage);
+  return collage;
+}
+
 function exportGiftPackImage() {
   const button = document.getElementById("exportGiftPackImageBtn");
-  const table = document.querySelector(".pack-table");
-  const hadEditColumn = table?.classList.contains("show-edit-column");
   closeModal();
   closeEditDialog();
-  window.LOSTARK_SHARE_EXPORT?.exportPng({
+  const collage = buildGiftPackCollage();
+  if (!window.LOSTARK_SHARE_EXPORT) {
+    collage.remove();
+    return;
+  }
+  window.LOSTARK_SHARE_EXPORT.exportPng({
     button,
-    target: document.querySelector(".app-shell"),
-    title: document.querySelector(".page-head h1")?.textContent || "礼包内容价值分析",
-    filename: "礼包内容价值分析-分享图",
-    backgroundColor: "#eef6ff",
-    beforeExport: () => table?.classList.remove("show-edit-column"),
-    afterExport: () => {
-      if (hadEditColumn) table?.classList.add("show-edit-column");
-    }
+    target: collage,
+    title: "礼包详情拼图",
+    filename: "礼包详情拼图",
+    backgroundColor: "#eef5fb",
+    scale: 1.5,
+    afterExport: () => collage.remove()
   });
 }
 

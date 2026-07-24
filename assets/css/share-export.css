@@ -58,6 +58,127 @@
   cursor: text;
 }
 
+.share-collage {
+  position: absolute;
+  z-index: 999;
+  top: 0;
+  left: 0;
+  width: 1400px;
+  min-height: 100vh;
+  padding: 32px;
+  background: #eef5fb;
+  color: #17243a;
+  font-family: "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif;
+}
+
+.share-collage-head {
+  margin-bottom: 20px;
+  padding: 20px 22px;
+  border: 1px solid #ccdeed;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.share-collage-head h1 {
+  margin: 0 0 7px;
+  color: #1769aa;
+  font-size: 28px;
+}
+
+.share-collage-head p {
+  margin: 0;
+  color: #60758d;
+  font-size: 13px;
+}
+
+.share-collage-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.share-collage-card {
+  overflow: hidden;
+  border: 1px solid #ccdeed;
+  border-radius: 10px;
+  background: #fff;
+  break-inside: avoid;
+}
+
+.share-collage-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid #e1eaf2;
+}
+
+.share-collage-card-head h2 {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.4;
+}
+
+.share-collage-card-head strong {
+  flex: 0 0 auto;
+  color: #b45309;
+  font-size: 16px;
+}
+
+.share-collage-media {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+  padding: 10px;
+  background: #f6f9fc;
+}
+
+.share-collage-media img,
+.share-collage-placeholder {
+  width: 100%;
+  height: 150px;
+  object-fit: contain;
+  border: 1px solid #dce6ef;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.share-collage-placeholder {
+  display: grid;
+  place-items: center;
+  color: #8796a8;
+  font-size: 12px;
+}
+
+.share-collage-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  padding: 11px 13px 13px;
+}
+
+.share-collage-metrics span {
+  display: block;
+  color: #6a7c90;
+  font-size: 10px;
+}
+
+.share-collage-metrics strong {
+  display: block;
+  margin-top: 3px;
+  color: #17324d;
+  font-size: 14px;
+}
+
+.share-collage-metrics strong.is-good {
+  color: #087f5b;
+}
+
+.share-collage-metrics strong.is-bad {
+  color: #b42318;
+}
+
 @media (max-width: 640px) {
   .share-export-footer {
     align-items: flex-start;

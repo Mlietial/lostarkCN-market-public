@@ -149,17 +149,41 @@ function setStarVeinTextEditing(editing,announce=true){
   if(!starVeinTextEditing)saveStarVeinDraft();
   if(announce)window.LOSTARK_SHARE_EXPORT?.showToast(starVeinTextEditing?"蓝色虚线区域可直接修改文字":"页面文案已保存到浏览器缓存");
 }
+function escapeShareText(value){
+  return String(value??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;");
+}
+function buildStarVeinPackCollage(){
+  const collage=document.createElement("section");
+  collage.className="share-collage";
+  const cards=packs.map(pack=>{
+    const calc=packMetrics(pack);
+    const display=packDisplay(pack,calc);
+    const images=[pack.cover,pack.detail].filter(Boolean).map((path,index)=>`<img src="${base}${escapeShareText(path)}" alt="${escapeShareText(pack.name)}${index?"详情":"封面"}">`).join("");
+    const roiClass=calc.roi>=100?"is-good":"is-bad";
+    return `<article class="share-collage-card"><header class="share-collage-card-head"><h2>${escapeShareText(pack.name)}</h2><strong>${pack.cost.toLocaleString()} 星脉币</strong></header><div class="share-collage-media">${images||'<div class="share-collage-placeholder">暂无礼包图片</div>'}</div><div class="share-collage-metrics"><div><span>单份内容估值</span><strong>${display.singleGold}</strong></div><div><span>折合人民币</span><strong>${display.singleRmb}</strong></div><div><span>性价比</span><strong class="${roiClass}">${display.roi}</strong></div></div></article>`;
+  }).join("");
+  collage.innerHTML=`<header class="share-collage-head"><h1>${escapeShareText(document.querySelector(".shop .section-title h2")?.textContent||"礼包详情拼图")}</h1><p>${selectedMultiplier} 倍 · 推进 ${selectedRooms} 房 · 共 ${packs.length} 个兑换礼包</p></header><div class="share-collage-grid">${cards}</div>`;
+  document.body.appendChild(collage);
+  return collage;
+}
 function exportStarVeinImage(){
   setStarVeinTextEditing(false,false);
   setValueDrawer(false);
   closePackModal();
   saveStarVeinDraft();
-  window.LOSTARK_SHARE_EXPORT?.exportPng({
+  const collage=buildStarVeinPackCollage();
+  if(!window.LOSTARK_SHARE_EXPORT){
+    collage.remove();
+    return;
+  }
+  window.LOSTARK_SHARE_EXPORT.exportPng({
     button:document.querySelector("#exportStarVeinImageBtn"),
-    target:document.querySelector(".shell"),
-    title:document.querySelector(".hero h1")?.textContent||"星脉探索抽奖",
-    filename:"星脉探索抽奖-分享图",
-    backgroundColor:"#f4f7fb"
+    target:collage,
+    title:"星脉兑换礼包详情拼图",
+    filename:"星脉兑换礼包详情拼图",
+    backgroundColor:"#eef5fb",
+    scale:1.5,
+    afterExport:()=>collage.remove()
   });
 }
 applyStarVeinDraft(restoredStarVeinDraft);
