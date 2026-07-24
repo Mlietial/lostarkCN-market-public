@@ -80,11 +80,10 @@ function animatedQualityRows(currentRoom){
   return qualities.map((quality,index)=>`<tr><td class="spe-td spe-td${index+1}"><i class="icon-xx icon-xx${index+1}"></i><span>${quality[0]}</span></td><td>${money(rates[index]*100)}%</td><td>${money(quality[3])}</td><td>${money(quality[3]*selectedMultiplier)}</td></tr>`).join("");
 }
 function animatedBags(room,state){
-  if(!room)return `<div class="animated-empty"><div><p>点击开始后，逐房从三个袋子中选一个翻牌。</p><button type="button" id="animatedStart">开始动画模拟</button></div></div>`;
   return Array.from({length:3},(_,index)=>{
-    const selected=state?.selectedBag===index;
-    const locked=state?.locked||state?.selectedBag!==null;
-    const className=["dz-item",selected?"revealed":"",selected?simulationQualityClasses[room.qualityIndex]:"",state?.selectedBag!==null&&!selected?"faded":""].filter(Boolean).join(" ");
+    const selected=!!room&&state?.selectedBag===index;
+    const locked=!room||state?.locked||state?.selectedBag!=null;
+    const className=["dz-item",selected?"revealed":"",selected?simulationQualityClasses[room.qualityIndex]:"",state?.selectedBag!=null&&!selected?"faded":""].filter(Boolean).join(" ");
     const sparks=Array.from({length:4},()=>`<i class="bag-spark"></i>`).join("");
     return `<button type="button" class="${className}" data-animated-bag="${index}" ${locked?"disabled":""} aria-label="翻开袋子 ${index+1}"><div class="icon-dz" data-quality="${selected?room.quality:""}">${sparks}</div><p>袋子${index+1}</p><div class="wh-text"><span>${selected?`+${money(room.reward)}`:"???"}</span></div></button>`;
   }).join("");
@@ -92,10 +91,10 @@ function animatedBags(room,state){
 function animatedPopup(state,room){
   if(state?.awaitingNext&&room){
     const taxText=room.taxed?`税收队扣除 ${money(room.taxLoss)} 星脉币后，本房累计为 ${money(room.cumulative)}。`:`本房未损失星脉币，当前累计 ${money(room.cumulative)}。`;
-    return `<div class="animated-pop-backdrop"><section class="animated-pop pop8 ${simulationQualityClasses[room.qualityIndex]}" role="dialog" aria-modal="true" aria-labelledby="animatedPopTitle"><p class="pop-kicker">ROOM ${room.room} REWARD</p><h5 id="animatedPopTitle">翻牌成功</h5><span class="pop-quality">${room.quality}</span><strong class="pop-reward">+${money(room.reward)} 星脉币</strong><p>${taxText}</p><button type="button" id="animatedNextRoom">${state.roomIndex>=selectedRooms?"完成本轮结算":"进入下一房"}</button></section></div>`;
+    return `<div class="animated-pop-backdrop"><section class="animated-pop pop8 ${simulationQualityClasses[room.qualityIndex]}" role="dialog" aria-modal="true" aria-labelledby="animatedPopTitle"><p class="pop-kicker">第 ${room.room} 房奖励</p><h5 id="animatedPopTitle">翻牌成功</h5><span class="pop-quality">${room.quality}</span><strong class="pop-reward">+${money(room.reward)} 星脉币</strong><p>${taxText}</p><button type="button" id="animatedNextRoom">${state.roomIndex>=selectedRooms?"完成本轮结算":"继续前进"}</button></section></div>`;
   }
   if(state?.finished){
-    return `<div class="animated-pop-backdrop"><section class="animated-pop pop8" role="dialog" aria-modal="true" aria-labelledby="animatedPopTitle"><p class="pop-kicker">EXPLORATION COMPLETE</p><h5 id="animatedPopTitle">本轮探索完成</h5><strong class="pop-reward">${money(state.coins)} 星脉币</strong><p>${selectedRooms} 房全部结算 · 大红 ${money(state.bigReds)} 次 · 税收 ${money(state.taxHits)} 次</p><button type="button" id="animatedRestart">再来一局</button></section></div>`;
+    return `<div class="animated-pop-backdrop"><section class="animated-pop pop8" role="dialog" aria-modal="true" aria-labelledby="animatedPopTitle"><p class="pop-kicker">星脉迷宫结算</p><h5 id="animatedPopTitle">本轮探索完成</h5><strong class="pop-reward">${money(state.coins)} 星脉币</strong><p>${selectedRooms} 房全部结算 · 大红 ${money(state.bigReds)} 次 · 税收 ${money(state.taxHits)} 次</p><div class="animated-official-actions"><button type="button" id="animatedRestart">再来一局</button><button type="button" class="secondary" id="animatedCloseResult">关闭</button></div></section></div>`;
   }
   return "";
 }
@@ -116,25 +115,26 @@ function renderAnimatedSimulation(){
   const room=state?.pending||state?.lastReveal||null;
   const currentRoom=room?.room||Math.min((state?.roomIndex||0)+1,selectedRooms);
   const tax=animatedTaxCopy(room);
-  const title=state?.finished?"探索完成":state?.active?`第 ${currentRoom} / ${selectedRooms} 房`:"等待开始";
-  const stageTitle=state?.finished?"本轮探索已完成":state?.active?`星脉探索 · 第 ${currentRoom} 房`:`${selectedMultiplier} 倍 · 推进 ${selectedRooms} 房`;
-  const message=state?.finished?"结果已计入上方模拟统计。":state?.awaitingNext?"奖励已揭晓，请在结果窗口中继续。":room?`点击袋子翻牌，选取后获得星脉币（按 ${selectedMultiplier} 倍结算）`:"动画模拟会沿用当前倍率和房间数。";
-  const result=state?.finished?`<strong>本局获得 ${money(state.coins)} 星脉币</strong>`:state?.active?`当前累计 <strong>${money(state.coins)} 星脉币</strong>`:"动画结果会同步计入上方统计";
-  const exitAction=state?.active&&!state.awaitingNext?`<button type="button" id="animatedExit">结束本局</button>`:state?.finished?`<button type="button" id="animatedExit">关闭结果</button>`:"";
-  container.innerHTML=`<div class="animated-mode-head"><div><span class="kicker">ANIMATED PLAY MODE</span><h4>官方风格翻牌模拟</h4></div><div class="animated-run-meta">${title}</div></div><div class="p3-gl-box ${state?.active?"show-ani":""}">
+  const stageTitle=state?.finished?"本轮探索已完成":state?.active?`当前房间 ${currentRoom} / ${selectedRooms}`:`${selectedMultiplier} 倍 · 推进 ${selectedRooms} 房`;
+  const message=room?"点击袋子翻牌，选取后获得星脉币（按当前倍率结算）":"点击开始动画模拟，进入星脉迷宫选择袋子";
+  const coins=state?.coins||0;
+  const startAction=!state?`<button type="button" id="animatedStart">开始探索</button>`:"";
+  const exitAction=state?.active&&!state.awaitingNext?`<button type="button" class="secondary" id="animatedExit">结束本局</button>`:"";
+  container.innerHTML=`<div class="p3-gl-box ${state?.active?"show-ani":""}">
     <div class="gl-info-box ${animatedInfoOpen?"":"is-collapsed"}">
       <div class="top-box"><p>| 概率信息板</p><button type="button" class="btn-djsq" id="animatedToggleInfo" aria-expanded="${animatedInfoOpen}"><i class="p3-icon-jt"></i><span class="pc-msg">${animatedInfoOpen?"点击收起":"点击展开"}</span><span class="h5-msg">${animatedInfoOpen?"点击收起":"点击展开"}</span></button></div>
-      <div class="center-box"><div class="center-inner"><div class="center-content"><div class="table-box"><table><thead><tr><th>品质</th><th>本房概率</th><th>基础奖励</th><th>${selectedMultiplier} 倍结算</th></tr></thead><tbody>${animatedQualityRows(currentRoom)}</tbody></table></div><div class="room-status"><div class="room-green ${tax.danger?"":"on"}"><p>${tax.title}<small>${tax.copy}</small></p></div><div class="room-red ${tax.danger?"on":""}"><p>${tax.title}<small>${tax.copy}</small></p></div></div></div></div></div>
+      <div class="center-box"><div class="center-inner"><div class="center-content"><div class="table-box"><table><tbody>${animatedQualityRows(currentRoom)}</tbody></table></div><div class="room-status"><div class="room-green ${tax.danger?"":"on"}"><p>${tax.title}<small>${tax.copy}</small></p></div><div class="room-red ${tax.danger?"on":""}"><p>${tax.title}<small>${tax.copy}</small></p></div></div></div></div></div>
     </div>
-    <div class="base-box"><div class="title p3-small-tit4"><span>${stageTitle}</span></div><p class="msg">${message}</p><div class="dz-box">${animatedBags(room,state)}</div></div>
+    <div class="base-box"><div class="title p3-small-tit4"><span>星脉迷宫探险</span></div><p class="room-progress">${stageTitle}</p><p class="msg">${message}</p><div class="dz-box">${animatedBags(room,state)}</div><p class="carry-coins">随身星脉币：<strong>${money(coins)}</strong></p><div class="animated-official-actions">${startAction}${exitAction}</div></div>
     ${animatedPopup(state,room)}
-  </div><div class="animated-mode-foot"><div class="animated-result">${result}</div><div class="animated-actions">${exitAction}</div></div>`;
+  </div>`;
   container.querySelector("#animatedToggleInfo")?.addEventListener("click",toggleAnimatedInfo);
   container.querySelectorAll("[data-animated-bag]").forEach(button=>button.addEventListener("click",()=>chooseAnimatedBag(button)));
   container.querySelector("#animatedStart")?.addEventListener("click",startAnimatedSimulation);
   container.querySelector("#animatedNextRoom")?.addEventListener("click",advanceAnimatedRoom);
   container.querySelector("#animatedExit")?.addEventListener("click",resetAnimatedSimulation);
   container.querySelector("#animatedRestart")?.addEventListener("click",startAnimatedSimulation);
+  container.querySelector("#animatedCloseResult")?.addEventListener("click",resetAnimatedSimulation);
   updateAnimatedActionState();
 }
 function playAnimatedRoomEntrance(){
