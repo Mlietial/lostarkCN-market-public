@@ -49,10 +49,11 @@
       <div class="room-grid" id="roomGrid"></div>
       <div class="event-note"><strong>圣光税收队：</strong>房间 2/3/4/5 触发概率为 10%/20%/35%/50%，触发后损失当前星脉币的 50%（向下取整），再继续开箱。</div>
       <section class="simulation-panel" aria-labelledby="simulationTitle">
-        <div class="simulation-head"><div><span class="kicker">PLAYGROUND</span><h3 id="simulationTitle">探索模拟</h3></div><div class="simulation-controls"><fieldset class="simulation-multipliers"><legend>模拟倍率</legend><div><button type="button" class="simulation-multiplier active" data-simulation-multiplier="1">1 倍</button><button type="button" class="simulation-multiplier" data-simulation-multiplier="10">10 倍</button><button type="button" class="simulation-multiplier" data-simulation-multiplier="50">50 倍</button></div></fieldset><div class="simulation-actions"><button id="simulateOnce" type="button" class="simulation-primary">模拟 1 次</button><button id="simulateTen" type="button">十连</button><button id="simulateHundred" type="button">模拟 100 次</button><button id="resetSimulation" type="button">清空</button></div></div></div>
+        <div class="simulation-head"><div><span class="kicker">PLAYGROUND</span><h3 id="simulationTitle">探索模拟</h3></div><div class="simulation-controls"><fieldset class="simulation-multipliers"><legend>模拟倍率</legend><div><button type="button" class="simulation-multiplier active" data-simulation-multiplier="1">1 倍</button><button type="button" class="simulation-multiplier" data-simulation-multiplier="10">10 倍</button><button type="button" class="simulation-multiplier" data-simulation-multiplier="50">50 倍</button></div></fieldset><div class="simulation-actions"><button id="simulateAnimated" type="button" class="simulation-primary">动画模拟</button><button id="simulateOnce" type="button">快速 1 次</button><button id="simulateTen" type="button">十连</button><button id="simulateHundred" type="button">模拟 100 次</button><button id="resetSimulation" type="button">清空</button></div></div></div>
         <div class="simulation-stats" id="simulationStats"></div>
         <div class="simulation-room-grid" id="simulationRoomGrid"></div>
         <div class="simulation-result" id="simulationResult" hidden></div>
+        <section class="animated-simulation" id="animatedSimulation" aria-live="polite"></section>
         <div class="simulation-probabilities" id="simulationProbabilities"></div>
       </section>
     </section>
@@ -84,6 +85,7 @@
   <script src="../data/dashboard-state.js"></script>
   <script src="../assets/js/blue-exchange-fee.js"></script>
   <script src="../assets/js/star-stone-valuation.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
   <script src="../assets/js/star-vein-lottery.js"></script>
 </body>
 </html>
