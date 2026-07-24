@@ -56,6 +56,7 @@ let selectedRooms=5;
 let expectedCoinsPerRmb=0;
 let engravingChoice={date:"",name:"",value:0,count:0};
 let simulationState={runs:0,totalCoins:0,totalRmb:0,totalCrystal:0,bigReds:0,taxHits:0,lastResult:null};
+let simulationMode="quick";
 let animatedSimulationState=null;
 let animatedInfoOpen=true;
 let animatedTween=null;
@@ -66,7 +67,22 @@ function drawSimulationQuality(roomIndex){const roll=Math.random();let cumulativ
 function createSimulationRoom(roomIndex,beforeTax){const taxed=Math.random()<taxRates[roomIndex];const afterTax=taxed?Math.floor(beforeTax*.5):beforeTax;const qualityIndex=drawSimulationQuality(roomIndex);const reward=qualities[qualityIndex][3]*selectedMultiplier;return {room:roomIndex+1,quality:qualities[qualityIndex][0],qualityIndex,reward,taxed,beforeTax,afterTax,taxLoss:beforeTax-afterTax,cumulative:afterTax+reward};}
 function simulateExplorationOnce(){let coins=0;let bigReds=0;let taxHits=0;const rooms=[];for(let roomIndex=0;roomIndex<selectedRooms;roomIndex++){const room=createSimulationRoom(roomIndex,coins);coins=room.cumulative;if(room.qualityIndex===0)bigReds++;if(room.taxed)taxHits++;rooms.push(room);}return {coins,bigReds,taxHits,rooms};}
 function commitSimulationResult(result){simulationState.runs++;simulationState.totalCoins+=result.coins;simulationState.totalRmb+=10*selectedMultiplier;simulationState.totalCrystal+=100*selectedMultiplier;simulationState.bigReds+=result.bigReds;simulationState.taxHits+=result.taxHits;simulationState.lastResult=result;}
-function updateAnimatedActionState(){const active=!!animatedSimulationState?.active;["#simulateAnimated","#simulateOnce","#simulateTen","#simulateHundred"].forEach(selector=>{const button=document.querySelector(selector);if(button)button.disabled=active;});}
+function setSimulationMode(mode){
+  simulationMode=mode==="animated"?"animated":"quick";
+  const quickMode=simulationMode==="quick";
+  const quickView=document.querySelector("#quickSimulationView");
+  const animatedView=document.querySelector("#animatedSimulation");
+  const quickActions=document.querySelector("#quickSimulationActions");
+  if(quickView)quickView.hidden=!quickMode;
+  if(animatedView)animatedView.hidden=quickMode;
+  if(quickActions)quickActions.hidden=!quickMode;
+  document.querySelectorAll("[data-simulation-mode]").forEach(button=>{
+    const active=button.dataset.simulationMode===simulationMode;
+    button.classList.toggle("active",active);
+    button.setAttribute("aria-selected",String(active));
+  });
+}
+function updateAnimatedActionState(){const active=!!animatedSimulationState?.active;["#simulateOnce","#simulateTen","#simulateHundred"].forEach(selector=>{const button=document.querySelector(selector);if(button)button.disabled=active;});}
 function renderSimulation(){document.querySelector("#simulationTitle").textContent=`探索模拟 · ${selectedMultiplier}倍 / ${selectedRooms}房`;const average=simulationState.runs?simulationState.totalCoins/simulationState.runs:0;document.querySelector("#simulationStats").innerHTML=`<div class="simulation-stat"><span>模拟次数</span><strong>${money(simulationState.runs)}</strong></div><div class="simulation-stat"><span>累计获得</span><strong>${money(simulationState.totalCoins)} 星脉币</strong></div><div class="simulation-stat"><span>平均获得</span><strong>${money(average)} 星脉币</strong></div><div class="simulation-stat"><span>累计花费</span><strong>${money(simulationState.totalRmb)} 元</strong><small>${money(simulationState.totalCrystal)} 彩钻</small></div><div class="simulation-stat"><span>大红次数</span><strong>${money(simulationState.bigReds)}</strong></div><div class="simulation-stat"><span>税收触发</span><strong>${money(simulationState.taxHits)}</strong></div>`;const result=simulationState.lastResult;document.querySelector("#simulationRoomGrid").innerHTML=result?result.rooms.map(room=>`<article class="simulation-room"><h4>房间 ${room.room}</h4><span class="simulation-quality ${simulationQualityClasses[room.qualityIndex]}">${room.quality}</span><strong>+${money(room.reward)}</strong><small>${room.taxed?`进入时 ${money(room.beforeTax)} · <span class="tax-hit">税后 ${money(room.afterTax)}（-${money(room.taxLoss)}）</span>`:taxRates[room.room-1]>0?`进入时 ${money(room.beforeTax)} · 税收未触发`:`进入时 ${money(room.beforeTax)} · 无税收事件`}<br>本房奖励 +${money(room.reward)} · 实得 ${money(room.cumulative)}</small></article>`).join(""):`<div class="simulation-empty">等待首次模拟</div>`;const finalResult=document.querySelector("#simulationResult");finalResult.hidden=!result;finalResult.innerHTML=result?`<span>本次推进 ${selectedRooms} 房完成</span><strong>实际获得 ${money(result.coins)} 星脉币</strong><small>本次花费 ${money(10*selectedMultiplier)} 元 / ${money(100*selectedMultiplier)} 彩钻，已计入全部奖励与税收</small>`:"";updateAnimatedActionState();}
 function renderSimulationProbabilities(){const qualityNames=qualities.map(quality=>quality[0]);document.querySelector("#simulationProbabilities").innerHTML=`<strong>概率公示</strong><div class="simulation-probability-grid">${roomRates.map((rates,index)=>`<small>房间 ${index+1}：${rates.map((rate,qualityIndex)=>`${qualityNames[qualityIndex]} ${money(rate*100)}%`).join(" / ")} · 税收 ${money(taxRates[index]*100)}%</small>`).join("")}</div><p>基础奖励：大红 400、金色 160、蓝色 60、绿色 20、白色 6 星脉币；奖励按探索倍率放大。税收触发时先扣除当前累计星脉币的 50%（向下取整），再获得本房奖励。</p>`;}
 function animatedTaxCopy(room){
@@ -202,6 +218,7 @@ function playAnimatedResultEntrance(){
 }
 function startAnimatedSimulation(){
   if(animatedSimulationState?.active)return;
+  setSimulationMode("animated");
   animatedSimulationState={active:true,finished:false,roomIndex:0,coins:0,bigReds:0,taxHits:0,rooms:[],pending:null,lastReveal:null,selectedBag:null,awaitingNext:false,locked:false};
   openAnimatedRoom();
   document.querySelector("#animatedSimulation")?.scrollIntoView({behavior:prefersReducedMotion()?"auto":"smooth",block:"center"});
@@ -271,7 +288,7 @@ function resetAnimatedSimulation(){
 function runSimulation(count){if(animatedSimulationState?.active)return;for(let index=0;index<count;index++)commitSimulationResult(simulateExplorationOnce());renderSimulation();}
 function resetSimulation(){simulationState={runs:0,totalCoins:0,totalRmb:0,totalCrystal:0,bigReds:0,taxHits:0,lastResult:null};resetAnimatedSimulation();renderSimulation();}
 function setSimulationMultiplier(multiplier){selectedMultiplier=multiplier;document.querySelectorAll(".choice-btn").forEach(button=>button.classList.toggle("active",Number(button.dataset.multiplier)===multiplier));document.querySelectorAll(".simulation-multiplier").forEach(button=>button.classList.toggle("active",Number(button.dataset.simulationMultiplier)===multiplier));renderRooms();resetSimulation();}
-function initSimulation(){renderSimulationProbabilities();renderAnimatedSimulation();renderSimulation();document.querySelector("#simulateAnimated").addEventListener("click",startAnimatedSimulation);document.querySelector("#simulateOnce").addEventListener("click",()=>runSimulation(1));document.querySelector("#simulateTen").addEventListener("click",()=>runSimulation(10));document.querySelector("#simulateHundred").addEventListener("click",()=>runSimulation(100));document.querySelector("#resetSimulation").addEventListener("click",resetSimulation);document.querySelectorAll(".simulation-multiplier").forEach(button=>button.addEventListener("click",()=>setSimulationMultiplier(Number(button.dataset.simulationMultiplier))));}
+function initSimulation(){renderSimulationProbabilities();renderAnimatedSimulation();renderSimulation();setSimulationMode(simulationMode);document.querySelectorAll("[data-simulation-mode]").forEach(button=>button.addEventListener("click",()=>setSimulationMode(button.dataset.simulationMode)));document.querySelector("#simulateOnce").addEventListener("click",()=>runSimulation(1));document.querySelector("#simulateTen").addEventListener("click",()=>runSimulation(10));document.querySelector("#simulateHundred").addEventListener("click",()=>runSimulation(100));document.querySelector("#resetSimulation").addEventListener("click",resetSimulation);document.querySelectorAll(".simulation-multiplier").forEach(button=>button.addEventListener("click",()=>setSimulationMultiplier(Number(button.dataset.simulationMultiplier))));}
 function renderRooms(){let dist=new Map([[0,1]]);const stats=[];let html="";for(let r=0;r<5;r++){const next=new Map();for(const [coins,p0] of dist){const taxed=[[Math.floor(coins*.5),p0*taxRates[r]],[coins,p0*(1-taxRates[r])]];for(const [after,pTax] of taxed){if(!pTax)continue;roomRates[r].forEach((p,i)=>{const value=qualities[i][3]*selectedMultiplier;next.set(after+value,(next.get(after+value)||0)+pTax*p);});}}dist=next;const cumulative=[...dist].reduce((s,[v,p])=>s+v*p,0);stats.push(cumulative);const state=r+1===selectedRooms?" selected":r+1>selectedRooms?" beyond":"";html+=`<article class="room${state}"><h3>推进 ${r+1} 房</h3><div class="ev">${money(cumulative)} <small>星脉币</small></div><small>计入各房间奖励概率与税收事件后的累计获取均值</small></article>`;}document.querySelector("#roomGrid").innerHTML=html;const selected=stats[selectedRooms-1];const costRmb=10*selectedMultiplier;const costCrystal=100*selectedMultiplier;expectedCoinsPerRmb=selected/costRmb;localStorage.setItem("starVeinExpectedCoinsPerRmb",String(expectedCoinsPerRmb));document.querySelector("#exploreSummary").innerHTML=`<strong>${selectedMultiplier} 倍 · 推进 ${selectedRooms} 房</strong><span>累计获取均值 <b>${money(selected)} 星脉币</b></span><span>消耗 <b>${costRmb} 元 / ${costCrystal} 彩钻</b></span><span>约 <b>${expectedCoinsPerRmb.toFixed(2)} 星脉币 / 元</b></span>`;renderPacks();}
 function blueExchangeServiceFee(totalBlue){return window.LOSTARK_BLUE_EXCHANGE_FEES.serviceFee(totalBlue);}
 function blueExchangeLots(neededBlue){return window.LOSTARK_BLUE_EXCHANGE_FEES.purchaseForNet(neededBlue);}
