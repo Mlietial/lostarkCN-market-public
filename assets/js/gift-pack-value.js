@@ -777,7 +777,7 @@ function buildGiftPackCollage() {
   const cards = rows.map(({ pack, calc }) => {
     const paths = [pack.image, ...(pack.detailImages || [])].filter(Boolean);
     const media = paths.length
-      ? paths.map((path, index) => `<img src="${escapeAttr(path)}" alt="${escapeAttr(pack.name)}${index ? `详情${index}` : "封面"}" loading="eager" decoding="sync">`).join("")
+      ? paths.map((path, index) => `<img class="${index ? "share-collage-detail" : "share-collage-cover"}" src="${escapeAttr(path)}" alt="${escapeAttr(pack.name)}${index ? `详情${index}` : "封面"}" loading="eager" decoding="sync">`).join("")
       : `<div class="share-collage-placeholder">暂无礼包图片</div>`;
     const valueText = formatGoldRange(calc.minValueGold, calc.maxValueGold, calc.valueGold);
     const percentText = formatPercentRange(calc.minPercent, calc.maxPercent, calc.percent);

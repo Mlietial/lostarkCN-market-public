@@ -180,10 +180,12 @@
 .share-collage-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
   gap: 14px;
 }
 
 .share-collage-card {
+  align-self: start;
   overflow: hidden;
   border: 1px solid #ccdeed;
   border-radius: 10px;
@@ -213,29 +215,32 @@
 }
 
 .share-collage-media {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   align-items: flex-start;
-  flex-wrap: wrap;
   gap: 7px;
   padding: 10px;
   background: #f6f9fc;
 }
 
 .share-collage-media img {
-  flex: 0 0 auto;
-  width: auto;
-  max-width: 100%;
+  display: block;
+  width: 100%;
   height: auto;
+  aspect-ratio: auto;
   object-fit: contain;
   border: 1px solid #dce6ef;
   border-radius: 6px;
   background: #fff;
 }
 
+.share-collage-media .share-collage-cover {
+  grid-column: 1 / -1;
+}
+
 .share-collage-placeholder,
 .share-image-missing {
-  flex: 1 1 220px;
-  width: auto;
+  width: 100%;
   height: 150px;
   border: 1px solid #dce6ef;
   border-radius: 6px;
