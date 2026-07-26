@@ -40,9 +40,9 @@
           <fieldset class="choice-buttons room-buttons"><legend>探索房间</legend><div><button type="button" class="room-btn" data-rooms="1">1 次</button><button type="button" class="room-btn" data-rooms="2">2 次</button><button type="button" class="room-btn" data-rooms="3">3 次</button><button type="button" class="room-btn" data-rooms="4">4 次</button><button type="button" class="room-btn active" data-rooms="5">5 次</button></div></fieldset>
         </div>
         <section class="expected-value-control" aria-labelledby="expectedValueTitle">
-          <span class="expected-value-copy"><strong id="expectedValueTitle">期望值计算方式</strong><small>默认可直接填写单倍平均值；如按多倍统计，也可切换为填写星脉币总值与实际总花费。</small><span class="expected-value-mode-switch"><button type="button" class="active" data-expected-value-mode="average">单倍平均值</button><button type="button" data-expected-value-mode="total">总值＋花费</button></span></span>
+          <span class="expected-value-copy"><strong id="expectedValueTitle">期望值计算方式</strong><small>平均值会跟随单倍、十倍或五十倍计算；如按多次结果统计，也可切换为填写星脉币总值与实际总花费。</small><span class="expected-value-mode-switch"><button type="button" class="active" data-expected-value-mode="average">倍率平均值</button><button type="button" data-expected-value-mode="total">总值＋花费</button></span></span>
           <span class="expected-value-fields average-value-fields" id="averageExpectedFields">
-            <label class="expected-value-input-label">单倍平均获得<span class="expected-value-field"><input id="averageExpectedCoins" type="number" min="0.01" step="0.01"><b>星脉币 / 10 元</b></span></label>
+            <label class="expected-value-input-label"><span id="averageExpectedLabel">单倍平均获得</span><span class="expected-value-field"><input id="averageExpectedCoins" type="number" min="0.01" step="0.01"><b id="averageExpectedUnit">星脉币 / 10 元</b></span></label>
           </span>
           <span class="expected-value-fields" id="totalExpectedFields" hidden>
             <label class="expected-value-input-label">获得星脉币总值<span class="expected-value-field"><input id="totalExpectedCoins" type="number" min="0.01" step="0.01"><b>星脉币</b></span></label>
