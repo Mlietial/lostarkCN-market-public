@@ -60,6 +60,7 @@ let selectedRooms=5;
 let expectedCoinsPerRmb=0;
 let calculatedExpectedCoins=0;
 let customExpectedCoins=null;
+let customExpectedCostRmb=null;
 let engravingChoice={date:"",name:"",value:0,count:0};
 let simulationState={runs:0,totalCoins:0,totalRmb:0,totalCrystal:0,bigReds:0,taxHits:0,lastResult:null};
 let simulationMode="quick";
@@ -76,6 +77,7 @@ function applyStarVeinDraft(draft){
   if([1,10,50].includes(Number(draft.selectedMultiplier)))selectedMultiplier=Number(draft.selectedMultiplier);
   if(Number(draft.selectedRooms)>=1&&Number(draft.selectedRooms)<=5)selectedRooms=Number(draft.selectedRooms);
   if(Number.isFinite(Number(draft.customExpectedCoins))&&Number(draft.customExpectedCoins)>0)customExpectedCoins=Number(draft.customExpectedCoins);
+  if(Number.isFinite(Number(draft.customExpectedCostRmb))&&Number(draft.customExpectedCostRmb)>0)customExpectedCostRmb=Number(draft.customExpectedCostRmb);
   if(["quick","animated"].includes(draft.simulationMode))simulationMode=draft.simulationMode;
   if(draft.simulationState&&typeof draft.simulationState==="object"){
     simulationState={...simulationState,...draft.simulationState};
@@ -122,6 +124,7 @@ function saveStarVeinDraft(){
     selectedMultiplier,
     selectedRooms,
     customExpectedCoins,
+    customExpectedCostRmb,
     simulationMode,
     simulationState,
     itemValues:savedItemValues,
@@ -416,8 +419,8 @@ function runSimulation(count){if(animatedSimulationState?.active)return;for(let 
 function resetSimulation(){simulationState={runs:0,totalCoins:0,totalRmb:0,totalCrystal:0,bigReds:0,taxHits:0,lastResult:null};resetAnimatedSimulation();renderSimulation();}
 function setSimulationMultiplier(multiplier){selectedMultiplier=multiplier;document.querySelectorAll(".choice-btn").forEach(button=>button.classList.toggle("active",Number(button.dataset.multiplier)===multiplier));document.querySelectorAll(".simulation-multiplier").forEach(button=>button.classList.toggle("active",Number(button.dataset.simulationMultiplier)===multiplier));renderRooms();resetAnimatedSimulation();renderSimulation();}
 function initSimulation(){renderSimulationProbabilities();renderAnimatedSimulation();renderSimulation();setSimulationMode(simulationMode);document.querySelectorAll("[data-simulation-mode]").forEach(button=>button.addEventListener("click",()=>setSimulationMode(button.dataset.simulationMode)));document.querySelector("#simulateOnce").addEventListener("click",()=>runSimulation(1));document.querySelector("#simulateTen").addEventListener("click",()=>runSimulation(10));document.querySelector("#simulateHundred").addEventListener("click",()=>runSimulation(100));document.querySelector("#resetSimulation").addEventListener("click",resetSimulation);document.querySelectorAll(".simulation-multiplier").forEach(button=>button.addEventListener("click",()=>setSimulationMultiplier(Number(button.dataset.simulationMultiplier))));}
-function renderExpectedPricing(){const costRmb=10*selectedMultiplier;const costCrystal=100*selectedMultiplier;const expectedCoins=customExpectedCoins??calculatedExpectedCoins;expectedCoinsPerRmb=expectedCoins/costRmb;localStorage.setItem("starVeinExpectedCoinsPerRmb",String(expectedCoinsPerRmb));document.querySelector("#exploreSummary").innerHTML=`<strong>${selectedMultiplier} 倍 · 推进 ${selectedRooms} 房</strong><span>${customExpectedCoins===null?"累计获取均值":"自定义期望值"} <b>${money(expectedCoins)} 星脉币</b></span><span>消耗 <b>${costRmb} 元 / ${costCrystal} 彩钻</b></span><span>约 <b>${expectedCoinsPerRmb.toFixed(2)} 星脉币 / 元</b></span>`;renderPacks();}
-function renderRooms(){let dist=new Map([[0,1]]);const stats=[];let html="";for(let r=0;r<5;r++){const next=new Map();for(const [coins,p0] of dist){const taxed=[[Math.floor(coins*.5),p0*taxRates[r]],[coins,p0*(1-taxRates[r])]];for(const [after,pTax] of taxed){if(!pTax)continue;roomRates[r].forEach((p,i)=>{const value=qualities[i][3]*selectedMultiplier;next.set(after+value,(next.get(after+value)||0)+pTax*p);});}}dist=next;const cumulative=[...dist].reduce((s,[v,p])=>s+v*p,0);stats.push(cumulative);const state=r+1===selectedRooms?" selected":r+1>selectedRooms?" beyond":"";html+=`<article class="room${state}"><h3>推进 ${r+1} 房</h3><div class="ev">${money(cumulative)} <small>星脉币</small></div><small>计入各房间奖励概率与税收事件后的累计获取均值</small></article>`;}document.querySelector("#roomGrid").innerHTML=html;calculatedExpectedCoins=stats[selectedRooms-1];document.querySelector("#expectedCoins").value=String(customExpectedCoins??Number(calculatedExpectedCoins.toFixed(2)));renderExpectedPricing();}
+function renderExpectedPricing(){const defaultCostRmb=10*selectedMultiplier;const costRmb=customExpectedCostRmb??defaultCostRmb;const expectedCoins=customExpectedCoins??calculatedExpectedCoins;expectedCoinsPerRmb=expectedCoins/costRmb;localStorage.setItem("starVeinExpectedCoinsPerRmb",String(expectedCoinsPerRmb));document.querySelector("#exploreSummary").innerHTML=`<strong>${selectedMultiplier} 倍 · 推进 ${selectedRooms} 房</strong><span>${customExpectedCoins===null?"理论获取总值":"填写获取总值"} <b>${money(expectedCoins)} 星脉币</b></span><span>${customExpectedCostRmb===null?"默认花费":"填写花费"} <b>${money(costRmb)} 元</b></span><span>换算比例 <b>${expectedCoinsPerRmb.toFixed(2)} 星脉币 / 元</b></span>`;renderPacks();}
+function renderRooms(){let dist=new Map([[0,1]]);const stats=[];let html="";for(let r=0;r<5;r++){const next=new Map();for(const [coins,p0] of dist){const taxed=[[Math.floor(coins*.5),p0*taxRates[r]],[coins,p0*(1-taxRates[r])]];for(const [after,pTax] of taxed){if(!pTax)continue;roomRates[r].forEach((p,i)=>{const value=qualities[i][3]*selectedMultiplier;next.set(after+value,(next.get(after+value)||0)+pTax*p);});}}dist=next;const cumulative=[...dist].reduce((s,[v,p])=>s+v*p,0);stats.push(cumulative);const state=r+1===selectedRooms?" selected":r+1>selectedRooms?" beyond":"";html+=`<article class="room${state}"><h3>推进 ${r+1} 房</h3><div class="ev">${money(cumulative)} <small>星脉币</small></div><small>计入各房间奖励概率与税收事件后的累计获取均值</small></article>`;}document.querySelector("#roomGrid").innerHTML=html;calculatedExpectedCoins=stats[selectedRooms-1];document.querySelector("#expectedCoins").value=String(customExpectedCoins??Number(calculatedExpectedCoins.toFixed(2)));document.querySelector("#expectedCostRmb").value=String(customExpectedCostRmb??10*selectedMultiplier);renderExpectedPricing();}
 function blueExchangeServiceFee(totalBlue){return window.LOSTARK_BLUE_EXCHANGE_FEES.serviceFee(totalBlue);}
 function blueExchangeLots(neededBlue){return window.LOSTARK_BLUE_EXCHANGE_FEES.purchaseForNet(neededBlue);}
 function blueToGold(blue){if(blueSettings.exchangePrice>0)return blueExchangeLots(blue).grossBlue/1000*blueSettings.exchangePrice;const goldRate=Number(document.querySelector("#goldRate").value)||0;if(blueSettings.customRate>0)return blue/blueSettings.customRate*goldRate;const source=BLUE_SOURCES[blueSettings.source];const royal=blue*source.royal/source.blue;return royal/blueSettings.royalPerRmb*goldRate;}
@@ -464,6 +467,14 @@ function init(){
   });
   document.querySelector("#expectedCoins").addEventListener("blur",event=>{
     if(customExpectedCoins===null)event.target.value=String(Number(calculatedExpectedCoins.toFixed(2)));
+  });
+  document.querySelector("#expectedCostRmb").addEventListener("input",event=>{
+    const value=Number(event.target.value);
+    customExpectedCostRmb=Number.isFinite(value)&&value>0?value:null;
+    renderExpectedPricing();
+  });
+  document.querySelector("#expectedCostRmb").addEventListener("blur",event=>{
+    if(customExpectedCostRmb===null)event.target.value=String(10*selectedMultiplier);
   });
   document.querySelectorAll(".choice-btn").forEach(btn=>btn.addEventListener("click",()=>setSimulationMultiplier(Number(btn.dataset.multiplier))));
   document.querySelectorAll(".room-btn").forEach(btn=>btn.addEventListener("click",()=>{
