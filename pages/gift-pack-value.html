@@ -596,7 +596,7 @@
             ? def.starcoin
             : defaultManualValue(name, defaultGold);
           const unit = manual?.unit || defaultUnit;
-          const isHundredStoneItem = /(?:破坏石|守护石)(?:结晶)?(?:[（(]绑定[）)])?$/.test(name);
+          const isHundredStoneItem = /(?:破坏石|守护石|破坏强石|守护强石)(?:结晶)?(?:[（(]绑定[）)])?$/.test(name);
           const stackSize = isHundredStoneItem ? 100 : 1;
           const displayedDefault = unit === "gold" && stackSize > 1 && Number.isFinite(defaultValue)
             ? defaultValue * stackSize
