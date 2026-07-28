@@ -389,7 +389,6 @@
               <img src="../assets/support-author-428.jpg" alt="支持作者收款码" width="428" height="428">
             </span>
           </span>
-          <button id="focusValuePanelBtn" type="button" class="ghost-btn">估值设置</button>
           <button id="editPageContentBtn" type="button" class="ghost-btn">编辑页面</button>
           <button id="addCustomPackBtn" type="button" class="ghost-btn">新增礼包</button>
           <button id="exportGiftPackImageBtn" type="button" class="ghost-btn">导出分享图</button>
@@ -729,9 +728,6 @@
           renderDrawerPrices(true);
         });
 
-        document.getElementById("focusValuePanelBtn")?.addEventListener("click", () => {
-          setDrawerOpen(true);
-        });
         drawerToggle.addEventListener("click", () => setDrawerOpen(drawerToggle.getAttribute("aria-expanded") !== "true"));
         drawerBackdrop.addEventListener("click", () => setDrawerOpen(false));
         document.getElementById("closeGiftValueDrawerBtn")?.addEventListener("click", () => setDrawerOpen(false));
