@@ -24,6 +24,7 @@
       padding: 10px 9px;
       font-weight: 900;
       letter-spacing: .08em;
+      transition: opacity .12s ease, visibility .12s ease, filter .12s ease;
       writing-mode: vertical-rl;
     }
 
@@ -31,8 +32,10 @@
       filter: brightness(1.08);
     }
 
-    .gift-value-drawer-toggle[aria-expanded="true"] {
-      transform: translateX(min(480px, 92vw)) translateY(-50%);
+    .gift-value-drawer-toggle.is-concealed {
+      opacity: 0;
+      pointer-events: none;
+      visibility: hidden;
     }
 
     .gift-value-drawer-backdrop {
@@ -215,10 +218,26 @@
       font-size: 10px;
     }
 
-    .drawer-price-item input {
+    .drawer-price-value-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 82px;
+      gap: 6px;
+    }
+
+    .drawer-price-item input,
+    .drawer-price-item select {
       min-height: 38px;
+    }
+
+    .drawer-price-item input {
       font-size: 15px;
       font-weight: 850;
+    }
+
+    .drawer-price-item select {
+      padding: 6px;
+      font-size: 12px;
+      font-weight: 750;
     }
 
     .pack-table:not(.show-edit-column) th:last-child,
@@ -258,12 +277,6 @@
         top: auto;
         bottom: 18px;
         min-height: 88px;
-        transform: none;
-      }
-
-      .gift-value-drawer-toggle[aria-expanded="true"] {
-        right: 8px;
-        left: auto;
         transform: none;
       }
 
@@ -448,7 +461,7 @@
     </label>
     <section class="drawer-price-section">
       <h3>物品价格</h3>
-      <p>填写方式与抽奖页相同；清空输入框可恢复公开数据中的默认估值。能按内容拆分的自选箱和材料袋不单独定价，会按各自开出的实际数量自动计算。</p>
+      <p>填写数值并选择金币、彩钻、蓝钻或星脉币，系统会自动折算成金币；清空可恢复默认估值。能按内容拆分的自选箱和材料袋会按实际数量自动计算。</p>
       <div class="drawer-price-editor" id="giftDrawerPriceEditor"></div>
     </section>
   </aside>
@@ -504,6 +517,27 @@
         const tableBody = document.getElementById("packTableBody");
         let drawerCloseTimer = 0;
         let drawerItemSignature = "";
+        MANUAL_VALUE_UNITS.starcoin = "星脉币";
+        const drawerValueUnits = {
+          gold: "金币",
+          royal: "彩钻",
+          blue: "蓝钻",
+          starcoin: "星脉币"
+        };
+        const originalManualValueToGold = manualValueToGold;
+        const originalManualRangeToGold = manualRangeToGold;
+        const originalManualSourceText = manualSourceText;
+        manualValueToGold = (entry, name) => entry?.unit === "starcoin"
+          ? starcoinToValuationGold(entry.value) / manualEntryStackSize(entry, name)
+          : originalManualValueToGold(entry, name);
+        manualRangeToGold = (entry, edge = "mid", name) => {
+          if (entry?.unit !== "starcoin") return originalManualRangeToGold(entry, edge, name);
+          const value = edge === "min" ? entry.min : edge === "max" ? entry.max : entry.value;
+          return starcoinToValuationGold(value) / manualEntryStackSize(entry, name);
+        };
+        manualSourceText = (entry, name) => entry?.unit === "starcoin"
+          ? `手动估值（${manualEntryText(entry)}星脉币，按星脉探索抽奖估值折算）`
+          : originalManualSourceText(entry, name);
 
         const refreshExpectedPreview = () => {
           const value = Number(localStorage.getItem("starVeinExpectedCoinsPerRmb")) || 27.77;
@@ -521,6 +555,7 @@
           drawerToggle.setAttribute("aria-expanded", String(open));
           drawer.setAttribute("aria-hidden", String(!open));
           if (open) {
+            drawerToggle.classList.add("is-concealed");
             renderDrawerPrices(true);
             drawer.hidden = false;
             drawerBackdrop.hidden = false;
@@ -536,6 +571,7 @@
             if (drawerToggle.getAttribute("aria-expanded") === "false") {
               drawer.hidden = true;
               drawerBackdrop.hidden = true;
+              drawerToggle.classList.remove("is-concealed");
             }
           };
           if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) finish();
@@ -544,9 +580,15 @@
 
         const drawerPriceMeta = name => {
           const manual = normalizeManualEntry(state.manualValues[name]);
+          const def = itemPrices[name];
           const defaultGold = defaultItemGold(name);
-          const defaultUnit = defaultManualUnit(name);
-          const defaultValue = defaultManualValue(name, defaultGold);
+          const useMerchantGold = state.heroStarBoxValueMode === "merchant" && typeof def?.merchantGold === "number";
+          const defaultUnit = !useMerchantGold && typeof def?.starcoin === "number"
+            ? "starcoin"
+            : defaultManualUnit(name);
+          const defaultValue = defaultUnit === "starcoin"
+            ? def.starcoin
+            : defaultManualValue(name, defaultGold);
           const unit = manual?.unit || defaultUnit;
           const isHundredStoneItem = /(?:破坏石|守护石)(?:结晶)?(?:[（(]绑定[）)])?$/.test(name);
           const stackSize = isHundredStoneItem ? 100 : 1;
@@ -559,9 +601,7 @@
             defaultValue: displayedDefault ?? "",
             unit,
             stackSize,
-            unitLabel: unit === "gold" && stackSize > 1
-              ? `金币 / ${stackSize} 个`
-              : `${MANUAL_VALUE_UNITS[unit] || "金币"} / 个`
+            quantityLabel: stackSize > 1 ? `每 ${stackSize} 个` : "每个"
           };
         };
 
@@ -579,41 +619,58 @@
             return `
               <label class="drawer-price-item">
                 <b title="${escapeAttr(displayItemName(name))}">${escapeHtml(displayItemName(name))}</b>
-                <small>${escapeHtml(meta.unitLabel)}</small>
-                <input
-                  type="text"
-                  inputmode="decimal"
-                  data-drawer-price="${escapeAttr(name)}"
-                  data-drawer-price-unit="${escapeAttr(meta.unit)}"
-                  data-stack-size="${escapeAttr(meta.stackSize)}"
-                  data-default-value="${escapeAttr(meta.defaultValue)}"
-                  value="${escapeAttr(meta.value)}"
-                  placeholder="${escapeAttr(meta.defaultValue)}">
+                <small>${escapeHtml(meta.quantityLabel)} · 自动折算为金币</small>
+                <span class="drawer-price-value-row">
+                  <input
+                    type="text"
+                    inputmode="decimal"
+                    aria-label="${escapeAttr(displayItemName(name))}价格"
+                    data-drawer-price="${escapeAttr(name)}"
+                    data-drawer-price-unit="${escapeAttr(meta.unit)}"
+                    data-stack-size="${escapeAttr(meta.stackSize)}"
+                    data-default-value="${escapeAttr(meta.defaultValue)}"
+                    value="${escapeAttr(meta.value)}"
+                    placeholder="${escapeAttr(meta.defaultValue)}">
+                  <select data-drawer-price-unit-select="${escapeAttr(name)}" aria-label="${escapeAttr(displayItemName(name))}货币单位">
+                    ${Object.entries(drawerValueUnits).map(([unit, label]) => `
+                      <option value="${unit}" ${meta.unit === unit ? "selected" : ""}>${label}</option>
+                    `).join("")}
+                  </select>
+                </span>
               </label>
             `;
           }).join("");
+          const saveDrawerPrice = input => {
+            const name = input.dataset.drawerPrice;
+            const parsed = parseManualValueRange(input.value);
+            if (parsed) {
+              state.manualValues[name] = {
+                raw: parsed.raw,
+                value: parsed.value,
+                min: parsed.min,
+                max: parsed.max,
+                isRange: parsed.isRange,
+                stackSize: parsed.stackSize || Number(input.dataset.stackSize) || null,
+                unit: input.dataset.drawerPriceUnit || "gold"
+              };
+            } else {
+              delete state.manualValues[name];
+            }
+            saveManualValues();
+            refreshValuation();
+          };
           drawerPriceEditor.querySelectorAll("[data-drawer-price]").forEach(input => {
-            input.addEventListener("input", () => {
-              const name = input.dataset.drawerPrice;
-              const parsed = parseManualValueRange(input.value);
-              if (parsed) {
-                state.manualValues[name] = {
-                  raw: parsed.raw,
-                  value: parsed.value,
-                  min: parsed.min,
-                  max: parsed.max,
-                  isRange: parsed.isRange,
-                  stackSize: parsed.stackSize || Number(input.dataset.stackSize) || null,
-                  unit: input.dataset.drawerPriceUnit || "gold"
-                };
-              } else {
-                delete state.manualValues[name];
-              }
-              saveManualValues();
-              refreshValuation();
-            });
+            input.addEventListener("input", () => saveDrawerPrice(input));
             input.addEventListener("blur", () => {
               if (!input.value.trim()) input.value = input.dataset.defaultValue || "";
+            });
+          });
+          drawerPriceEditor.querySelectorAll("[data-drawer-price-unit-select]").forEach(select => {
+            select.addEventListener("change", () => {
+              const input = drawerPriceEditor.querySelector(`[data-drawer-price="${CSS.escape(select.dataset.drawerPriceUnitSelect)}"]`);
+              if (!input) return;
+              input.dataset.drawerPriceUnit = select.value;
+              saveDrawerPrice(input);
             });
           });
         }
