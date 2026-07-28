@@ -617,7 +617,8 @@
             if (/守护石|守护强石/.test(name)) return 1;
             if (/突破石/.test(name)) return 2;
             if (/融合材料/.test(name)) return 3;
-            return 4;
+            if (/(?:冰川|熔岩)之息/.test(name)) return 4;
+            return 5;
           };
           const names = sortedManualItems(allPackItems().filter(name => {
             const def = itemPrices[name];
