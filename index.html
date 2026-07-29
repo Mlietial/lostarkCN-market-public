@@ -199,6 +199,32 @@
       line-height: 1;
       animation: dashboardNewPulse 2.2s ease-in-out infinite;
     }
+    .dashboard-paused-badge,
+    .relation-paused-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 9px;
+      border: 2px solid #fff;
+      border-radius: 999px;
+      color: #fff;
+      background: #64748b;
+      box-shadow: 0 6px 15px rgba(51, 65, 85, .24);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .08em;
+      line-height: 1;
+      white-space: nowrap;
+    }
+    .dashboard-paused-badge {
+      position: absolute;
+      top: -10px;
+      right: 16px;
+    }
+    .relation-paused-badge {
+      border-width: 0;
+      box-shadow: none;
+    }
     @keyframes dashboardNewPulse {
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.08); }
@@ -261,20 +287,22 @@
         <p>模拟房间奖励与税收事件，查看兑换礼包单份及限购全部价值。</p>
       </a>
       <a class="card gem-dashboard-card" href="./pages/gem-dashboard.html">
-        <span class="dashboard-new-badge" aria-label="新功能">NEW</span>
+        <span class="dashboard-paused-badge" aria-label="已停止更新">停更</span>
         <h2>宝石市场价格指数</h2>
         <p>查看宝石走势、等级价格与金币换算。</p>
       </a>
       <a class="card engraving-book-card" href="./pages/engraving-books.html">
-        <span class="dashboard-new-badge" aria-label="新功能">NEW</span>
+        <span class="dashboard-paused-badge" aria-label="已停止更新">停更</span>
         <h2>遗物刻印市场行情</h2>
         <p>独立查看刻印书价格、较昨均变化和历史低价走势。</p>
       </a>
       <a class="card" href="./pages/gold-trend.html">
+        <span class="dashboard-paused-badge" aria-label="已停止更新">停更</span>
         <h2>国服金币价格走势</h2>
         <p>查看邮寄和拍卖交易的金币比例走势。</p>
       </a>
       <a class="card" href="./pages/material-trend.html">
+        <span class="dashboard-paused-badge" aria-label="已停止更新">停更</span>
         <h2>强化材料价格趋势</h2>
         <p>查看强化材料、碎片袋和辅助材料的价格走势。</p>
       </a>
@@ -284,6 +312,7 @@
             <div class="relation-title-wrap">
               <div class="relation-title-line">
                 <h2 id="relationTitle">金币 / 宝石 / 刻印书走势</h2>
+                <span class="relation-paused-badge" aria-label="已停止更新">停更</span>
                 <div class="relation-note" id="relationNote"></div>
               </div>
               <div class="relation-sub" id="relationSubtitle">线条为指数，悬停看原始值。</div>
