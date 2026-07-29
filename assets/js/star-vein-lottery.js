@@ -493,6 +493,10 @@ function init(){
   document.querySelector("#expectedCostRmb").addEventListener("blur",event=>{
     if(customExpectedCostRmb===null)event.target.value=String(10*selectedMultiplier);
   });
+  document.querySelector("#goldRate").addEventListener("input",()=>{
+    document.querySelector("#goldRateNote").textContent="当前按手动输入的金价计算";
+    renderPacks();
+  });
   document.querySelectorAll(".choice-btn").forEach(btn=>btn.addEventListener("click",()=>setSimulationMultiplier(Number(btn.dataset.multiplier))));
   document.querySelectorAll(".room-btn").forEach(btn=>btn.addEventListener("click",()=>{
     selectedRooms=Number(btn.dataset.rooms);
