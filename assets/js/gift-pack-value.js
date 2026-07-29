@@ -19,6 +19,7 @@ const EDITABLE_STORAGE_KEYS = {
   customManualItems: "giftPackCustomManualItems",
   hiddenManualItems: "giftPackHiddenManualItems",
   itemLabels: "giftPackEditableItemLabels",
+  itemComponents: "giftPackEditableItemComponents",
   choiceOptionQuantities: "giftPackChoiceOptionQuantities",
   rateHistory: "giftPackRateHistory",
   packHistory: "giftPackPackHistory",
@@ -53,6 +54,7 @@ let editableDeletedPacks = loadJson(EDITABLE_STORAGE_KEYS.deletedPacks, []);
 let customManualItems = loadJson(EDITABLE_STORAGE_KEYS.customManualItems, []);
 let hiddenManualItems = loadJson(EDITABLE_STORAGE_KEYS.hiddenManualItems, []);
 let editableItemLabels = loadJson(EDITABLE_STORAGE_KEYS.itemLabels, {});
+let editableItemComponents = loadJson(EDITABLE_STORAGE_KEYS.itemComponents, {});
 let editableChoiceOptionQuantities = loadJson(EDITABLE_STORAGE_KEYS.choiceOptionQuantities, {});
 let rateHistory = loadJson(EDITABLE_STORAGE_KEYS.rateHistory, []);
 let packHistory = loadJson(EDITABLE_STORAGE_KEYS.packHistory, []);
@@ -681,16 +683,13 @@ function hasCachedGiftPackState() {
     || hasJsonContent(EDITABLE_STORAGE_KEYS.itemIcons)
     || hasJsonContent(EDITABLE_STORAGE_KEYS.customManualItems)
     || hasJsonContent(EDITABLE_STORAGE_KEYS.itemLabels)
+    || hasJsonContent(EDITABLE_STORAGE_KEYS.itemComponents)
     || hasJsonContent("giftPackManualValues")
     || !!localStorage.getItem("giftPackSettings");
 }
 
 async function chooseCachedGiftPackState() {
-  if (!hasCachedGiftPackState()) return false;
-  return window.LOSTARK_SHARE_EXPORT.confirmCache({
-    title: "发现礼包编辑缓存",
-    message: "检测到当前浏览器保存的礼包编辑内容，可以继续使用缓存查看，或载入作者最新默认数据。"
-  });
+  return hasCachedGiftPackState();
 }
 
 function giftPackStorageKeys() {
@@ -859,6 +858,7 @@ function resetEditableDataInMemory() {
   editablePackOverrides = {};
   editableCustomPacks = [];
   editableDeletedPacks = [];
+  editableItemComponents = {};
   editableChoiceOptionQuantities = {};
   rateHistory = [];
   packHistory = [];
@@ -973,6 +973,7 @@ function applyPublicGiftPackSnapshot(backup, storage, options = {}) {
   const localCustomManualItems = preserveLocalData ? customManualItems : [];
   const localHiddenManualItems = preserveLocalData ? hiddenManualItems : [];
   const localItemLabels = preserveLocalData ? editableItemLabels : {};
+  const localItemComponents = preserveLocalData ? editableItemComponents : {};
   const localRateHistory = preserveLocalData ? rateHistory : [];
   const localPackHistory = preserveLocalData ? packHistory : [];
   const localPackHistoryLinks = preserveLocalData ? packHistoryLinks : {};
@@ -991,6 +992,7 @@ function applyPublicGiftPackSnapshot(backup, storage, options = {}) {
     customManualItems = localCustomManualItems;
     hiddenManualItems = localHiddenManualItems;
     editableItemLabels = { ...editableItemLabels, ...localItemLabels };
+    editableItemComponents = { ...editableItemComponents, ...localItemComponents };
     rateHistory = localRateHistory;
     packHistory = localPackHistory;
     packHistoryLinks = localPackHistoryLinks;
@@ -1052,6 +1054,7 @@ function applyGiftPackBackupStorage(storage, persist = false) {
   const customItems = parse(EDITABLE_STORAGE_KEYS.customManualItems);
   const hiddenItems = parse(EDITABLE_STORAGE_KEYS.hiddenManualItems);
   const itemLabels = parse(EDITABLE_STORAGE_KEYS.itemLabels);
+  const itemComponents = parse(EDITABLE_STORAGE_KEYS.itemComponents);
   const choiceOptionQuantities = parse(EDITABLE_STORAGE_KEYS.choiceOptionQuantities);
   const rates = parse(EDITABLE_STORAGE_KEYS.rateHistory);
   const packs = parse(EDITABLE_STORAGE_KEYS.packHistory);
@@ -1068,6 +1071,7 @@ function applyGiftPackBackupStorage(storage, persist = false) {
   if (Array.isArray(customItems)) customManualItems = customItems;
   if (Array.isArray(hiddenItems)) hiddenManualItems = hiddenItems;
   if (itemLabels && typeof itemLabels === "object") editableItemLabels = itemLabels;
+  if (itemComponents && typeof itemComponents === "object") editableItemComponents = itemComponents;
   if (choiceOptionQuantities && typeof choiceOptionQuantities === "object") editableChoiceOptionQuantities = choiceOptionQuantities;
   if (Array.isArray(rates)) rateHistory = rates;
   if (Array.isArray(packs)) packHistory = packs;
@@ -1637,6 +1641,7 @@ function resetEditableContent() {
   editableCustomPacks = [];
   editableItemIcons = {};
   editableDeletedPacks = [];
+  editableItemComponents = {};
   editableChoiceOptionQuantities = {};
   Object.values(EDITABLE_STORAGE_KEYS).forEach(key => localStorage.removeItem(key));
 }
@@ -2179,8 +2184,32 @@ function valuationName(name) {
   return state.manualValues[alias] || itemPrices[alias] ? alias : name;
 }
 
-function itemUnitGold(content) {
+function effectiveItemRecipe(name) {
+  if (Object.prototype.hasOwnProperty.call(editableItemComponents, name)) {
+    const saved = editableItemComponents[name];
+    if (Array.isArray(saved)) return { mode: "fixed", chooseCount: 1, items: saved };
+    if (saved && typeof saved === "object") {
+      return {
+        mode: saved.mode === "choice" ? "choice" : "fixed",
+        chooseCount: Math.max(1, Number(saved.chooseCount) || 1),
+        items: Array.isArray(saved.items) ? saved.items : []
+      };
+    }
+  }
+  return {
+    mode: "fixed",
+    chooseCount: 1,
+    items: Array.isArray(itemPrices[name]?.components) ? itemPrices[name].components : []
+  };
+}
+
+function effectiveItemComponents(name) {
+  return effectiveItemRecipe(name).items;
+}
+
+function itemUnitGold(content, parentNames = new Set()) {
   const name = valuationName(content.name);
+  if (parentNames.has(name)) return { value: null, source: "箱内物品存在循环引用" };
   const manualEntry = normalizeManualEntry(state.manualValues[name]);
   const manual = manualEntry && manualEntry.value > 0 ? manualValueToGold(manualEntry, name) : null;
   if (manual !== null) {
@@ -2193,6 +2222,46 @@ function itemUnitGold(content) {
     };
   }
   const def = itemPrices[name];
+  const recipe = effectiveItemRecipe(name);
+  const components = recipe.items;
+  if (components.length) {
+    const nextParentNames = new Set(parentNames);
+    nextParentNames.add(name);
+    const valuedComponents = components.map(component => {
+      const unit = itemUnitGold({ name: component.name, qty: component.qty }, nextParentNames);
+      return {
+        component,
+        value: unit.value === null ? null : unit.value * component.qty,
+        minValue: (unit.minValue ?? unit.value ?? 0) * component.qty,
+        maxValue: (unit.maxValue ?? unit.value ?? 0) * component.qty
+      };
+    });
+    const source = components.map(component => `${displayItemName(component.name)}×${fmtNum(component.qty, 0)}`).join("＋");
+    if (valuedComponents.some(item => item.value === null)) {
+      return { value: null, source: `箱内物品未全部定价：${source}` };
+    }
+    if (recipe.mode === "choice") {
+      const chooseCount = Math.min(recipe.chooseCount, valuedComponents.length);
+      const byValue = [...valuedComponents].sort((a, b) => a.value - b.value);
+      const minSelected = byValue.slice(0, chooseCount);
+      const maxSelected = byValue.slice(-chooseCount);
+      const minValue = minSelected.reduce((sum, item) => sum + item.minValue, 0);
+      const maxValue = maxSelected.reduce((sum, item) => sum + item.maxValue, 0);
+      return {
+        value: maxValue,
+        minValue,
+        maxValue,
+        source: `每箱自选 ${chooseCount} 项：${source}`,
+        isRange: Math.round(minValue) !== Math.round(maxValue)
+      };
+    }
+    const value = valuedComponents.reduce((sum, item) => sum + item.value, 0);
+    const minValue = valuedComponents.reduce((sum, item) => sum + item.minValue, 0);
+    const maxValue = valuedComponents.reduce((sum, item) => sum + item.maxValue, 0);
+    return value === null
+      ? { value: null, source: `箱内物品未全部定价：${source}` }
+      : { value, minValue, maxValue, source, isRange: Math.round(minValue) !== Math.round(maxValue) };
+  }
   if (!def) return { value: null, source: "未计入估值" };
   if (state.heroStarBoxValueMode === "merchant" && typeof def.merchantGold === "number") {
     return { value: def.merchantGold, source: `商人金币售价 ${fmtGold(def.merchantGold)} 金/个` };
@@ -2203,19 +2272,6 @@ function itemUnitGold(content) {
   if (typeof def.gold === "number") return { value: def.gold, source: itemSources[name] || def.note || "金币单价" };
   if (typeof def.royal === "number") return { value: royalToValuationGold(def.royal), source: `${itemSources[name] || def.note || "彩钻折金币"}（估值基准比例 ${fmtGold(state.valuationGoldPerRmb)} 金/元）` };
   if (typeof def.blue === "number") return { value: blueToValuationGold(def.blue), source: `${itemSources[name] || def.note || "蓝钻折金币"}（${blueSourceText()}，估值基准比例 ${fmtGold(state.valuationGoldPerRmb)} 金/元）` };
-  if (Array.isArray(def.components) && def.components.length) {
-    let missing = false;
-    let minValue = 0;
-    let maxValue = 0;
-    const value = def.components.reduce((sum, component) => {
-      const unit = itemUnitGold({ name: component.name, qty: component.qty });
-      if (unit.value === null) missing = true;
-      minValue += (unit.minValue ?? unit.value ?? 0) * component.qty;
-      maxValue += (unit.maxValue ?? unit.value ?? 0) * component.qty;
-      return sum + (unit.value === null ? 0 : unit.value * component.qty);
-    }, 0);
-    return missing ? { value: null, source: "组件未定价" } : { value, minValue, maxValue, source: itemSources[name] || def.note || "组件折算", isRange: Math.round(minValue) !== Math.round(maxValue) };
-  }
   return { value: null, source: "未计入估值" };
 }
 
@@ -2416,6 +2472,10 @@ function allPackItems() {
   Object.values(itemPrices).forEach(def => {
     (def.components || []).forEach(component => byName.set(component.name, component.name));
   });
+  Object.keys(editableItemComponents).forEach(name => {
+    byName.set(name, name);
+    effectiveItemComponents(name).forEach(component => byName.set(component.name, component.name));
+  });
   UNKNOWN_ITEMS.forEach(name => byName.set(name, name));
   customManualItems.forEach(name => byName.set(name, name));
   return [...byName.keys()].filter(name => !hiddenManualItems.includes(name));
@@ -2423,14 +2483,20 @@ function allPackItems() {
 
 function defaultItemGold(name) {
   const def = itemPrices[name];
-  if (!def) return null;
-  if (Array.isArray(def.components) && def.components.length) {
-    const total = def.components.reduce((sum, component) => {
+  const recipe = effectiveItemRecipe(name);
+  const components = recipe.items;
+  if (components.length) {
+    const totals = components.map(component => {
       const unit = itemUnitGold({ name: component.name, qty: component.qty });
-      return sum + (unit.value === null ? 0 : unit.value * component.qty);
-    }, 0);
+      return unit.value === null ? null : unit.value * component.qty;
+    });
+    if (totals.some(value => value === null)) return null;
+    const total = recipe.mode === "choice"
+      ? [...totals].sort((a, b) => b - a).slice(0, Math.min(recipe.chooseCount, totals.length)).reduce((sum, value) => sum + value, 0)
+      : totals.reduce((sum, value) => sum + value, 0);
     return total > 0 ? total : null;
   }
+  if (!def) return null;
   if (state.heroStarBoxValueMode === "merchant" && typeof def.merchantGold === "number") return def.merchantGold;
   if (typeof def.starcoin === "number") return starcoinToValuationGold(def.starcoin);
   if (typeof def.gold === "number") return def.gold;
@@ -2457,6 +2523,12 @@ function defaultManualValue(name, defaultGold) {
 
 function defaultItemSource(name) {
   const def = itemPrices[name];
+  const recipe = effectiveItemRecipe(name);
+  const components = recipe.items;
+  if (components.length) {
+    const source = components.map(component => `${displayItemName(component.name)}×${fmtNum(component.qty, 0)}`).join("＋");
+    return recipe.mode === "choice" ? `每箱自选 ${Math.min(recipe.chooseCount, components.length)} 项：${source}` : source;
+  }
   if (state.heroStarBoxValueMode === "merchant" && typeof def?.merchantGold === "number") return `商人金币售价 ${fmtGold(def.merchantGold)} 金/个`;
   if (typeof def?.starcoin === "number") return `${fmtNum(def.starcoin, 0)}星脉币折算`;
   return itemSources[name] || itemPrices[name]?.note || "默认估值";
@@ -2600,7 +2672,7 @@ function manualItemMeta(name) {
   const defaultValue = defaultManualValue(name, defaultGold);
   const manual = normalizeManualEntry(state.manualValues[name]) || { value: "", unit: defaultUnit };
   const placeholder = defaultGold === null ? "请输入单价，如 60000" : fmtUnitGold(defaultValue);
-  const note = itemPrices[name] ? defaultItemSource(name) : "自定义估值项";
+  const note = itemPrices[name] || effectiveItemComponents(name).length ? defaultItemSource(name) : "自定义估值项";
   const meta = manualDefaultSummary(defaultValue, defaultUnit, defaultGold);
   return { defaultGold, defaultUnit, defaultValue, manual, placeholder, meta, note };
 }
@@ -3193,11 +3265,19 @@ function packEditHtml(pack) {
         </label>
         <input id="editPackNoteInput" type="hidden" value="${escapeAttr(pack.note || "")}">
       </div>
-      <div class="content-edit-list" id="contentEditList">
-        ${editableContents.map((content, index) => contentEditRowHtml(content, index)).join("")}
-      </div>
+      <section class="content-edit-section">
+        <div class="content-edit-head">
+          <div>
+            <h4>礼包内容物</h4>
+            <p>输入简称或关键词即可搜索，例如“碎片”“突破石”。从候选项点选后会自动匹配完整名称、图标和现有估值。</p>
+          </div>
+          <button id="addContentRowBtn" type="button" class="ghost-btn">＋ 添加一项</button>
+        </div>
+        <div class="content-edit-list" id="contentEditList">
+          ${editableContents.map((content, index) => contentEditRowHtml(content, index)).join("")}
+        </div>
+      </section>
       <div class="pack-edit-actions">
-        <button id="addContentRowBtn" type="button" class="ghost-btn">添加内容物</button>
         <button id="applyHistoryPackBtn" type="button" class="ghost-btn">套用历史</button>
         <button id="linkHistoryPackBtn" type="button" class="ghost-btn">关联历史</button>
         <button id="unlinkHistoryPackBtn" type="button" class="ghost-btn">取消关联</button>
@@ -3213,16 +3293,21 @@ function contentEditRowHtml(content = {}, index = 0) {
   const iconPath = resolveItemIconPath(content.name) || "";
   return `
     <div class="content-edit-row" data-content-row="${index}">
-      <label>
-        内容物名称
-        <input type="text" data-content-name value="${escapeAttr(content.name || "")}">
+      <div class="content-edit-preview" data-content-preview>
+        ${contentItemPreviewHtml(content.name, iconPath)}
+      </div>
+      <label class="content-name-field">
+        搜索内容物
+        <input type="search" data-content-name value="${escapeAttr(content.name || "")}" placeholder="输入关键词，如：突破石" autocomplete="off">
+        <span class="content-item-suggestions" data-content-suggestions hidden></span>
+        <small>点选候选项可自动使用已有估值；没有的物品也可以直接输入新名称。</small>
       </label>
       <label>
         数量
         <input type="number" min="0" step="1" data-content-qty value="${escapeAttr(content.qty || 1)}">
       </label>
       <label>
-        图标
+        图标（可选）
         <select data-content-icon-choice>
           ${itemIconOptionsHtml(iconPath)}
         </select>
@@ -3230,6 +3315,127 @@ function contentEditRowHtml(content = {}, index = 0) {
       </label>
       <button type="button" class="remove-row-btn" data-remove-content title="删除内容物">×</button>
     </div>
+  `;
+}
+
+function contentItemPreviewHtml(name = "", iconPath = "") {
+  if (!name) {
+    return `
+      <span class="content-preview-icon item-icon-fallback">?</span>
+      <span><strong>等待选择</strong><small>输入关键词查找已有物品</small></span>
+    `;
+  }
+  const label = displayItemName(name);
+  const valued = itemUnitGold({ name, qty: 1 });
+  const recipe = effectiveItemRecipe(name);
+  const components = recipe.items;
+  const valueText = valued.value === null
+    ? "暂无估值，保存后可在物品估值中补充"
+    : `${formatGoldRange(valued.minValue, valued.maxValue, valued.value)} 金/个 · ${valued.source}`;
+  const iconHtml = iconPath
+    ? `<img class="content-preview-icon" src="${escapeAttr(iconPath)}" alt="${escapeAttr(label)}">`
+    : `<span class="content-preview-icon item-icon-fallback">${escapeHtml(label.slice(0, 1) || "?")}</span>`;
+  const componentAction = isContainerItemName(name)
+    ? `<button type="button" class="configure-components-btn" data-configure-components>${components.length ? `${recipe.mode === "choice" ? "自选" : "箱内"} ${components.length} 种 · 设置` : "设置箱内物品"}</button>`
+    : "";
+  return `${iconHtml}<span><strong>${escapeHtml(label)}</strong><small>${escapeHtml(valueText)}</small>${componentAction}</span>`;
+}
+
+function isContainerItemName(name) {
+  return /箱|袋|包|盒|匣|礼包/.test(String(name || ""));
+}
+
+function contentComponentEditorHtml(ownerName) {
+  const recipe = effectiveItemRecipe(ownerName);
+  const components = recipe.items;
+  const hasOverride = Object.prototype.hasOwnProperty.call(editableItemComponents, ownerName);
+  const rows = components.length ? components : [{ name: "", qty: 1 }];
+  return `
+    <div class="inline-component-editor" data-component-owner="${escapeAttr(ownerName)}">
+      <div class="inline-component-head">
+        <span><strong>设置「${escapeHtml(displayItemName(ownerName))}」打开后的内容</strong><small>这里的数量是每 1 个箱子或袋子开出的数量，不是礼包里箱子的数量。</small></span>
+        <button type="button" class="remove-row-btn" data-close-component-editor title="关闭">×</button>
+      </div>
+      <div class="component-rule-row">
+        <label>
+          箱子类型
+          <select data-component-mode>
+            <option value="fixed" ${recipe.mode === "fixed" ? "selected" : ""}>固定内容（全部获得）</option>
+            <option value="choice" ${recipe.mode === "choice" ? "selected" : ""}>自选内容（从选项中选择）</option>
+          </select>
+        </label>
+        <label data-component-choose-field ${recipe.mode === "choice" ? "" : "hidden"}>
+          每箱可选
+          <input type="number" min="1" step="1" data-component-choose-count value="${escapeAttr(recipe.chooseCount)}">
+          <small>项</small>
+        </label>
+        <p data-component-rule-note>${recipe.mode === "choice" ? "下方每一行代表一个可选项，估值显示最低选择到最高选择的范围。" : "下方所有内容都会同时获得并相加计算。"}</p>
+      </div>
+      <div class="component-edit-list">
+        ${rows.map(componentEditRowHtml).join("")}
+      </div>
+      <div class="inline-component-actions">
+        <button type="button" class="ghost-btn" data-add-box-component>＋ 添加箱内物品</button>
+        <button type="button" class="ghost-btn" data-save-box-components>保存箱内设置</button>
+        <button type="button" class="ghost-btn" data-reset-box-components ${hasOverride ? "" : "disabled"}>恢复页面默认</button>
+      </div>
+    </div>
+  `;
+}
+
+function componentEditRowHtml(component = {}) {
+  return `
+    <div class="component-edit-row">
+      <label class="component-name-field">
+        箱内物品
+        <input type="search" data-box-component-name value="${escapeAttr(component.name || "")}" placeholder="输入关键词，如：守护石" autocomplete="off">
+        <span class="content-item-suggestions component-item-suggestions" data-box-component-suggestions hidden></span>
+      </label>
+      <label>
+        每箱数量
+        <input type="number" min="0.01" step="1" data-box-component-qty value="${escapeAttr(component.qty || 1)}">
+      </label>
+      <button type="button" class="remove-row-btn" data-remove-box-component title="删除箱内物品">×</button>
+    </div>
+  `;
+}
+
+function contentItemCatalog() {
+  return [...new Set(allPackItems())].sort((a, b) => displayItemName(a).localeCompare(displayItemName(b), "zh-CN", { numeric: true }));
+}
+
+function matchingContentItems(query, limit = 10) {
+  const keyword = String(query || "").trim().toLocaleLowerCase("zh-CN");
+  if (!keyword) return [];
+  return contentItemCatalog()
+    .map(name => {
+      const label = displayItemName(name);
+      const searchable = `${name} ${label}`.toLocaleLowerCase("zh-CN");
+      const index = searchable.indexOf(keyword);
+      return { name, index, startsWith: searchable.startsWith(keyword) };
+    })
+    .filter(entry => entry.index >= 0)
+    .sort((a, b) => Number(b.startsWith) - Number(a.startsWith) || a.index - b.index || displayItemName(a.name).localeCompare(displayItemName(b.name), "zh-CN", { numeric: true }))
+    .slice(0, limit)
+    .map(entry => entry.name);
+}
+
+function contentItemSuggestionHtml(name) {
+  const label = displayItemName(name);
+  const iconPath = resolveItemIconPath(name);
+  const valued = itemUnitGold({ name, qty: 1 });
+  const valueText = valued.value === null
+    ? "暂未估值"
+    : `${formatGoldRange(valued.minValue, valued.maxValue, valued.value)} 金/个`;
+  const iconHtml = iconPath
+    ? `<img src="${escapeAttr(iconPath)}" alt="">`
+    : `<span class="item-icon-fallback">${escapeHtml(label.slice(0, 1) || "?")}</span>`;
+  return `
+    <button type="button" data-content-suggestion="${escapeAttr(name)}">
+      ${iconHtml}
+      <span><strong>${escapeHtml(label)}</strong><small>${escapeHtml(valueText)} · ${escapeHtml(valued.source)}</small></span>
+      <em>选择</em>
+    </button>
   `;
 }
 
@@ -3445,6 +3651,7 @@ function wirePackEditEvents(pack) {
     const list = document.getElementById("contentEditList");
     list.insertAdjacentHTML("beforeend", contentEditRowHtml({ name: "", qty: 1 }, list.children.length));
     wireContentEditRows();
+    list.lastElementChild?.querySelector("[data-content-name]")?.focus();
   });
   document.getElementById("applyHistoryPackBtn")?.addEventListener("click", () => {
     const history = selectedPackHistory();
@@ -3516,11 +3723,207 @@ function wireContentEditRows() {
   document.querySelectorAll("[data-remove-content]").forEach(button => {
     button.onclick = () => button.closest(".content-edit-row")?.remove();
   });
+  document.querySelectorAll("[data-content-preview]").forEach(preview => {
+    preview.onclick = event => {
+      if (!event.target.closest("[data-configure-components]")) return;
+      toggleContentComponentEditor(preview.closest(".content-edit-row"));
+    };
+  });
+  document.querySelectorAll("[data-content-name]").forEach(input => {
+    input.oninput = () => {
+      updateContentEditPreview(input.closest(".content-edit-row"));
+      renderContentItemSuggestions(input);
+    };
+    input.onfocus = () => renderContentItemSuggestions(input);
+    input.onkeydown = event => {
+      if (event.key !== "Enter") return;
+      const first = input.closest(".content-edit-row")?.querySelector("[data-content-suggestion]");
+      if (!first) return;
+      event.preventDefault();
+      first.click();
+    };
+    input.onblur = () => {
+      window.setTimeout(() => {
+        const suggestions = input.closest(".content-edit-row")?.querySelector("[data-content-suggestions]");
+        if (suggestions) suggestions.hidden = true;
+      }, 120);
+    };
+  });
   document.querySelectorAll("[data-content-icon-choice]").forEach(select => {
     select.onchange = () => {
       const row = select.closest(".content-edit-row");
       const iconInput = row?.querySelector("[data-content-icon]");
       if (iconInput) iconInput.value = select.value;
+      updateContentEditPreview(row);
+    };
+  });
+}
+
+function renderContentItemSuggestions(input) {
+  const row = input.closest(".content-edit-row");
+  const suggestions = row?.querySelector("[data-content-suggestions]");
+  if (!suggestions) return;
+  const matches = matchingContentItems(input.value);
+  if (!matches.length) {
+    suggestions.innerHTML = input.value.trim()
+      ? '<span class="content-suggestion-empty">没有匹配项，可继续使用这个名称并在“物品估值”中补充价格。</span>'
+      : '<span class="content-suggestion-empty">输入一两个关键词即可搜索，无需填写完整名称。</span>';
+    suggestions.hidden = false;
+    return;
+  }
+  suggestions.innerHTML = matches.map(contentItemSuggestionHtml).join("");
+  suggestions.hidden = false;
+  suggestions.querySelectorAll("[data-content-suggestion]").forEach(button => {
+    button.onclick = () => selectContentItem(row, button.dataset.contentSuggestion);
+  });
+}
+
+function selectContentItem(row, name) {
+  if (!row || !name) return;
+  const input = row.querySelector("[data-content-name]");
+  const iconSelect = row.querySelector("[data-content-icon-choice]");
+  const iconInput = row.querySelector("[data-content-icon]");
+  const suggestions = row.querySelector("[data-content-suggestions]");
+  const iconPath = resolveItemIconPath(name) || "";
+  if (input) input.value = name;
+  if (iconSelect) iconSelect.value = iconPath;
+  if (iconInput) iconInput.value = iconPath;
+  if (suggestions) suggestions.hidden = true;
+  updateContentEditPreview(row);
+  row.querySelector("[data-content-qty]")?.focus();
+}
+
+function updateContentEditPreview(row) {
+  if (!row) return;
+  const name = row.querySelector("[data-content-name]")?.value.trim() || "";
+  const iconPath = row.querySelector("[data-content-icon]")?.value.trim() || resolveItemIconPath(name) || "";
+  const preview = row.querySelector("[data-content-preview]");
+  if (preview) preview.innerHTML = contentItemPreviewHtml(name, iconPath);
+}
+
+function toggleContentComponentEditor(row) {
+  if (!row) return;
+  const current = row.querySelector(".inline-component-editor");
+  if (current) {
+    current.remove();
+    return;
+  }
+  const ownerName = row.querySelector("[data-content-name]")?.value.trim();
+  if (!ownerName) return;
+  row.insertAdjacentHTML("beforeend", contentComponentEditorHtml(ownerName));
+  wireInlineComponentEditor(row.querySelector(".inline-component-editor"), row);
+}
+
+function wireInlineComponentEditor(editor, contentRow) {
+  if (!editor) return;
+  const list = editor.querySelector(".component-edit-list");
+  const wireComponentPickers = () => {
+    editor.querySelectorAll("[data-box-component-name]").forEach(input => {
+      input.oninput = () => renderBoxComponentSuggestions(input);
+      input.onfocus = () => renderBoxComponentSuggestions(input);
+      input.onkeydown = event => {
+        if (event.key !== "Enter") return;
+        const first = input.closest(".component-edit-row")?.querySelector("[data-content-suggestion]");
+        if (!first) return;
+        event.preventDefault();
+        first.click();
+      };
+      input.onblur = () => {
+        window.setTimeout(() => {
+          const suggestions = input.closest(".component-edit-row")?.querySelector("[data-box-component-suggestions]");
+          if (suggestions) suggestions.hidden = true;
+        }, 120);
+      };
+    });
+  };
+  const wireRemoveButtons = () => {
+    editor.querySelectorAll("[data-remove-box-component]").forEach(button => {
+      button.onclick = () => {
+        button.closest(".component-edit-row")?.remove();
+        if (!list.children.length) list.insertAdjacentHTML("beforeend", componentEditRowHtml());
+        wireRemoveButtons();
+        wireComponentPickers();
+      };
+    });
+  };
+  wireRemoveButtons();
+  wireComponentPickers();
+  const modeSelect = editor.querySelector("[data-component-mode]");
+  const chooseField = editor.querySelector("[data-component-choose-field]");
+  const ruleNote = editor.querySelector("[data-component-rule-note]");
+  modeSelect?.addEventListener("change", () => {
+    const isChoice = modeSelect.value === "choice";
+    if (chooseField) chooseField.hidden = !isChoice;
+    if (ruleNote) {
+      ruleNote.textContent = isChoice
+        ? "下方每一行代表一个可选项，估值显示最低选择到最高选择的范围。"
+        : "下方所有内容都会同时获得并相加计算。";
+    }
+  });
+  editor.querySelector("[data-close-component-editor]")?.addEventListener("click", () => editor.remove());
+  editor.querySelector("[data-add-box-component]")?.addEventListener("click", () => {
+    list.insertAdjacentHTML("beforeend", componentEditRowHtml());
+    wireRemoveButtons();
+    wireComponentPickers();
+    list.lastElementChild?.querySelector("[data-box-component-name]")?.focus();
+  });
+  editor.querySelector("[data-save-box-components]")?.addEventListener("click", () => {
+    const ownerName = contentRow.querySelector("[data-content-name]")?.value.trim();
+    if (!ownerName) return;
+    const components = [...editor.querySelectorAll(".component-edit-row")].map(componentRow => {
+      const name = componentRow.querySelector("[data-box-component-name]")?.value.trim();
+      const qty = Number(componentRow.querySelector("[data-box-component-qty]")?.value);
+      return name && Number.isFinite(qty) && qty > 0 ? { name, qty } : null;
+    }).filter(Boolean);
+    if (!components.length) {
+      window.alert("请至少填写一种箱内物品和数量。");
+      return;
+    }
+    const mode = editor.querySelector("[data-component-mode]")?.value === "choice" ? "choice" : "fixed";
+    const chooseCount = Math.min(
+      components.length,
+      Math.max(1, Number(editor.querySelector("[data-component-choose-count]")?.value) || 1)
+    );
+    editableItemComponents[ownerName] = { mode, chooseCount, items: components };
+    saveJson(EDITABLE_STORAGE_KEYS.itemComponents, editableItemComponents);
+    updateContentEditPreview(contentRow);
+    renderTable();
+    refreshSelectedModal();
+    editor.outerHTML = contentComponentEditorHtml(ownerName);
+    wireInlineComponentEditor(contentRow.querySelector(".inline-component-editor"), contentRow);
+  });
+  editor.querySelector("[data-reset-box-components]")?.addEventListener("click", () => {
+    const ownerName = contentRow.querySelector("[data-content-name]")?.value.trim();
+    if (!ownerName) return;
+    delete editableItemComponents[ownerName];
+    saveJson(EDITABLE_STORAGE_KEYS.itemComponents, editableItemComponents);
+    updateContentEditPreview(contentRow);
+    renderTable();
+    refreshSelectedModal();
+    editor.outerHTML = contentComponentEditorHtml(ownerName);
+    wireInlineComponentEditor(contentRow.querySelector(".inline-component-editor"), contentRow);
+  });
+}
+
+function renderBoxComponentSuggestions(input) {
+  const componentRow = input.closest(".component-edit-row");
+  const suggestions = componentRow?.querySelector("[data-box-component-suggestions]");
+  if (!suggestions) return;
+  const matches = matchingContentItems(input.value);
+  if (!matches.length) {
+    suggestions.innerHTML = input.value.trim()
+      ? '<span class="content-suggestion-empty">没有匹配项，可直接使用这个新名称。</span>'
+      : '<span class="content-suggestion-empty">输入关键词即可搜索箱内物品，无需填写完整名称。</span>';
+    suggestions.hidden = false;
+    return;
+  }
+  suggestions.innerHTML = matches.map(contentItemSuggestionHtml).join("");
+  suggestions.hidden = false;
+  suggestions.querySelectorAll("[data-content-suggestion]").forEach(button => {
+    button.onclick = () => {
+      input.value = button.dataset.contentSuggestion;
+      suggestions.hidden = true;
+      componentRow.querySelector("[data-box-component-qty]")?.focus();
     };
   });
 }
