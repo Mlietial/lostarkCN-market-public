@@ -35,23 +35,17 @@
     .creator-rail .support-card {
       width: 100%;
       padding: 10px 12px;
-      transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
-    }
-    .creator-rail .support-card:hover {
-      transform: translateY(-2px);
-      border-color: #cbd5e1;
-      box-shadow: 0 14px 30px rgba(15, 23, 42, .1);
+      cursor: default;
+      background: #f8fafc;
     }
     .creator-rail .support-card h2 {
       margin: 0;
       font-size: 15px;
       line-height: 1.2;
     }
-    .creator-rail .support-card.is-open h2 {
-      margin-bottom: 10px;
-    }
-    .creator-rail .support-qr {
-      width: 100%;
+    .creator-rail .support-card p {
+      margin-top: 6px;
+      font-size: 12px;
     }
     .relation-line {
       stroke-width: 2.5;
@@ -271,9 +265,9 @@
           <p>点击前往淡水鱼怪的 B 站空间。</p>
         </div>
       </a>
-      <section class="card support-card" aria-label="支持作者">
-        <h2>支持作者</h2>
-        <img class="support-qr" src="./assets/support-author-428.jpg" alt="支持作者收款码" width="428" height="428">
+      <section class="card support-card" aria-label="赞助已关闭">
+        <h2>赞助已关闭</h2>
+        <p>项目已停止更新，无需赞助，感谢理解。</p>
       </section>
     </div>
     <section class="grid">
@@ -357,27 +351,6 @@
         if (dataUpdatedAt && text) dataUpdatedAt.textContent = `数据更新时间 ${text}`;
       })
       .catch(() => {});
-
-    const supportCard = document.querySelector('.support-card');
-
-    if (supportCard) {
-      supportCard.setAttribute('role', 'button');
-      supportCard.setAttribute('tabindex', '0');
-      supportCard.setAttribute('aria-expanded', 'false');
-
-      const toggleSupport = () => {
-        const isOpen = supportCard.classList.toggle('is-open');
-        supportCard.setAttribute('aria-expanded', String(isOpen));
-      };
-
-      supportCard.addEventListener('click', toggleSupport);
-      supportCard.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault();
-          toggleSupport();
-        }
-      });
-    }
 
     const relationChart = document.getElementById('relationChart');
     const relationCard = document.querySelector('.relation-card');
