@@ -177,22 +177,6 @@
       outline: 3px solid rgba(100, 116, 139, .2);
       outline-offset: 2px;
     }
-    .dashboard-new-badge {
-      position: absolute;
-      top: -10px;
-      right: 16px;
-      padding: 4px 9px;
-      border: 2px solid #fff;
-      border-radius: 999px;
-      color: #7c2d12;
-      background: #fbbf24;
-      box-shadow: 0 6px 15px rgba(180, 83, 9, .3);
-      font-size: 11px;
-      font-weight: 900;
-      letter-spacing: .08em;
-      line-height: 1;
-      animation: dashboardNewPulse 2.2s ease-in-out infinite;
-    }
     .dashboard-paused-badge,
     .relation-paused-badge {
       display: inline-flex;
@@ -218,13 +202,6 @@
     .relation-paused-badge {
       border-width: 0;
       box-shadow: none;
-    }
-    @keyframes dashboardNewPulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.08); }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .dashboard-new-badge { animation: none; }
     }
     @media (max-width: 1280px) {
       .creator-rail {
@@ -272,13 +249,14 @@
     </div>
     <section class="grid">
       <a class="card" href="./pages/gift-pack-value.html">
+        <span class="dashboard-paused-badge" aria-label="已停止更新">停更</span>
         <h2>礼包内容价值分析</h2>
-        <p>按金币折算、人民币成本和内容估值查看礼包性价比。</p>
+        <p>已停止更新；可自行填入材料价格、新增礼包，作为估值参考。</p>
       </a>
       <a class="card" href="./pages/star-vein-lottery.html">
-        <span class="dashboard-new-badge" aria-label="新功能">NEW</span>
+        <span class="dashboard-paused-badge" aria-label="已停止更新">停更</span>
         <h2>星脉探索抽奖分析</h2>
-        <p>模拟房间奖励与税收事件，查看兑换礼包单份及限购全部价值。</p>
+        <p>已停止更新；仅保留可自行编辑的内容，作为抽奖与兑换估值参考。</p>
       </a>
       <a class="card gem-dashboard-card" href="./pages/gem-dashboard.html">
         <span class="dashboard-paused-badge" aria-label="已停止更新">停更</span>
