@@ -17,6 +17,108 @@
       display: grid;
       gap: 10px;
     }
+    .project-note {
+      margin: 8px 0 0;
+      color: #b45309;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.6;
+    }
+    .project-note strong {
+      color: #92400e;
+      font-variant-numeric: tabular-nums;
+    }
+    .site-notice-modal {
+      position: fixed;
+      z-index: 1000;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 22px;
+      background: rgba(15, 23, 42, .5);
+      backdrop-filter: blur(4px);
+    }
+    .site-notice-modal.is-open {
+      display: flex;
+    }
+    .site-notice-dialog {
+      width: min(460px, 100%);
+      padding: 28px;
+      border: 1px solid rgba(148, 163, 184, .35);
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: 0 24px 70px rgba(15, 23, 42, .24);
+    }
+    .site-notice-tag {
+      display: inline-flex;
+      padding: 4px 9px;
+      border-radius: 999px;
+      color: #92400e;
+      background: #fef3c7;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .site-notice-dialog h2 {
+      margin: 14px 0 10px;
+      font-size: 26px;
+    }
+    .site-notice-dialog p {
+      margin: 0;
+      color: #475569;
+      line-height: 1.7;
+    }
+    .site-notice-group {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-top: 18px;
+      padding: 13px 14px;
+      border-radius: 10px;
+      background: #f8fafc;
+    }
+    .site-notice-group span {
+      color: #64748b;
+      font-size: 13px;
+    }
+    .site-notice-group strong {
+      display: block;
+      margin-top: 2px;
+      color: #0f172a;
+      font-size: 20px;
+      font-variant-numeric: tabular-nums;
+    }
+    .site-notice-copy,
+    .site-notice-close {
+      border: 0;
+      border-radius: 8px;
+      font-family: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .site-notice-copy {
+      flex: 0 0 auto;
+      padding: 8px 12px;
+      color: #1d4ed8;
+      background: #dbeafe;
+    }
+    .site-notice-close {
+      width: 100%;
+      margin-top: 18px;
+      padding: 11px 16px;
+      color: #fff;
+      background: #0f172a;
+      font-size: 15px;
+    }
+    .site-notice-copy:focus-visible,
+    .site-notice-close:focus-visible {
+      outline: 3px solid rgba(37, 99, 235, .25);
+      outline-offset: 2px;
+    }
+    body.modal-open {
+      overflow: hidden;
+    }
     .creator-rail .creator-card {
       position: static;
       width: 100%;
@@ -232,6 +334,7 @@
     <section class="top">
       <div class="title-row"><h1>命运方舟市场工具</h1><span id="dataUpdatedAt" class="updated-at" aria-live="polite"></span></div>
       <p class="sub">国服命运方舟礼包性价比分析、宝石价格指数和金币走势</p>
+      <p class="project-note">本项目已停止更新，现有工具仅供自行编辑与估值参考。交流群：<strong>1029188169</strong></p>
     </section>
     <div class="creator-rail">
       <a class="card creator-card" href="https://space.bilibili.com/1628012" target="_blank" rel="noopener noreferrer">
@@ -310,25 +413,70 @@
       </div>
     </section>
   </main>
+  <div id="siteNoticeModal" class="site-notice-modal" role="dialog" aria-modal="true" aria-labelledby="siteNoticeTitle">
+    <div class="site-notice-dialog">
+      <span class="site-notice-tag">停更公告</span>
+      <h2 id="siteNoticeTitle">本项目已停止更新</h2>
+      <p>页面中的历史数据不会继续维护。现有工具仍可用于自行填写材料价格、添加礼包及进行估值参考。</p>
+      <div class="site-notice-group">
+        <div><span>交流群</span><strong>1029188169</strong></div>
+        <button id="copyGroupNumberBtn" class="site-notice-copy" type="button">复制群号</button>
+      </div>
+      <button id="closeSiteNoticeBtn" class="site-notice-close" type="button">我知道了</button>
+    </div>
+  </div>
   <script src="./data/dashboard-state.js"></script>
   <script>
     const dataUpdatedAt = document.getElementById('dataUpdatedAt');
-    const formatDataUpdatedAt = (value) => {
+    const formatLastUpdated = (value) => {
       if (!value) return '';
       const normalized = String(value).trim().replace(' ', 'T');
       const date = new Date(normalized);
-      if (Number.isNaN(date.getTime())) return String(value).trim().slice(0, 16);
-      const pad = (n) => String(n).padStart(2, '0');
-      return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+      if (Number.isNaN(date.getTime())) return '';
+      const days = Math.max(0, Math.floor((Date.now() - date.getTime()) / 86400000));
+      return days === 0 ? '上次更新于今天' : `上次更新 ${days} 天前`;
     };
 
     fetch('./data/dashboard-state.json', { cache: 'no-store' })
       .then((response) => response.ok ? response.json() : null)
       .then((data) => {
-        const text = formatDataUpdatedAt(data && data.publishedAt);
-        if (dataUpdatedAt && text) dataUpdatedAt.textContent = `数据更新时间 ${text}`;
+        const text = formatLastUpdated(data && data.publishedAt);
+        if (dataUpdatedAt && text) dataUpdatedAt.textContent = text;
       })
       .catch(() => {});
+
+    const siteNoticeModal = document.getElementById('siteNoticeModal');
+    const closeSiteNoticeBtn = document.getElementById('closeSiteNoticeBtn');
+    const copyGroupNumberBtn = document.getElementById('copyGroupNumberBtn');
+    const closeSiteNotice = () => {
+      if (!siteNoticeModal) return;
+      siteNoticeModal.classList.remove('is-open');
+      document.body.classList.remove('modal-open');
+    };
+
+    if (siteNoticeModal && closeSiteNoticeBtn) {
+      siteNoticeModal.classList.add('is-open');
+      document.body.classList.add('modal-open');
+      closeSiteNoticeBtn.focus();
+      closeSiteNoticeBtn.addEventListener('click', closeSiteNotice);
+      siteNoticeModal.addEventListener('click', (event) => {
+        if (event.target === siteNoticeModal) closeSiteNotice();
+      });
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') closeSiteNotice();
+      });
+    }
+
+    if (copyGroupNumberBtn) {
+      copyGroupNumberBtn.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText('1029188169');
+          copyGroupNumberBtn.textContent = '已复制';
+        } catch (_) {
+          copyGroupNumberBtn.textContent = '群号 1029188169';
+        }
+      });
+    }
 
     const relationChart = document.getElementById('relationChart');
     const relationCard = document.querySelector('.relation-card');
